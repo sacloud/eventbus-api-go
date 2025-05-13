@@ -12,46 +12,46 @@ sacloud/eventbus-api-goはさくらのクラウド EventBus APIをGo言語から
 package main
 
 import (
-	"context"
-	"fmt"
+    "context"
+    "fmt"
     "strconv"
     "time"
 
-	"github.com/sacloud/eventbus-api-go"
-	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
+    "github.com/sacloud/eventbus-api-go"
+    v1 "github.com/sacloud/eventbus-api-go/apis/v1"
 )
 
 func main() {
     client, err := eventbus.InitClient()
-	if err != nil {
-		panic(err)
-	}
-	ctx := context.Background()
-	pcOp := eventbus.NewProcessConfigurationOp(client)
-	schedOp := eventbus.NewScheduleOp(client)
+    if err != nil {
+        panic(err)
+    }
+    ctx := context.Background()
+    pcOp := eventbus.NewProcessConfigurationOp(client)
+    schedOp := eventbus.NewScheduleOp(client)
 
-	// テスト用の実行設定の生成 (1111111111はリソースIDの例)
-	pc, err := pcOp.Create(ctx, v1.ProcessConfigurationRequestSettings{
-		Name: "実行設定1", Description: "アプリ向け実行設定",
-		Settings: eventbus.CreateSimpleNotificationSettings("1111111111", "Hello"),
-	})
-	if err != nil {
-		panic(err)
-	}
-	pcId := strconv.FormatInt(pc.ID, 10)
+    // テスト用の実行設定の生成 (1111111111はリソースIDの例)
+    pc, err := pcOp.Create(ctx, v1.ProcessConfigurationRequestSettings{
+        Name: "実行設定1", Description: "アプリ向け実行設定",
+        Settings: eventbus.CreateSimpleNotificationSettings("1111111111", "Hello"),
+    })
+    if err != nil {
+        panic(err)
+    }
+    pcId := strconv.FormatInt(pc.ID, 10)
 
-	res, err := schedOp.Create(ctx, v1.ScheduleRequestSettings{
-		Name: "スケジュール1", Description: "アプリ向けスケジュール",
-		Settings: v1.ScheduleSettings{
-			ProcessConfigurationID: pcId,
-			RecurringStep:          10,
-			RecurringUnit:          "min",
-			StartsAt:               time.Now().UnixMilli(),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
+    res, err := schedOp.Create(ctx, v1.ScheduleRequestSettings{
+        Name: "スケジュール1", Description: "アプリ向けスケジュール",
+        Settings: v1.ScheduleSettings{
+            ProcessConfigurationID: pcId,
+            RecurringStep:          10,
+            RecurringUnit:          "min",
+            StartsAt:               time.Now().UnixMilli(),
+        },
+    })
+    if err != nil {
+        panic(err)
+    }
 
     fmt.Println(res.Name)
 }
