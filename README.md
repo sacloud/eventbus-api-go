@@ -1,39 +1,74 @@
-# sacloud/go-template
+# sacloud/eventbus-api-go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sacloud/go-template.svg)](https://pkg.go.dev/github.com/sacloud/go-template)
-[![Tests](https://github.com/sacloud/go-template/workflows/Tests/badge.svg)](https://github.com/sacloud/go-template/actions/workflows/tests.yaml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/sacloud/go-template)](https://goreportcard.com/report/github.com/sacloud/go-template)
+Go言語向けのさくらのクラウド EventBus APIライブラリ
 
-さくらのクラウド向けOSSプロダクトでのプロジェクトテンプレート(Go)
+EventBus APIドキュメント: https://manual.sakura.ad.jp/cloud/appliance/eventbus/index.html
 
 ## 概要
 
-さくらのクラウド向けOSSプロダクトでGo言語を中心に用いるプロジェクトのためのテンプレート
+sacloud/eventbus-api-goはさくらのクラウド EventBus APIをGo言語から利用するためのAPIライブラリです。
 
-## 使い方
+```go
+package main
 
-GitHubでリポジトリを作成する際にテンプレートとしてsacloud/go-templateを選択して作成します。  
-![テンプレートの選択](docs/new_repo.png)
+import (
+	"context"
+	"fmt"
+    "strconv"
+    "time"
 
-次に`go-teplate`という文字列を自身のプロジェクトのものに置き換えてください。
+	"github.com/sacloud/eventbus-api-go"
+	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
+)
 
-例: exampleという名前のプロジェクトを作成する場合
+func main() {
+    client, err := eventbus.InitClient()
+	if err != nil {
+		panic(err)
+	}
+	ctx := context.Background()
+	pcOp := eventbus.NewProcessConfigurationOp(client)
+	schedOp := eventbus.NewScheduleOp(client)
 
-```bash
-# 作成したプロジェクトのディレクトリに移動
-cd example
-# 置き換え
-find . -type f | xargs sed -i '' -e "s/go-template/example/g"
+	// テスト用の実行設定の生成 (1111111111はリソースIDの例)
+	pc, err := pcOp.Create(ctx, v1.ProcessConfigurationRequestSettings{
+		Name: "実行設定1", Description: "アプリ向け実行設定",
+		Settings: eventbus.CreateSimpleNotificationSettings("1111111111", "Hello"),
+	})
+	if err != nil {
+		panic(err)
+	}
+	pcId := strconv.FormatInt(pc.ID, 10)
+
+	res, err := schedOp.Create(ctx, v1.ScheduleRequestSettings{
+		Name: "スケジュール1", Description: "アプリ向けスケジュール",
+		Settings: v1.ScheduleSettings{
+			ProcessConfigurationID: pcId,
+			RecurringStep:          10,
+			RecurringUnit:          "min",
+			StartsAt:               time.Now().UnixMilli(),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+    fmt.Println(res.Name)
+}
 ```
 
-### DockerイメージをGitHub Container Registryで公開する際の注意点
+example_test.goも参照。
 
-デフォルトでは`CR_PAT`が渡されないためGitHub Actionsでのイメージのビルド/プッシュに失敗します。
-また、パッケージを公開したい場合は初回のみ手作業が必要です。
+:warning:  v1.0に達するまでは互換性のない形で変更される可能性がありますのでご注意ください。
 
-このためDockerイメージをGitHub Container Registryで公開したい場合はオーガニゼーション管理者にご相談ください。
+## TODO
+
+- Testの追加
+- `ProcessConfiguration` / `Schedule` の返り値をポインタにするか検討 (apprunはポインタ)
+- 現在は他のライブラリに合わせて`xxxOp`を提供しているが、`ListSchedules`のようなメソッドも提供するか検討
+- EventBusが公開用OpenAPI定義を提供したらそちらを利用(現在は内部向けAPIを手動でogenにマッピングしている)
 
 ## License
 
-`go-template` Copyright (C) 2022-2025 The sacloud/go-template authors.
+`eventbus-api-go` Copyright (C) 2025- The sacloud/eventbus-api-go authors.
 This project is published under [Apache 2.0 License](LICENSE).
