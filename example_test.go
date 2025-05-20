@@ -42,7 +42,7 @@ func checkEnvs() {
 func ExampleProcessConfigurationAPI() {
 	checkEnvs()
 
-	client, err := eventbus.InitClient()
+	client, err := eventbus.NewClient()
 	if err != nil {
 		panic(err)
 	}
@@ -105,7 +105,7 @@ func ExampleProcessConfigurationAPI() {
 func ExampleScheduleAPI() {
 	checkEnvs()
 
-	client, err := eventbus.InitClient()
+	client, err := eventbus.NewClient()
 	if err != nil {
 		panic(err)
 	}
