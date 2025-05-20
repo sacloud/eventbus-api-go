@@ -17,12 +17,12 @@ import (
     "strconv"
     "time"
 
-    "github.com/sacloud/eventbus-api-go"
+    eventbus "github.com/sacloud/eventbus-api-go"
     v1 "github.com/sacloud/eventbus-api-go/apis/v1"
 )
 
 func main() {
-    client, err := eventbus.InitClient()
+    client, err := eventbus.NewClient()
     if err != nil {
         panic(err)
     }
