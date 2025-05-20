@@ -35,6 +35,7 @@ var UserAgent = fmt.Sprintf(
 	client.DefaultUserAgent,
 )
 
+// SecuritySourceはOpenAPI定義で使用されている認証のための仕組み。api-client-goが処理するので、ogen用はダミーで誤魔化す
 type DummySecuritySource struct {
 	Token string
 }
@@ -48,7 +49,7 @@ func NewClient() (*v1.Client, error) {
 }
 
 func NewClientWithApiUrl(apiUrl string) (*v1.Client, error) {
-	c, err := client.NewClient(apiUrl)
+	c, err := client.NewClient(apiUrl, client.WithUserAgent(UserAgent))
 	if err != nil {
 		return nil, err
 	}
