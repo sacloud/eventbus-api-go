@@ -23,12 +23,12 @@ import (
 )
 
 type ProcessConfigurationAPI interface {
-	List(ctx context.Context) (v1.ProcessConfigurations, error)
-	Read(ctx context.Context, id string) (v1.ProcessConfiguration, error)
-	Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (v1.ProcessConfiguration, error)
-	Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (v1.ProcessConfiguration, error)
+	List(ctx context.Context) ([]v1.ProcessConfiguration, error)
+	Read(ctx context.Context, id string) (*v1.ProcessConfiguration, error)
+	Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error)
+	Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error)
 	UpdateSecret(ctx context.Context, id string, secret v1.ProcessConfigurationSecret) error
-	Delete(ctx context.Context, id string) (v1.ProcessConfiguration, error)
+	Delete(ctx context.Context, id string) error
 }
 
 var _ ProcessConfigurationAPI = (*processConfigurationOp)(nil)
@@ -41,7 +41,7 @@ func NewProcessConfigurationOp(client *v1.Client) ProcessConfigurationAPI {
 	return &processConfigurationOp{client: client}
 }
 
-func (op *processConfigurationOp) List(ctx context.Context) (v1.ProcessConfigurations, error) {
+func (op *processConfigurationOp) List(ctx context.Context) ([]v1.ProcessConfiguration, error) {
 	res, err := op.client.GetProcessConfigurations(ctx)
 	if err != nil {
 		return nil, err
@@ -61,72 +61,69 @@ func (op *processConfigurationOp) List(ctx context.Context) (v1.ProcessConfigura
 	}
 }
 
-func (op *processConfigurationOp) Read(ctx context.Context, id string) (v1.ProcessConfiguration, error) {
-	var empty v1.ProcessConfiguration
+func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.ProcessConfiguration, error) {
 	res, err := op.client.GetProcessConfigurationById(ctx, v1.GetProcessConfigurationByIdParams{ID: id})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.GetProcessConfigurationByIdOK:
-		return p.ProcessConfiguration, nil
+		return &p.ProcessConfiguration, nil
 	case *v1.GetProcessConfigurationByIdUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetProcessConfigurationByIdBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetProcessConfigurationByIdNotFound:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetProcessConfigurationByIdInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
-func (op *processConfigurationOp) Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (v1.ProcessConfiguration, error) {
-	var empty v1.ProcessConfiguration
+func (op *processConfigurationOp) Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error) {
 	res, err := op.client.CreateProcessConfiguration(ctx, &v1.CreateProcessConfigurationRequest{
 		ProcessConfiguration: request,
 	})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.CreateProcessConfigurationOK:
-		return p.ProcessConfiguration, nil
+		return &p.ProcessConfiguration, nil
 	case *v1.CreateProcessConfigurationBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.CreateProcessConfigurationUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.CreateProcessConfigurationInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
-func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (v1.ProcessConfiguration, error) {
-	var empty v1.ProcessConfiguration
+func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error) {
 	res, err := op.client.ConfigureProcessConfiguration(ctx, &v1.ConfigureProcessConfigurationRequest{
 		ProcessConfiguration: request,
 	}, v1.ConfigureProcessConfigurationParams{ID: id})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.ConfigureProcessConfigurationOK:
-		return p.ProcessConfiguration, nil
+		return &p.ProcessConfiguration, nil
 	case *v1.ConfigureProcessConfigurationBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.ConfigureProcessConfigurationNotFound:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.ConfigureProcessConfigurationInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
@@ -152,26 +149,25 @@ func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, s
 	}
 }
 
-func (op *processConfigurationOp) Delete(ctx context.Context, id string) (v1.ProcessConfiguration, error) {
-	var empty v1.ProcessConfiguration
+func (op *processConfigurationOp) Delete(ctx context.Context, id string) error {
 	res, err := op.client.DeleteProcessConfiguration(ctx, v1.DeleteProcessConfigurationParams{ID: id})
 	if err != nil {
-		return empty, err
+		return err
 	}
 
 	switch p := res.(type) {
 	case *v1.DeleteProcessConfigurationOK:
-		return p.ProcessConfiguration, nil
+		return nil
 	case *v1.DeleteProcessConfigurationUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteProcessConfigurationBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteProcessConfigurationNotFound:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteProcessConfigurationInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return errors.New("unknown error")
 	}
 }
 

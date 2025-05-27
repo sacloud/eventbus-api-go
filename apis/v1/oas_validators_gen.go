@@ -336,28 +336,6 @@ func (s ProcessConfigurationDestination) Validate() error {
 	}
 }
 
-func (s ProcessConfigurations) Validate() error {
-	alias := ([]ProcessConfiguration)(s)
-	var failures []validate.FieldError
-	for i, elem := range alias {
-		if err := func() error {
-			if err := elem.Validate(); err != nil {
-				return err
-			}
-			return nil
-		}(); err != nil {
-			failures = append(failures, validate.FieldError{
-				Name:  fmt.Sprintf("[%d]", i),
-				Error: err,
-			})
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
 func (s *Schedule) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
