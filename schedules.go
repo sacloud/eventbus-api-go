@@ -22,11 +22,11 @@ import (
 )
 
 type ScheduleAPI interface {
-	List(ctx context.Context) (v1.Schedules, error)
-	Read(ctx context.Context, id string) (v1.Schedule, error)
-	Create(ctx context.Context, request v1.ScheduleRequestSettings) (v1.Schedule, error)
-	Update(ctx context.Context, id string, request v1.ScheduleRequestSettings) (v1.Schedule, error)
-	Delete(ctx context.Context, id string) (v1.Schedule, error)
+	List(ctx context.Context) ([]v1.Schedule, error)
+	Read(ctx context.Context, id string) (*v1.Schedule, error)
+	Create(ctx context.Context, request v1.ScheduleRequestSettings) (*v1.Schedule, error)
+	Update(ctx context.Context, id string, request v1.ScheduleRequestSettings) (*v1.Schedule, error)
+	Delete(ctx context.Context, id string) error
 }
 
 var _ ScheduleAPI = (*scheduleOp)(nil)
@@ -39,7 +39,7 @@ func NewScheduleOp(client *v1.Client) ScheduleAPI {
 	return &scheduleOp{client: client}
 }
 
-func (op *scheduleOp) List(ctx context.Context) (v1.Schedules, error) {
+func (op *scheduleOp) List(ctx context.Context) ([]v1.Schedule, error) {
 	res, err := op.client.GetSchedules(ctx)
 	if err != nil {
 		return nil, err
@@ -59,94 +59,90 @@ func (op *scheduleOp) List(ctx context.Context) (v1.Schedules, error) {
 	}
 }
 
-func (op *scheduleOp) Read(ctx context.Context, id string) (v1.Schedule, error) {
-	var empty v1.Schedule
+func (op *scheduleOp) Read(ctx context.Context, id string) (*v1.Schedule, error) {
 	res, err := op.client.GetScheduleById(ctx, v1.GetScheduleByIdParams{ID: id})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.GetScheduleByIdOK:
-		return p.Schedule, nil
+		return &p.Schedule, nil
 	case *v1.GetScheduleByIdUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetScheduleByIdBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetScheduleByIdNotFound:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.GetScheduleByIdInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
-func (op *scheduleOp) Create(ctx context.Context, request v1.ScheduleRequestSettings) (v1.Schedule, error) {
-	var empty v1.Schedule
+func (op *scheduleOp) Create(ctx context.Context, request v1.ScheduleRequestSettings) (*v1.Schedule, error) {
 	res, err := op.client.CreateSchedule(ctx, &v1.CreateScheduleRequest{
 		Schedule: request,
 	})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.CreateScheduleOK:
-		return p.Schedule, nil
+		return &p.Schedule, nil
 	case *v1.CreateScheduleBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.CreateScheduleUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.CreateScheduleInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
-func (op *scheduleOp) Update(ctx context.Context, id string, request v1.ScheduleRequestSettings) (v1.Schedule, error) {
-	var empty v1.Schedule
+func (op *scheduleOp) Update(ctx context.Context, id string, request v1.ScheduleRequestSettings) (*v1.Schedule, error) {
 	res, err := op.client.ConfigureSchedule(ctx, &v1.ConfigureScheduleRequest{
 		Schedule: request,
 	}, v1.ConfigureScheduleParams{ID: id})
 	if err != nil {
-		return empty, err
+		return nil, err
 	}
 
 	switch p := res.(type) {
 	case *v1.ConfigureScheduleOK:
-		return p.Schedule, nil
+		return &p.Schedule, nil
 	case *v1.ConfigureScheduleBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.ConfigureScheduleNotFound:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	case *v1.ConfigureScheduleInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return nil, errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return nil, errors.New("unknown error")
 	}
 }
 
-func (op *scheduleOp) Delete(ctx context.Context, id string) (v1.Schedule, error) {
-	var empty v1.Schedule
+func (op *scheduleOp) Delete(ctx context.Context, id string) error {
 	res, err := op.client.DeleteSchedule(ctx, v1.DeleteScheduleParams{ID: id})
 	if err != nil {
-		return empty, err
+		return err
 	}
 
 	switch p := res.(type) {
 	case *v1.DeleteScheduleOK:
-		return p.Schedule, nil
+		return nil
 	case *v1.DeleteScheduleUnauthorized:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteScheduleBadRequest:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteScheduleNotFound:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	case *v1.DeleteScheduleInternalServerError:
-		return empty, errors.New(p.Message.Value)
+		return errors.New(p.Message.Value)
 	default:
-		return empty, errors.New("unknown error")
+		return errors.New("unknown error")
 	}
 }

@@ -696,7 +696,7 @@ type GetProcessConfigurationsOK struct {
 	From  int64
 	Count int64
 	Total int64
-	ProcessConfigurations ProcessConfigurations `json:"CommonServiceItems"`
+	ProcessConfigurations []ProcessConfiguration `json:"CommonServiceItems"`
 }
 
 // GetCount returns the value of Count.
@@ -710,7 +710,7 @@ func (s *GetProcessConfigurationsOK) GetTotal() int64 {
 }
 
 // GetProcessConfigurations returns the value of ProcessConfigurations.
-func (s *GetProcessConfigurationsOK) GetProcessConfigurations() ProcessConfigurations {
+func (s *GetProcessConfigurationsOK) GetProcessConfigurations() []ProcessConfiguration {
 	return s.ProcessConfigurations
 }
 
@@ -725,7 +725,7 @@ func (s *GetProcessConfigurationsOK) SetTotal(val int64) {
 }
 
 // SetProcessConfigurations sets the value of ProcessConfigurations.
-func (s *GetProcessConfigurationsOK) SetProcessConfigurations(val ProcessConfigurations) {
+func (s *GetProcessConfigurationsOK) SetProcessConfigurations(val []ProcessConfiguration) {
 	s.ProcessConfigurations = val
 }
 
@@ -779,16 +779,16 @@ type GetSchedulesOK struct {
 	From  int64
 	Count int64
 	Total int64
-	Schedules Schedules `json:"CommonServiceItems"`
+	Schedules []Schedule `json:"CommonServiceItems"`
 }
 
 // GetSchedules returns the value of Schedules.
-func (s *GetSchedulesOK) GetSchedules() Schedules {
+func (s *GetSchedulesOK) GetSchedules() []Schedule {
 	return s.Schedules
 }
 
 // SetSchedules sets the value of Schedules.
-func (s *GetSchedulesOK) SetSchedules(val Schedules) {
+func (s *GetSchedulesOK) SetSchedules(val []Schedule) {
 	s.Schedules = val
 }
 
@@ -1253,8 +1253,6 @@ func (s *ProcessConfigurationDestination) UnmarshalText(data []byte) error {
 	}
 }
 
-type ProcessConfigurations []ProcessConfiguration
-
 // Ref: #/components/schemas/ScheduleLastResult
 type ScheduleLastResult struct {
 	Success   bool   `json:"Success"`
@@ -1339,5 +1337,3 @@ func (s *ScheduleRecurringUnit) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
-
-type Schedules []Schedule

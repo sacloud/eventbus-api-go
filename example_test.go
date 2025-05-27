@@ -91,15 +91,15 @@ func ExampleProcessConfigurationAPI() {
 		panic(err)
 	}
 
-	resDelete, err := pcOp.Delete(ctx, pcId)
+	err = pcOp.Delete(ctx, pcId)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(resDelete.Name)
+	fmt.Println("succeeded")
 	// Output:
 	// SDK Test
 	// SDK Test 2
-	// SDK Test 2
+	// succeeded
 }
 
 func ExampleScheduleAPI() {
@@ -169,21 +169,21 @@ func ExampleScheduleAPI() {
 	fmt.Println(resRead.Name)
 	fmt.Println(resRead.Settings.RecurringUnit)
 
-	resDelete, err := schedOp.Delete(ctx, schedId)
+	err = schedOp.Delete(ctx, schedId)
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = pcOp.Delete(ctx, pcId)
+	err = pcOp.Delete(ctx, pcId)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(resDelete.Name)
+	fmt.Println("succeeded")
 	// Output:
 	// SDK Test
 	// min
 	// SDK Test 2
 	// hour
-	// SDK Test 2
+	// succeeded
 }
