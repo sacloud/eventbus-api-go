@@ -64,8 +64,6 @@ example_test.goも参照。
 ## TODO
 
 - Testの追加
-- `ProcessConfiguration` / `Schedule` の返り値をポインタにするか検討 (apprunはポインタ)
-- 現在は他のライブラリに合わせて`xxxOp`を提供しているが、`ListSchedules`のようなメソッドも提供するか検討
 - EventBusが公開用OpenAPI定義を提供したらそちらを利用(現在は内部向けAPIを手動でogenにマッピングしている)
 
 ## License
