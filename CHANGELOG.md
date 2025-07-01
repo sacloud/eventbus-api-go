@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.3.0](https://github.com/sacloud/eventbus-api-go/compare/v0.2.0...v0.3.0) - 2025-07-01
+- go: bump github.com/ogen-go/ogen from 1.13.0 to 1.14.0 by @dependabot in https://github.com/sacloud/eventbus-api-go/pull/9
+- Use eventbus.Error instead of common error by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/11
+
 ## [v0.2.0](https://github.com/sacloud/eventbus-api-go/compare/v0.1.0...v0.2.0) - 2025-05-27
 - メソッドの返り値の型等を他のライブラリと合わせる by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/7
 - TODOの更新 by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/8
