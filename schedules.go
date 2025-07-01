@@ -42,42 +42,42 @@ func NewScheduleOp(client *v1.Client) ScheduleAPI {
 func (op *scheduleOp) List(ctx context.Context) ([]v1.Schedule, error) {
 	res, err := op.client.GetSchedules(ctx)
 	if err != nil {
-		return nil, err
+		return nil, NewError("List", err)
 	}
 
 	switch p := res.(type) {
 	case *v1.GetSchedulesOK:
 		return p.Schedules, nil
 	case *v1.GetSchedulesUnauthorized:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("List", errors.New(p.Message.Value))
 	case *v1.GetSchedulesBadRequest:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("List", errors.New(p.Message.Value))
 	case *v1.GetSchedulesInternalServerError:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("List", errors.New(p.Message.Value))
 	default:
-		return nil, errors.New("unknown error")
+		return nil, NewError("List", errors.New("unknown error"))
 	}
 }
 
 func (op *scheduleOp) Read(ctx context.Context, id string) (*v1.Schedule, error) {
 	res, err := op.client.GetScheduleById(ctx, v1.GetScheduleByIdParams{ID: id})
 	if err != nil {
-		return nil, err
+		return nil, NewError("Read", err)
 	}
 
 	switch p := res.(type) {
 	case *v1.GetScheduleByIdOK:
 		return &p.Schedule, nil
 	case *v1.GetScheduleByIdUnauthorized:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Read", errors.New(p.Message.Value))
 	case *v1.GetScheduleByIdBadRequest:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Read", errors.New(p.Message.Value))
 	case *v1.GetScheduleByIdNotFound:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Read", errors.New(p.Message.Value))
 	case *v1.GetScheduleByIdInternalServerError:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Read", errors.New(p.Message.Value))
 	default:
-		return nil, errors.New("unknown error")
+		return nil, NewError("Read", errors.New("unknown error"))
 	}
 }
 
@@ -86,20 +86,20 @@ func (op *scheduleOp) Create(ctx context.Context, request v1.ScheduleRequestSett
 		Schedule: request,
 	})
 	if err != nil {
-		return nil, err
+		return nil, NewError("Create", err)
 	}
 
 	switch p := res.(type) {
 	case *v1.CreateScheduleOK:
 		return &p.Schedule, nil
 	case *v1.CreateScheduleBadRequest:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Create", errors.New(p.Message.Value))
 	case *v1.CreateScheduleUnauthorized:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Create", errors.New(p.Message.Value))
 	case *v1.CreateScheduleInternalServerError:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Create", errors.New(p.Message.Value))
 	default:
-		return nil, errors.New("unknown error")
+		return nil, NewError("Create", errors.New("unknown error"))
 	}
 }
 
@@ -108,41 +108,41 @@ func (op *scheduleOp) Update(ctx context.Context, id string, request v1.Schedule
 		Schedule: request,
 	}, v1.ConfigureScheduleParams{ID: id})
 	if err != nil {
-		return nil, err
+		return nil, NewError("Update", err)
 	}
 
 	switch p := res.(type) {
 	case *v1.ConfigureScheduleOK:
 		return &p.Schedule, nil
 	case *v1.ConfigureScheduleBadRequest:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Update", errors.New(p.Message.Value))
 	case *v1.ConfigureScheduleNotFound:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Update", errors.New(p.Message.Value))
 	case *v1.ConfigureScheduleInternalServerError:
-		return nil, errors.New(p.Message.Value)
+		return nil, NewError("Update", errors.New(p.Message.Value))
 	default:
-		return nil, errors.New("unknown error")
+		return nil, NewError("Update", errors.New("unknown error"))
 	}
 }
 
 func (op *scheduleOp) Delete(ctx context.Context, id string) error {
 	res, err := op.client.DeleteSchedule(ctx, v1.DeleteScheduleParams{ID: id})
 	if err != nil {
-		return err
+		return NewError("Delete", err)
 	}
 
 	switch p := res.(type) {
 	case *v1.DeleteScheduleOK:
 		return nil
 	case *v1.DeleteScheduleUnauthorized:
-		return errors.New(p.Message.Value)
+		return NewError("Delete", errors.New(p.Message.Value))
 	case *v1.DeleteScheduleBadRequest:
-		return errors.New(p.Message.Value)
+		return NewError("Delete", errors.New(p.Message.Value))
 	case *v1.DeleteScheduleNotFound:
-		return errors.New(p.Message.Value)
+		return NewError("Delete", errors.New(p.Message.Value))
 	case *v1.DeleteScheduleInternalServerError:
-		return errors.New(p.Message.Value)
+		return NewError("Delete", errors.New(p.Message.Value))
 	default:
-		return errors.New("unknown error")
+		return NewError("Delete", errors.New("unknown error"))
 	}
 }
