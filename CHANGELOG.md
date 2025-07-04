@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.3.2](https://github.com/sacloud/eventbus-api-go/compare/v0.3.1...v0.3.2) - 2025-07-04
+
 ## [v0.3.1](https://github.com/sacloud/eventbus-api-go/compare/v0.3.0...v0.3.1) - 2025-07-04
 - Use api-client-go's APIError by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/13
 
