@@ -44,42 +44,42 @@ func NewProcessConfigurationOp(client *v1.Client) ProcessConfigurationAPI {
 func (op *processConfigurationOp) List(ctx context.Context) ([]v1.ProcessConfiguration, error) {
 	res, err := op.client.GetProcessConfigurations(ctx)
 	if err != nil {
-		return nil, NewError("List", err)
+		return nil, NewAPIError("ProcessConfiguration.List", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.GetProcessConfigurationsOK:
 		return p.ProcessConfigurations, nil
 	case *v1.GetProcessConfigurationsUnauthorized:
-		return nil, NewError("List", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.List", 401, errors.New(p.Message.Value))
 	case *v1.GetProcessConfigurationsBadRequest:
-		return nil, NewError("List", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.List", 400, errors.New(p.Message.Value))
 	case *v1.GetProcessConfigurationsInternalServerError:
-		return nil, NewError("List", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.List", 500, errors.New(p.Message.Value))
 	default:
-		return nil, NewError("List", errors.New("unknown error"))
+		return nil, NewAPIError("ProcessConfiguration.List", 0, nil)
 	}
 }
 
 func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.ProcessConfiguration, error) {
 	res, err := op.client.GetProcessConfigurationById(ctx, v1.GetProcessConfigurationByIdParams{ID: id})
 	if err != nil {
-		return nil, NewError("Read", err)
+		return nil, NewAPIError("ProcessConfiguration.Read", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.GetProcessConfigurationByIdOK:
 		return &p.ProcessConfiguration, nil
 	case *v1.GetProcessConfigurationByIdUnauthorized:
-		return nil, NewError("Read", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Read", 401, errors.New(p.Message.Value))
 	case *v1.GetProcessConfigurationByIdBadRequest:
-		return nil, NewError("Read", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Read", 400, errors.New(p.Message.Value))
 	case *v1.GetProcessConfigurationByIdNotFound:
-		return nil, NewError("Read", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Read", 404, errors.New(p.Message.Value))
 	case *v1.GetProcessConfigurationByIdInternalServerError:
-		return nil, NewError("Read", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Read", 500, errors.New(p.Message.Value))
 	default:
-		return nil, NewError("Read", errors.New("unknown error"))
+		return nil, NewAPIError("ProcessConfiguration.Read", 0, nil)
 	}
 }
 
@@ -88,20 +88,20 @@ func (op *processConfigurationOp) Create(ctx context.Context, request v1.Process
 		ProcessConfiguration: request,
 	})
 	if err != nil {
-		return nil, NewError("Create", err)
+		return nil, NewAPIError("ProcessConfiguration.Create", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.CreateProcessConfigurationOK:
 		return &p.ProcessConfiguration, nil
 	case *v1.CreateProcessConfigurationBadRequest:
-		return nil, NewError("Create", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Create", 400, errors.New(p.Message.Value))
 	case *v1.CreateProcessConfigurationUnauthorized:
-		return nil, NewError("Create", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Create", 401, errors.New(p.Message.Value))
 	case *v1.CreateProcessConfigurationInternalServerError:
-		return nil, NewError("Create", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Create", 500, errors.New(p.Message.Value))
 	default:
-		return nil, NewError("Create", errors.New("unknown error"))
+		return nil, NewAPIError("ProcessConfiguration.Create", 0, nil)
 	}
 }
 
@@ -110,20 +110,20 @@ func (op *processConfigurationOp) Update(ctx context.Context, id string, request
 		ProcessConfiguration: request,
 	}, v1.ConfigureProcessConfigurationParams{ID: id})
 	if err != nil {
-		return nil, NewError("Update", err)
+		return nil, NewAPIError("ProcessConfiguration.Update", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.ConfigureProcessConfigurationOK:
 		return &p.ProcessConfiguration, nil
 	case *v1.ConfigureProcessConfigurationBadRequest:
-		return nil, NewError("Update", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Update", 400, errors.New(p.Message.Value))
 	case *v1.ConfigureProcessConfigurationNotFound:
-		return nil, NewError("Update", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Update", 404, errors.New(p.Message.Value))
 	case *v1.ConfigureProcessConfigurationInternalServerError:
-		return nil, NewError("Update", errors.New(p.Message.Value))
+		return nil, NewAPIError("ProcessConfiguration.Update", 500, errors.New(p.Message.Value))
 	default:
-		return nil, NewError("Update", errors.New("unknown error"))
+		return nil, NewAPIError("ProcessConfiguration.Update", 0, nil)
 	}
 }
 
@@ -132,42 +132,42 @@ func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, s
 		Secret: secret,
 	}, v1.ConfigureProcessConfigurationSecretParams{ID: id})
 	if err != nil {
-		return NewError("UpdateSecret", err)
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.ConfigureProcessConfigurationSecretOK:
 		return nil
 	case *v1.ConfigureProcessConfigurationSecretBadRequest:
-		return NewError("UpdateSecret", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 400, errors.New(p.Message.Value))
 	case *v1.ConfigureProcessConfigurationSecretNotFound:
-		return NewError("UpdateSecret", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 404, errors.New(p.Message.Value))
 	case *v1.ConfigureProcessConfigurationSecretInternalServerError:
-		return NewError("UpdateSecret", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 500, errors.New(p.Message.Value))
 	default:
-		return NewError("UpdateSecret", errors.New("unknown error"))
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 0, nil)
 	}
 }
 
 func (op *processConfigurationOp) Delete(ctx context.Context, id string) error {
 	res, err := op.client.DeleteProcessConfiguration(ctx, v1.DeleteProcessConfigurationParams{ID: id})
 	if err != nil {
-		return NewError("Delete", err)
+		return NewAPIError("ProcessConfiguration.Delete", 0, err)
 	}
 
 	switch p := res.(type) {
 	case *v1.DeleteProcessConfigurationOK:
 		return nil
 	case *v1.DeleteProcessConfigurationUnauthorized:
-		return NewError("Delete", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.Delete", 401, errors.New(p.Message.Value))
 	case *v1.DeleteProcessConfigurationBadRequest:
-		return NewError("Delete", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.Delete", 400, errors.New(p.Message.Value))
 	case *v1.DeleteProcessConfigurationNotFound:
-		return NewError("Delete", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.Delete", 404, errors.New(p.Message.Value))
 	case *v1.DeleteProcessConfigurationInternalServerError:
-		return NewError("Delete", errors.New(p.Message.Value))
+		return NewAPIError("ProcessConfiguration.Delete", 500, errors.New(p.Message.Value))
 	default:
-		return NewError("Delete", errors.New("unknown error"))
+		return NewAPIError("ProcessConfiguration.Delete", 0, nil)
 	}
 }
 
