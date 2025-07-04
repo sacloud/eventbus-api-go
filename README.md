@@ -57,13 +57,12 @@ func main() {
 }
 ```
 
-example_test.goも参照。
+[process_configurations_test.go](./process_configurations_test.go) / [schedules_test.go](./schedules_test.go) も参照。
 
 :warning:  v1.0に達するまでは互換性のない形で変更される可能性がありますのでご注意ください。
 
 ## TODO
 
-- Testの追加
 - EventBusが公開用OpenAPI定義を提供したらそちらを利用(現在は内部向けAPIを手動でogenにマッピングしている)
 
 ## License
