@@ -14,7 +14,7 @@ const (
 	DeleteProcessConfigurationOperation          OperationName = "DeleteProcessConfiguration"
 	DeleteScheduleOperation                      OperationName = "DeleteSchedule"
 	GetProcessConfigurationByIdOperation         OperationName = "GetProcessConfigurationById"
-	GetProcessConfigurationsOperation   OperationName = "GetProcessConfigurations"
+	GetProcessConfigurationsOperation            OperationName = "GetProcessConfigurations"
 	GetScheduleByIdOperation                     OperationName = "GetScheduleById"
-	GetSchedulesOperation               OperationName = "GetSchedules"
+	GetSchedulesOperation                        OperationName = "GetSchedules"
 )
