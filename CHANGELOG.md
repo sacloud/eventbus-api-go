@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.4.0](https://github.com/sacloud/eventbus-api-go/compare/v0.3.2...v0.4.0) - 2025-09-22
+- ci: bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/17
+- go: bump github.com/sacloud/api-client-go from 0.3.2 to 0.3.3 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/19
+- go: bump github.com/stretchr/testify from 1.10.0 to 1.11.1 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/20
+- Update github settings by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/23
+- Support tags field by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/26
+- ci: bump Songmu/tagpr from 1.8.4 to 1.9.0 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/24
+
 ## [v0.3.2](https://github.com/sacloud/eventbus-api-go/compare/v0.3.1...v0.3.2) - 2025-07-07
 - NewClient functions accept client parameters by @repeatedly in https://github.com/sacloud/eventbus-api-go/pull/16
 
