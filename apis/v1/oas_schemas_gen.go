@@ -154,9 +154,9 @@ func (s *ConfigureProcessConfigurationSecretOK) SetSuccess(val bool) {
 func (*ConfigureProcessConfigurationSecretOK) configureProcessConfigurationSecretRes() {}
 
 type ProcessConfigurationSecret struct {
-	AccessToken string `json:,omitempty`
+	AccessToken       string `json:,omitempty`
 	AccessTokenSecret string `json:,omitempty`
-	APIKey string `json:,omitempty`
+	APIKey            string `json:,omitempty`
 }
 
 // Ref: #/components/schemas/ConfigureProcessConfigurationSecretRequest
@@ -284,7 +284,7 @@ func (*CreateProcessConfigurationOK) createProcessConfigurationRes() {}
 
 type DestinationSettings struct {
 	Destination CreateProcessConfigurationRequestDestination `json:"Destination"`
-	Parameters  string `json:"Parameters"`
+	Parameters  string                                       `json:"Parameters"`
 }
 
 type ProcessConfigurationProvider struct {
@@ -292,10 +292,11 @@ type ProcessConfigurationProvider struct {
 }
 
 type ProcessConfigurationRequestSettings struct {
-	Name        string `json:"Name"`
-	Description string `json:"Description"`
-	Settings    DestinationSettings`json:"Settings"`
-	Provider 	ProcessConfigurationProvider `json:"Provider"`
+	Name        string                       `json:"Name"`
+	Description string                       `json:"Description"`
+	Tags        []string                     `json:"Tags,omitempty"`
+	Settings    DestinationSettings          `json:"Settings"`
+	Provider    ProcessConfigurationProvider `json:"Provider"`
 }
 
 // Ref: #/components/schemas/CreateProcessConfigurationRequest
@@ -391,16 +392,16 @@ type CreateScheduleInternalServerError Error
 func (*CreateScheduleInternalServerError) createScheduleRes() {}
 
 type Schedule struct {
-	ID    int64
-	Name  string
-	Description string
-	Settings ScheduleSettings
-	SettingsHash string
-	Availability string
-	CreatedAt string
-	ModifiedAt string
-	Status OptScheduleLastResult
-	Tags []string
+	ID           int64                 `json:",omitempty"`
+	Name         string                `json:",omitempty"`
+	Description  string                `json:",omitempty"`
+	Settings     ScheduleSettings      `json:",omitempty"`
+	SettingsHash string                `json:",omitempty"`
+	Availability string                `json:",omitempty"`
+	CreatedAt    string                `json:",omitempty"`
+	ModifiedAt   string                `json:",omitempty"`
+	Status       OptScheduleLastResult `json:",omitempty"`
+	Tags         []string              `json:",omitempty"`
 }
 
 type CreateScheduleOK struct {
@@ -433,6 +434,7 @@ type ScheduleProvider struct {
 type ScheduleRequestSettings struct {
 	Name        string           `json:"Name"`
 	Description string           `json:"Description"`
+	Tags        []string         `json:"Tags,omitempty"`
 	Settings    ScheduleSettings `json:"Settings"`
 	Provider    ScheduleProvider `json:"Provider"`
 }
@@ -652,16 +654,16 @@ type GetProcessConfigurationByIdNotFound Error
 func (*GetProcessConfigurationByIdNotFound) getProcessConfigurationByIdRes() {}
 
 type ProcessConfiguration struct {
-	Index int64
-	ID    int64
-	Name  string
-	Description string
-	Settings DestinationSettings
-	SettingsHash string
-	Availability string
-	CreatedAt string
-	ModifiedAt string
-	Tags []string
+	Index        int64               `json:",omitempty"`
+	ID           int64               `json:",omitempty"`
+	Name         string              `json:",omitempty"`
+	Description  string              `json:",omitempty"`
+	Settings     DestinationSettings `json:",omitempty"`
+	SettingsHash string              `json:",omitempty"`
+	Availability string              `json:",omitempty"`
+	CreatedAt    string              `json:",omitempty"`
+	ModifiedAt   string              `json:",omitempty"`
+	Tags         []string            `json:",omitempty"`
 }
 
 type GetProcessConfigurationByIdOK struct {
@@ -693,9 +695,9 @@ type GetProcessConfigurationsInternalServerError Error
 func (*GetProcessConfigurationsInternalServerError) getProcessConfigurationsByAccountRes() {}
 
 type GetProcessConfigurationsOK struct {
-	From  int64
-	Count int64
-	Total int64
+	From                  int64
+	Count                 int64
+	Total                 int64
 	ProcessConfigurations []ProcessConfiguration `json:"CommonServiceItems"`
 }
 
@@ -776,9 +778,9 @@ type GetSchedulesInternalServerError Error
 func (*GetSchedulesInternalServerError) getSchedulesByAccountRes() {}
 
 type GetSchedulesOK struct {
-	From  int64
-	Count int64
-	Total int64
+	From      int64
+	Count     int64
+	Total     int64
 	Schedules []Schedule `json:"CommonServiceItems"`
 }
 
@@ -1210,7 +1212,6 @@ func (o OptString) Or(d string) string {
 	}
 	return d
 }
-
 
 type ProcessConfigurationDestination string
 

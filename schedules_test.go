@@ -27,7 +27,7 @@ func TestScheduleAPI(t *testing.T) {
 	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
 
 	pc, err := pcOp.Create(ctx, v1.ProcessConfigurationRequestSettings{
-		Name: "SDK Test", Description: "SDK Testの概要",
+		Name: "SDK Test", Description: "SDK Testの概要", Tags: []string{"tag1", "tag2"},
 		Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ"),
 	})
 	require.NoError(t, err)
@@ -61,7 +61,7 @@ func TestScheduleAPI(t *testing.T) {
 	assert.True(t, found, "Created Schedule not found in list")
 
 	_, err = schedOp.Update(ctx, schedId, v1.ScheduleRequestSettings{
-		Name: "SDK Test 2", Description: "SDK Test 2の概要",
+		Name: "SDK Test 2", Description: "SDK Test 2の概要", Tags: []string{"tag1", "tag2"},
 		Settings: v1.ScheduleSettings{
 			ProcessConfigurationID: pcId,
 			RecurringStep:          1,
@@ -75,6 +75,7 @@ func TestScheduleAPI(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "SDK Test 2", resRead.Name)
 	assert.Equal(t, v1.CreateScheduleRequestRecurringUnit("hour"), resRead.Settings.RecurringUnit)
+	assert.Equal(t, []string{"tag1", "tag2"}, resRead.Tags)
 
 	err = schedOp.Delete(ctx, schedId)
 	require.NoError(t, err)
