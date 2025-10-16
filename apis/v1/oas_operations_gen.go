@@ -6,15 +6,10 @@ package v1
 type OperationName = string
 
 const (
-	ConfigureProcessConfigurationOperation       OperationName = "ConfigureProcessConfiguration"
-	ConfigureProcessConfigurationSecretOperation OperationName = "ConfigureProcessConfigurationSecret"
-	ConfigureScheduleOperation                   OperationName = "ConfigureSchedule"
-	CreateProcessConfigurationOperation          OperationName = "CreateProcessConfiguration"
-	CreateScheduleOperation                      OperationName = "CreateSchedule"
-	DeleteProcessConfigurationOperation          OperationName = "DeleteProcessConfiguration"
-	DeleteScheduleOperation                      OperationName = "DeleteSchedule"
-	GetProcessConfigurationByIdOperation         OperationName = "GetProcessConfigurationById"
-	GetProcessConfigurationsOperation            OperationName = "GetProcessConfigurations"
-	GetScheduleByIdOperation                     OperationName = "GetScheduleById"
-	GetSchedulesOperation                        OperationName = "GetSchedules"
+	CreateCommonServiceItemOperation       OperationName = "CreateCommonServiceItem"
+	DeleteCommonServiceItemOperation       OperationName = "DeleteCommonServiceItem"
+	GetCommonServiceItemOperation          OperationName = "GetCommonServiceItem"
+	GetCommonServiceItemsOperation         OperationName = "GetCommonServiceItems"
+	SetProcessConfigurationSecretOperation OperationName = "SetProcessConfigurationSecret"
+	UpdateCommonServiceItemOperation       OperationName = "UpdateCommonServiceItem"
 )
