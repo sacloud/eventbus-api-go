@@ -17,6 +17,7 @@ package eventbus
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"runtime"
 
 	client "github.com/sacloud/api-client-go"
@@ -24,7 +25,7 @@ import (
 )
 
 // DefaultAPIRootURL デフォルトのAPIルートURL
-const DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1/commonserviceitem/"
+const DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1"
 
 // UserAgent APIリクエスト時のユーザーエージェント
 var UserAgent = fmt.Sprintf(
@@ -40,8 +41,8 @@ type DummySecuritySource struct {
 	Token string
 }
 
-func (ss DummySecuritySource) CloudCtrlAuth(ctx context.Context, operationName v1.OperationName) (v1.CloudCtrlAuth, error) {
-	return v1.CloudCtrlAuth{Token: ss.Token}, nil
+func (ss DummySecuritySource) ApiKeyAuth(ctx context.Context, operationName v1.OperationName) (v1.ApiKeyAuth, error) {
+	return v1.ApiKeyAuth{Username: ss.Token}, nil
 }
 
 func NewClient(params ...client.ClientParam) (*v1.Client, error) {
@@ -49,7 +50,9 @@ func NewClient(params ...client.ClientParam) (*v1.Client, error) {
 }
 
 func NewClientWithApiUrl(apiUrl string, params ...client.ClientParam) (*v1.Client, error) {
-	params = append(params, client.WithUserAgent(UserAgent))
+	params = append(params, client.WithUserAgent(UserAgent), client.WithHTTPClient(&http.Client{
+		Transport: &filterInjector{},
+	}))
 	c, err := client.NewClient(apiUrl, params...)
 	if err != nil {
 		return nil, NewError("NewClientWithApiUrl", err)
