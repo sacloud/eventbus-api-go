@@ -42,6 +42,7 @@ func NewProcessConfigurationOp(client *v1.Client) ProcessConfigurationAPI {
 }
 
 func (op *processConfigurationOp) List(ctx context.Context) ([]v1.CommonServiceItem, error) {
+	ctx = setFilterProviderClass(ctx, v1.ProviderClassEventbusprocessconfiguration)
 	res, err := op.client.GetCommonServiceItems(ctx)
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.List", 0, err)
