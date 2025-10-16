@@ -17,14 +17,16 @@ package eventbus
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"runtime"
 
 	client "github.com/sacloud/api-client-go"
 	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
+	sacloudhttp "github.com/sacloud/go-http"
 )
 
 // DefaultAPIRootURL デフォルトのAPIルートURL
-const DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1/commonserviceitem/"
+const DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1"
 
 // UserAgent APIリクエスト時のユーザーエージェント
 var UserAgent = fmt.Sprintf(
@@ -40,8 +42,8 @@ type DummySecuritySource struct {
 	Token string
 }
 
-func (ss DummySecuritySource) CloudCtrlAuth(ctx context.Context, operationName v1.OperationName) (v1.CloudCtrlAuth, error) {
-	return v1.CloudCtrlAuth{Token: ss.Token}, nil
+func (ss DummySecuritySource) ApiKeyAuth(ctx context.Context, operationName v1.OperationName) (v1.ApiKeyAuth, error) {
+	return v1.ApiKeyAuth{Username: ss.Token}, nil
 }
 
 func NewClient(params ...client.ClientParam) (*v1.Client, error) {
@@ -49,7 +51,21 @@ func NewClient(params ...client.ClientParam) (*v1.Client, error) {
 }
 
 func NewClientWithApiUrl(apiUrl string, params ...client.ClientParam) (*v1.Client, error) {
-	params = append(params, client.WithUserAgent(UserAgent))
+	params = append(params,
+		client.WithUserAgent(UserAgent),
+		// TODO: filterがOpenAPI定義で表現できるようになったら不要となるので削除。
+		client.WithHTTPClient(&http.Client{
+			Transport: &filterInjector{},
+		}),
+		client.WithOptions(&client.Options{
+			RequestCustomizers: []sacloudhttp.RequestCustomizer{
+				func(req *http.Request) error {
+					// 文字列を勝手に数値に変換しないようヘッダーで指定
+					req.Header.Set("X-Sakura-Bigint-As-Int", "0")
+					return nil
+				},
+			},
+		}))
 	c, err := client.NewClient(apiUrl, params...)
 	if err != nil {
 		return nil, NewError("NewClientWithApiUrl", err)
