@@ -6,7 +6,12 @@ import (
 	"net/http"
 
 	ht "github.com/ogen-go/ogen/http"
+	"github.com/ogen-go/ogen/ogenregex"
 )
+
+var regexMap = map[string]ogenregex.Regexp{
+	"^(?!data$)[a-z0-9]{1,20}$": ogenregex.MustCompile("^(?!data$)[a-z0-9]{1,20}$"),
+}
 
 type (
 	optionFunc[C any] func(*C)

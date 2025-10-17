@@ -3,7 +3,6 @@ package eventbus_test
 import (
 	"context"
 	"os"
-	"strconv"
 	"testing"
 
 	client "github.com/sacloud/api-client-go"
@@ -25,12 +24,14 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	pcOp := eventbus.NewProcessConfigurationOp(client)
 	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
 
-	resCreate, err := pcOp.Create(ctx, v1.ProcessConfigurationRequestSettings{
-		Name: "SDK Test", Description: "SDK Testの概要", Tags: []string{"test"},
-		Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ"),
+	resCreate, err := pcOp.Create(ctx, v1.CreateCommonServiceItemRequest{
+		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
+			Name: "SDK Test", Description: v1.NewOptNilString("SDK Testの概要"), Tags: []string{"test"},
+			Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ"),
+		},
 	})
 	require.NoError(t, err)
-	pcId := strconv.FormatInt(resCreate.ID, 10)
+	pcId := resCreate.ID
 
 	resList, err := pcOp.List(ctx)
 	assert.NoError(t, err)
@@ -44,9 +45,11 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	}
 	assert.True(t, found, "Created ProcessConfiguration not found in list")
 
-	_, err = pcOp.Update(ctx, pcId, v1.ProcessConfigurationRequestSettings{
-		Name: "SDK Test 2", Description: "SDK Test 2の概要", Tags: []string{"test2"},
-		Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ2"),
+	_, err = pcOp.Update(ctx, pcId, v1.UpdateCommonServiceItemRequest{
+		CommonServiceItem: v1.UpdateCommonServiceItemRequestCommonServiceItem{
+			Name: v1.NewOptString("SDK Test 2"), Description: v1.NewOptNilString("SDK Test 2の概要"), Tags: []string{"test2"},
+			Settings: v1.NewOptSettings(eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ2")),
+		},
 	})
 	assert.NoError(t, err)
 
@@ -55,9 +58,11 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	assert.Equal(t, "SDK Test 2", resRead.Name)
 	assert.Equal(t, []string{"test2"}, resRead.Tags)
 
-	err = pcOp.UpdateSecret(ctx, pcId, v1.ProcessConfigurationSecret{
-		AccessToken:       os.Getenv("SAKURACLOUD_ACCESS_TOKEN"),
-		AccessTokenSecret: os.Getenv("SAKURACLOUD_ACCESS_TOKEN_SECRET"),
+	err = pcOp.UpdateSecret(ctx, pcId, v1.SetSecretRequest{
+		Secret: v1.NewSacloudAPISecretSetSecretRequestSecret(v1.SacloudAPISecret{
+			AccessToken:       os.Getenv("SAKURACLOUD_ACCESS_TOKEN"),
+			AccessTokenSecret: os.Getenv("SAKURACLOUD_ACCESS_TOKEN_SECRET"),
+		}),
 	})
 	assert.NoError(t, err)
 

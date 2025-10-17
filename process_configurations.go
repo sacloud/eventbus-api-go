@@ -23,11 +23,11 @@ import (
 )
 
 type ProcessConfigurationAPI interface {
-	List(ctx context.Context) ([]v1.ProcessConfiguration, error)
-	Read(ctx context.Context, id string) (*v1.ProcessConfiguration, error)
-	Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error)
-	Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error)
-	UpdateSecret(ctx context.Context, id string, secret v1.ProcessConfigurationSecret) error
+	List(ctx context.Context) ([]v1.CommonServiceItem, error)
+	Read(ctx context.Context, id string) (*v1.CommonServiceItem, error)
+	Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error)
+	Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error)
+	UpdateSecret(ctx context.Context, id string, secret v1.SetSecretRequest) error
 	Delete(ctx context.Context, id string) error
 }
 
@@ -41,148 +41,157 @@ func NewProcessConfigurationOp(client *v1.Client) ProcessConfigurationAPI {
 	return &processConfigurationOp{client: client}
 }
 
-func (op *processConfigurationOp) List(ctx context.Context) ([]v1.ProcessConfiguration, error) {
-	res, err := op.client.GetProcessConfigurations(ctx)
+func (op *processConfigurationOp) List(ctx context.Context) ([]v1.CommonServiceItem, error) {
+	ctx = setFilterProviderClass(ctx, v1.ProviderClassEventbusprocessconfiguration)
+	res, err := op.client.GetCommonServiceItems(ctx)
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.List", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.GetProcessConfigurationsOK:
-		return p.ProcessConfigurations, nil
-	case *v1.GetProcessConfigurationsUnauthorized:
-		return nil, NewAPIError("ProcessConfiguration.List", 401, errors.New(p.Message.Value))
-	case *v1.GetProcessConfigurationsBadRequest:
-		return nil, NewAPIError("ProcessConfiguration.List", 400, errors.New(p.Message.Value))
-	case *v1.GetProcessConfigurationsInternalServerError:
-		return nil, NewAPIError("ProcessConfiguration.List", 500, errors.New(p.Message.Value))
+	case *v1.GetCommonServiceItemsOK:
+		return p.CommonServiceItems, nil
+	case *v1.GetCommonServiceItemsUnauthorized:
+		return nil, NewAPIError("ProcessConfiguration.List", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemsBadRequest:
+		return nil, NewAPIError("ProcessConfiguration.List", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemsInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.List", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("ProcessConfiguration.List", 0, nil)
 	}
 }
 
-func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.ProcessConfiguration, error) {
-	res, err := op.client.GetProcessConfigurationById(ctx, v1.GetProcessConfigurationByIdParams{ID: id})
+func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.CommonServiceItem, error) {
+	res, err := op.client.GetCommonServiceItem(ctx, v1.GetCommonServiceItemParams{ID: id})
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.Read", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.GetProcessConfigurationByIdOK:
-		return &p.ProcessConfiguration, nil
-	case *v1.GetProcessConfigurationByIdUnauthorized:
-		return nil, NewAPIError("ProcessConfiguration.Read", 401, errors.New(p.Message.Value))
-	case *v1.GetProcessConfigurationByIdBadRequest:
-		return nil, NewAPIError("ProcessConfiguration.Read", 400, errors.New(p.Message.Value))
-	case *v1.GetProcessConfigurationByIdNotFound:
-		return nil, NewAPIError("ProcessConfiguration.Read", 404, errors.New(p.Message.Value))
-	case *v1.GetProcessConfigurationByIdInternalServerError:
-		return nil, NewAPIError("ProcessConfiguration.Read", 500, errors.New(p.Message.Value))
+	case *v1.GetCommonServiceItemOK:
+		return &p.CommonServiceItem, nil
+	case *v1.GetCommonServiceItemUnauthorized:
+		return nil, NewAPIError("ProcessConfiguration.Read", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemBadRequest:
+		return nil, NewAPIError("ProcessConfiguration.Read", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemNotFound:
+		return nil, NewAPIError("ProcessConfiguration.Read", 404, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.Read", 500, errors.New(p.ErrorMsg.Value))
 	default:
-		return nil, NewAPIError("ProcessConfiguration.Read", 0, nil)
+		return nil, NewAPIError("CommonServiceItem.Read", 0, nil)
 	}
 }
 
-func (op *processConfigurationOp) Create(ctx context.Context, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error) {
-	res, err := op.client.CreateProcessConfiguration(ctx, &v1.CreateProcessConfigurationRequest{
-		ProcessConfiguration: request,
-	})
+func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
+	if !request.CommonServiceItem.Settings.IsProcessConfigurationSettings() {
+		return nil, errors.New("invalid settings as ProcessConfiguration")
+	}
+	request.CommonServiceItem.Provider = v1.Provider{Class: v1.ProviderClassEventbusprocessconfiguration}
+	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.Create", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.CreateProcessConfigurationOK:
-		return &p.ProcessConfiguration, nil
-	case *v1.CreateProcessConfigurationBadRequest:
-		return nil, NewAPIError("ProcessConfiguration.Create", 400, errors.New(p.Message.Value))
-	case *v1.CreateProcessConfigurationUnauthorized:
-		return nil, NewAPIError("ProcessConfiguration.Create", 401, errors.New(p.Message.Value))
-	case *v1.CreateProcessConfigurationInternalServerError:
-		return nil, NewAPIError("ProcessConfiguration.Create", 500, errors.New(p.Message.Value))
+	case *v1.CreateCommonServiceItemCreated:
+		return &p.CommonServiceItem, nil
+	case *v1.CreateCommonServiceItemBadRequest:
+		return nil, NewAPIError("ProcessConfiguration.Create", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.CreateCommonServiceItemUnauthorized:
+		return nil, NewAPIError("ProcessConfiguration.Create", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.CreateCommonServiceItemConflict:
+		return nil, NewAPIError("ProcessConfiguration.Create", 409, errors.New(p.ErrorMsg.Value))
+	case *v1.CreateCommonServiceItemInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.Create", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("ProcessConfiguration.Create", 0, nil)
 	}
 }
 
-func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.ProcessConfigurationRequestSettings) (*v1.ProcessConfiguration, error) {
-	res, err := op.client.ConfigureProcessConfiguration(ctx, &v1.ConfigureProcessConfigurationRequest{
-		ProcessConfiguration: request,
-	}, v1.ConfigureProcessConfigurationParams{ID: id})
+func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
+	if settings := request.CommonServiceItem.Settings; settings.IsSet() && !settings.Value.IsProcessConfigurationSettings() {
+		return nil, errors.New("invalid settings as ProcessConfiguration")
+	}
+	request.CommonServiceItem.Provider = v1.NewOptProvider(v1.Provider{Class: v1.ProviderClassEventbusprocessconfiguration})
+	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.Update", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.ConfigureProcessConfigurationOK:
-		return &p.ProcessConfiguration, nil
-	case *v1.ConfigureProcessConfigurationBadRequest:
-		return nil, NewAPIError("ProcessConfiguration.Update", 400, errors.New(p.Message.Value))
-	case *v1.ConfigureProcessConfigurationNotFound:
-		return nil, NewAPIError("ProcessConfiguration.Update", 404, errors.New(p.Message.Value))
-	case *v1.ConfigureProcessConfigurationInternalServerError:
-		return nil, NewAPIError("ProcessConfiguration.Update", 500, errors.New(p.Message.Value))
+	case *v1.UpdateCommonServiceItemOK:
+		return &p.CommonServiceItem, nil
+	case *v1.UpdateCommonServiceItemBadRequest:
+		return nil, NewAPIError("ProcessConfiguration.Update", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemUnauthorized:
+		return nil, NewAPIError("ProcessConfiguration.Update", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemNotFound:
+		return nil, NewAPIError("ProcessConfiguration.Update", 404, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.Update", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("ProcessConfiguration.Update", 0, nil)
 	}
 }
 
-func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, secret v1.ProcessConfigurationSecret) error {
-	res, err := op.client.ConfigureProcessConfigurationSecret(ctx, &v1.ConfigureProcessConfigurationSecretRequest{
-		Secret: secret,
-	}, v1.ConfigureProcessConfigurationSecretParams{ID: id})
+func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, secret v1.SetSecretRequest) error {
+	res, err := op.client.SetProcessConfigurationSecret(ctx, &secret, v1.SetProcessConfigurationSecretParams{ID: id})
 	if err != nil {
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.ConfigureProcessConfigurationSecretOK:
+	case *v1.SetProcessConfigurationSecretOK:
 		return nil
-	case *v1.ConfigureProcessConfigurationSecretBadRequest:
-		return NewAPIError("ProcessConfiguration.UpdateSecret", 400, errors.New(p.Message.Value))
-	case *v1.ConfigureProcessConfigurationSecretNotFound:
-		return NewAPIError("ProcessConfiguration.UpdateSecret", 404, errors.New(p.Message.Value))
-	case *v1.ConfigureProcessConfigurationSecretInternalServerError:
-		return NewAPIError("ProcessConfiguration.UpdateSecret", 500, errors.New(p.Message.Value))
+	case *v1.SetProcessConfigurationSecretBadRequest:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.SetProcessConfigurationSecretUnauthorized:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.SetProcessConfigurationSecretNotFound:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 404, errors.New(p.ErrorMsg.Value))
+	case *v1.SetProcessConfigurationSecretInternalServerError:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 0, nil)
 	}
 }
 
 func (op *processConfigurationOp) Delete(ctx context.Context, id string) error {
-	res, err := op.client.DeleteProcessConfiguration(ctx, v1.DeleteProcessConfigurationParams{ID: id})
+	res, err := op.client.DeleteCommonServiceItem(ctx, v1.DeleteCommonServiceItemParams{ID: id})
 	if err != nil {
 		return NewAPIError("ProcessConfiguration.Delete", 0, err)
 	}
 
 	switch p := res.(type) {
-	case *v1.DeleteProcessConfigurationOK:
+	case *v1.DeleteCommonServiceItemOK:
 		return nil
-	case *v1.DeleteProcessConfigurationUnauthorized:
-		return NewAPIError("ProcessConfiguration.Delete", 401, errors.New(p.Message.Value))
-	case *v1.DeleteProcessConfigurationBadRequest:
-		return NewAPIError("ProcessConfiguration.Delete", 400, errors.New(p.Message.Value))
-	case *v1.DeleteProcessConfigurationNotFound:
-		return NewAPIError("ProcessConfiguration.Delete", 404, errors.New(p.Message.Value))
-	case *v1.DeleteProcessConfigurationInternalServerError:
-		return NewAPIError("ProcessConfiguration.Delete", 500, errors.New(p.Message.Value))
+	case *v1.DeleteCommonServiceItemUnauthorized:
+		return NewAPIError("ProcessConfiguration.Delete", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.DeleteCommonServiceItemBadRequest:
+		return NewAPIError("ProcessConfiguration.Delete", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.DeleteCommonServiceItemNotFound:
+		return NewAPIError("ProcessConfiguration.Delete", 404, errors.New(p.ErrorMsg.Value))
+	case *v1.DeleteCommonServiceItemInternalServerError:
+		return NewAPIError("ProcessConfiguration.Delete", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return NewAPIError("ProcessConfiguration.Delete", 0, nil)
 	}
 }
 
-func CreateSimpleNotificationSettings(groupId string, message string) v1.DestinationSettings {
+func CreateSimpleNotificationSettings(groupId string, message string) v1.Settings {
 	param, _ := json.Marshal(map[string]string{"group_id": groupId, "message": message})
-	return v1.DestinationSettings{
-		Destination: "simplenotification",
+	return v1.NewProcessConfigurationSettingsSettings(v1.ProcessConfigurationSettings{
+		Destination: v1.ProcessConfigurationSettingsDestinationSimplenotification,
 		Parameters:  string(param),
-	}
+	})
 }
 
-func CreateSimpleMqSettings(queueName string, content string) v1.DestinationSettings {
+func CreateSimpleMqSettings(queueName string, content string) v1.Settings {
 	param, _ := json.Marshal(map[string]string{"queue_name": queueName, "content": content})
-	return v1.DestinationSettings{
-		Destination: "simplemq",
+	return v1.NewProcessConfigurationSettingsSettings(v1.ProcessConfigurationSettings{
+		Destination: v1.ProcessConfigurationSettingsDestinationSimplemq,
 		Parameters:  string(param),
-	}
+	})
 }

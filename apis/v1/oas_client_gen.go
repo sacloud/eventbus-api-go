@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/go-faster/errors"
-
 	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/ogenerrors"
@@ -22,72 +21,47 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// ConfigureProcessConfiguration invokes configureProcessConfiguration operation.
+	// CreateCommonServiceItem invokes createCommonServiceItem operation.
 	//
-	// 実行設定の設定変更.
+	// 実行設定・スケジュール・トリガーの作成.
 	//
-	// PUT /commonserviceitem
-	ConfigureProcessConfiguration(ctx context.Context, request *ConfigureProcessConfigurationRequest, params ConfigureProcessConfigurationParams) (ConfigureProcessConfigurationRes, error)
-	// ConfigureProcessConfigurationSecret invokes configureProcessConfigurationSecret operation.
+	// POST /commonserviceitem
+	CreateCommonServiceItem(ctx context.Context, request *CreateCommonServiceItemRequest) (CreateCommonServiceItemRes, error)
+	// DeleteCommonServiceItem invokes deleteCommonServiceItem operation.
 	//
-	// 実行設定のシークレット設定.
+	// 実行設定・スケジュール・トリガーの削除.
 	//
-	// PUT /admin/process-configurations/{id}/set-secret
-	ConfigureProcessConfigurationSecret(ctx context.Context, request *ConfigureProcessConfigurationSecretRequest, params ConfigureProcessConfigurationSecretParams) (ConfigureProcessConfigurationSecretRes, error)
-	// ConfigureSchedule invokes configureSchedule operation.
+	// DELETE /commonserviceitem/{id}
+	DeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (DeleteCommonServiceItemRes, error)
+	// GetCommonServiceItem invokes getCommonServiceItem operation.
 	//
-	// Scheduleの設定変更.
+	// 実行設定・スケジュール・トリガーの取得.
 	//
-	// PUT /admin/schedules/{id}
-	ConfigureSchedule(ctx context.Context, request *ConfigureScheduleRequest, params ConfigureScheduleParams) (ConfigureScheduleRes, error)
-	// CreateProcessConfiguration invokes createProcessConfiguration operation.
+	// GET /commonserviceitem/{id}
+	GetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (GetCommonServiceItemRes, error)
+	// GetCommonServiceItems invokes getCommonServiceItems operation.
 	//
-	// 実行設定の作成.
+	// Provider.
+	// Classでeventbusschedule、eventbustriggerまたはeventbusprocessconfigurationを指定してフィルタ可能。
+	// クエリパラメータに下記のようにフィルタを設定することでスケジュール、トリガーまたは実行設定のリソースのみを取得できます
+	// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusschedule"}}`
+	// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbustrigger"}}`
+	// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusprocessconfiguration"}}`.
 	//
-	// POST /
-	CreateProcessConfiguration(ctx context.Context, request *CreateProcessConfigurationRequest) (CreateProcessConfigurationRes, error)
-	// CreateSchedule invokes createSchedule operation.
+	// GET /commonserviceitem
+	GetCommonServiceItems(ctx context.Context) (GetCommonServiceItemsRes, error)
+	// SetProcessConfigurationSecret invokes setProcessConfigurationSecret operation.
 	//
-	// Scheduleの作成.
+	// 実行設定のSecret設定.
 	//
-	// POST /admin/schedules/{id}
-	CreateSchedule(ctx context.Context, request *CreateScheduleRequest, params CreateScheduleParams) (CreateScheduleRes, error)
-	// DeleteProcessConfiguration invokes deleteProcessConfiguration operation.
+	// PUT /commonserviceitem/{id}/eventbus/processconfiguration/set-secret
+	SetProcessConfigurationSecret(ctx context.Context, request *SetSecretRequest, params SetProcessConfigurationSecretParams) (SetProcessConfigurationSecretRes, error)
+	// UpdateCommonServiceItem invokes updateCommonServiceItem operation.
 	//
-	// 実行設定の削除.
+	// 実行設定・スケジュール・トリガーの更新.
 	//
-	// DELETE /admin/process-configurations/{id}
-	DeleteProcessConfiguration(ctx context.Context, params DeleteProcessConfigurationParams) (DeleteProcessConfigurationRes, error)
-	// DeleteSchedule invokes deleteSchedule operation.
-	//
-	// Scheduleの削除.
-	//
-	// DELETE /admin/schedules/{id}
-	DeleteSchedule(ctx context.Context, params DeleteScheduleParams) (DeleteScheduleRes, error)
-	// GetProcessConfigurationById invokes getProcessConfigurationById operation.
-	//
-	// 指定されたIDに対応するプロセス設定情報を取得します。.
-	//
-	// GET /admin/process-configurations/{id}
-	GetProcessConfigurationById(ctx context.Context, params GetProcessConfigurationByIdParams) (GetProcessConfigurationByIdRes, error)
-	// GetProcessConfigurations invokes getProcessConfigurationsByAccount operation.
-	//
-	// アカウントに紐づく実行設定の一覧取得.
-	//
-	// GET /?{"Filter":{"Provider.Class":["eventbusprocessconfiguration"]}}
-	GetProcessConfigurations(ctx context.Context) (GetProcessConfigurationsRes, error)
-	// GetScheduleById invokes getScheduleById operation.
-	//
-	// 指定されたIDに対応するスケジュール情報を取得します。.
-	//
-	// GET /admin/schedules/{id}
-	GetScheduleById(ctx context.Context, params GetScheduleByIdParams) (GetScheduleByIdRes, error)
-	// GetSchedules invokes getSchedulesByAccount operation.
-	//
-	// アカウントに紐づくscheduleの一覧取得.
-	//
-	// GET /?{"Filter":{"Provider.Class":["eventbusschedule"]}}
-	GetSchedules(ctx context.Context) (GetSchedulesRes, error)
+	// PUT /commonserviceitem/{id}
+	UpdateCommonServiceItem(ctx context.Context, request *UpdateCommonServiceItemRequest, params UpdateCommonServiceItemParams) (UpdateCommonServiceItemRes, error)
 }
 
 // Client implements OAS client.
@@ -131,17 +105,17 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// ConfigureProcessConfiguration invokes configureProcessConfiguration operation.
+// CreateCommonServiceItem invokes createCommonServiceItem operation.
 //
-// 実行設定の設定変更.
+// 実行設定・スケジュール・トリガーの作成.
 //
-// PUT /{id}
-func (c *Client) ConfigureProcessConfiguration(ctx context.Context, request *ConfigureProcessConfigurationRequest, params ConfigureProcessConfigurationParams) (ConfigureProcessConfigurationRes, error) {
-	res, err := c.sendConfigureProcessConfiguration(ctx, request, params)
+// POST /commonserviceitem
+func (c *Client) CreateCommonServiceItem(ctx context.Context, request *CreateCommonServiceItemRequest) (CreateCommonServiceItemRes, error) {
+	res, err := c.sendCreateCommonServiceItem(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendConfigureProcessConfiguration(ctx context.Context, request *ConfigureProcessConfigurationRequest, params ConfigureProcessConfigurationParams) (res ConfigureProcessConfigurationRes, err error) {
+func (c *Client) sendCreateCommonServiceItem(ctx context.Context, request *CreateCommonServiceItemRequest) (res CreateCommonServiceItemRes, err error) {
 	// Validate request before sending.
 	if err := func() error {
 		if err := request.Validate(); err != nil {
@@ -153,35 +127,15 @@ func (c *Client) sendConfigureProcessConfiguration(ctx context.Context, request 
 	}
 
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/"
-	{
-		// Encode "id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.ID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
+	var pathParts [1]string
+	pathParts[0] = "/commonserviceitem"
 	uri.AddPathParts(u, pathParts[:]...)
 
-	request.ProcessConfiguration.Provider.Class = "eventbusprocessconfiguration"
-
-	r, err := ht.NewRequest(ctx, "PUT", u)
+	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeConfigureProcessConfigurationRequest(request, r); err != nil {
+	if err := encodeCreateCommonServiceItemRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -190,13 +144,13 @@ func (c *Client) sendConfigureProcessConfiguration(ctx context.Context, request 
 		var satisfied bitset
 		{
 
-			switch err := c.securityCloudCtrlAuth(ctx, ConfigureProcessConfigurationOperation, r); {
+			switch err := c.securityApiKeyAuth(ctx, CreateCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
 				// Skip this security.
 			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
 			}
 		}
 
@@ -224,7 +178,7 @@ func (c *Client) sendConfigureProcessConfiguration(ctx context.Context, request 
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeConfigureProcessConfigurationResponse(resp)
+	result, err := decodeCreateCommonServiceItemResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -232,21 +186,269 @@ func (c *Client) sendConfigureProcessConfiguration(ctx context.Context, request 
 	return result, nil
 }
 
-// ConfigureProcessConfigurationSecret invokes configureProcessConfigurationSecret operation.
+// DeleteCommonServiceItem invokes deleteCommonServiceItem operation.
 //
-// 実行設定のシークレット設定.
+// 実行設定・スケジュール・トリガーの削除.
 //
-// PUT /admin/process-configurations/{id}/set-secret
-func (c *Client) ConfigureProcessConfigurationSecret(ctx context.Context, request *ConfigureProcessConfigurationSecretRequest, params ConfigureProcessConfigurationSecretParams) (ConfigureProcessConfigurationSecretRes, error) {
-	res, err := c.sendConfigureProcessConfigurationSecret(ctx, request, params)
+// DELETE /commonserviceitem/{id}
+func (c *Client) DeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (DeleteCommonServiceItemRes, error) {
+	res, err := c.sendDeleteCommonServiceItem(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendConfigureProcessConfigurationSecret(ctx context.Context, request *ConfigureProcessConfigurationSecretRequest, params ConfigureProcessConfigurationSecretParams) (res ConfigureProcessConfigurationSecretRes, err error) {
+func (c *Client) sendDeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (res DeleteCommonServiceItemRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/commonserviceitem/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityApiKeyAuth(ctx, DeleteCommonServiceItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteCommonServiceItemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetCommonServiceItem invokes getCommonServiceItem operation.
+//
+// 実行設定・スケジュール・トリガーの取得.
+//
+// GET /commonserviceitem/{id}
+func (c *Client) GetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (GetCommonServiceItemRes, error) {
+	res, err := c.sendGetCommonServiceItem(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (res GetCommonServiceItemRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/commonserviceitem/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityApiKeyAuth(ctx, GetCommonServiceItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetCommonServiceItemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetCommonServiceItems invokes getCommonServiceItems operation.
+//
+// Provider.
+// Classでeventbusschedule、eventbustriggerまたはeventbusprocessconfigurationを指定してフィルタ可能。
+// クエリパラメータに下記のようにフィルタを設定することでスケジュール、トリガーまたは実行設定のリソースのみを取得できます
+// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusschedule"}}`
+// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbustrigger"}}`
+// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusprocessconfiguration"}}`.
+//
+// GET /commonserviceitem
+func (c *Client) GetCommonServiceItems(ctx context.Context) (GetCommonServiceItemsRes, error) {
+	res, err := c.sendGetCommonServiceItems(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetCommonServiceItems(ctx context.Context) (res GetCommonServiceItemsRes, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/commonserviceitem"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityApiKeyAuth(ctx, GetCommonServiceItemsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetCommonServiceItemsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SetProcessConfigurationSecret invokes setProcessConfigurationSecret operation.
+//
+// 実行設定のSecret設定.
+//
+// PUT /commonserviceitem/{id}/eventbus/processconfiguration/set-secret
+func (c *Client) SetProcessConfigurationSecret(ctx context.Context, request *SetSecretRequest, params SetProcessConfigurationSecretParams) (SetProcessConfigurationSecretRes, error) {
+	res, err := c.sendSetProcessConfigurationSecret(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendSetProcessConfigurationSecret(ctx context.Context, request *SetSecretRequest, params SetProcessConfigurationSecretParams) (res SetProcessConfigurationSecretRes, err error) {
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/"
+	pathParts[0] = "/commonserviceitem/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -272,7 +474,7 @@ func (c *Client) sendConfigureProcessConfigurationSecret(ctx context.Context, re
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeConfigureProcessConfigurationSecretRequest(request, r); err != nil {
+	if err := encodeSetProcessConfigurationSecretRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -281,13 +483,13 @@ func (c *Client) sendConfigureProcessConfigurationSecret(ctx context.Context, re
 		var satisfied bitset
 		{
 
-			switch err := c.securityCloudCtrlAuth(ctx, ConfigureProcessConfigurationSecretOperation, r); {
+			switch err := c.securityApiKeyAuth(ctx, SetProcessConfigurationSecretOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
 				// Skip this security.
 			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
 			}
 		}
 
@@ -315,7 +517,7 @@ func (c *Client) sendConfigureProcessConfigurationSecret(ctx context.Context, re
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeConfigureProcessConfigurationSecretResponse(resp)
+	result, err := decodeSetProcessConfigurationSecretResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -323,17 +525,17 @@ func (c *Client) sendConfigureProcessConfigurationSecret(ctx context.Context, re
 	return result, nil
 }
 
-// ConfigureSchedule invokes configureSchedule operation.
+// UpdateCommonServiceItem invokes updateCommonServiceItem operation.
 //
-// Scheduleの設定変更.
+// 実行設定・スケジュール・トリガーの更新.
 //
-// PUT /{id}
-func (c *Client) ConfigureSchedule(ctx context.Context, request *ConfigureScheduleRequest, params ConfigureScheduleParams) (ConfigureScheduleRes, error) {
-	res, err := c.sendConfigureSchedule(ctx, request, params)
+// PUT /commonserviceitem/{id}
+func (c *Client) UpdateCommonServiceItem(ctx context.Context, request *UpdateCommonServiceItemRequest, params UpdateCommonServiceItemParams) (UpdateCommonServiceItemRes, error) {
+	res, err := c.sendUpdateCommonServiceItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendConfigureSchedule(ctx context.Context, request *ConfigureScheduleRequest, params ConfigureScheduleParams) (res ConfigureScheduleRes, err error) {
+func (c *Client) sendUpdateCommonServiceItem(ctx context.Context, request *UpdateCommonServiceItemRequest, params UpdateCommonServiceItemParams) (res UpdateCommonServiceItemRes, err error) {
 	// Validate request before sending.
 	if err := func() error {
 		if err := request.Validate(); err != nil {
@@ -346,7 +548,7 @@ func (c *Client) sendConfigureSchedule(ctx context.Context, request *ConfigureSc
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/"
+	pathParts[0] = "/commonserviceitem/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -366,14 +568,12 @@ func (c *Client) sendConfigureSchedule(ctx context.Context, request *ConfigureSc
 		pathParts[1] = encoded
 	}
 	uri.AddPathParts(u, pathParts[:]...)
-
-	request.Schedule.Provider.Class = "eventbusschedule"
 
 	r, err := ht.NewRequest(ctx, "PUT", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeConfigureScheduleRequest(request, r); err != nil {
+	if err := encodeUpdateCommonServiceItemRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -382,13 +582,13 @@ func (c *Client) sendConfigureSchedule(ctx context.Context, request *ConfigureSc
 		var satisfied bitset
 		{
 
-			switch err := c.securityCloudCtrlAuth(ctx, ConfigureScheduleOperation, r); {
+			switch err := c.securityApiKeyAuth(ctx, UpdateCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
 				// Skip this security.
 			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
+				return res, errors.Wrap(err, "security \"ApiKeyAuth\"")
 			}
 		}
 
@@ -416,665 +616,10 @@ func (c *Client) sendConfigureSchedule(ctx context.Context, request *ConfigureSc
 	}
 	defer resp.Body.Close()
 
-	result, err := decodeConfigureScheduleResponse(resp)
+	result, err := decodeUpdateCommonServiceItemResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
 
 	return result, nil
 }
-
-// CreateProcessConfiguration invokes createProcessConfiguration operation.
-//
-// 実行設定の作成.
-//
-// POST /admin/process-configurations/{id}
-func (c *Client) CreateProcessConfiguration(ctx context.Context, request *CreateProcessConfigurationRequest) (CreateProcessConfigurationRes, error) {
-	res, err := c.sendCreateProcessConfiguration(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendCreateProcessConfiguration(ctx context.Context, request *CreateProcessConfigurationRequest) (res CreateProcessConfigurationRes, err error) {
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
-	}
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	request.ProcessConfiguration.Provider.Class = "eventbusprocessconfiguration"
-
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreateProcessConfigurationRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, CreateProcessConfigurationOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeCreateProcessConfigurationResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// CreateSchedule invokes createSchedule operation.
-//
-// Scheduleの作成.
-//
-// POST /
-func (c *Client) CreateSchedule(ctx context.Context, request *CreateScheduleRequest) (CreateScheduleRes, error) {
-	res, err := c.sendCreateSchedule(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendCreateSchedule(ctx context.Context, request *CreateScheduleRequest) (res CreateScheduleRes, err error) {
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
-	}
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	request.Schedule.Provider.Class = "eventbusschedule"
-
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreateScheduleRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, CreateScheduleOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeCreateScheduleResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// DeleteProcessConfiguration invokes deleteProcessConfiguration operation.
-//
-// 実行設定の削除.
-//
-// DELETE /{id}
-func (c *Client) DeleteProcessConfiguration(ctx context.Context, params DeleteProcessConfigurationParams) (DeleteProcessConfigurationRes, error) {
-	res, err := c.sendDeleteProcessConfiguration(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendDeleteProcessConfiguration(ctx context.Context, params DeleteProcessConfigurationParams) (res DeleteProcessConfigurationRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/"
-	{
-		// Encode "id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.ID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, DeleteProcessConfigurationOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeDeleteProcessConfigurationResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// DeleteSchedule invokes deleteSchedule operation.
-//
-// Scheduleの削除.
-//
-// DELETE /{id}
-func (c *Client) DeleteSchedule(ctx context.Context, params DeleteScheduleParams) (DeleteScheduleRes, error) {
-	res, err := c.sendDeleteSchedule(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendDeleteSchedule(ctx context.Context, params DeleteScheduleParams) (res DeleteScheduleRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/"
-	{
-		// Encode "id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.ID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, DeleteScheduleOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeDeleteScheduleResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetProcessConfigurationById invokes getProcessConfigurationById operation.
-//
-// 指定されたIDに対応するプロセス設定情報を取得します。.
-//
-// GET /{id}
-func (c *Client) GetProcessConfigurationById(ctx context.Context, params GetProcessConfigurationByIdParams) (GetProcessConfigurationByIdRes, error) {
-	res, err := c.sendGetProcessConfigurationById(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendGetProcessConfigurationById(ctx context.Context, params GetProcessConfigurationByIdParams) (res GetProcessConfigurationByIdRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/"
-
-	// Encode "id" parameter.
-	e := uri.NewPathEncoder(uri.PathEncoderConfig{
-		Param:   "id",
-		Style:   uri.PathStyleSimple,
-		Explode: false,
-	})
-	if err := func() error {
-		return e.EncodeValue(conv.StringToString(params.ID))
-	}(); err != nil {
-		return res, errors.Wrap(err, "encode path")
-	}
-	encoded, err := e.Result()
-	if err != nil {
-		return res, errors.Wrap(err, "encode path")
-	}
-	pathParts[1] = encoded
-
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, GetProcessConfigurationByIdOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeGetProcessConfigurationByIdResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetProcessConfigurations invokes getProcessConfigurationsByAccount operation.
-//
-// アカウントに紐づく実行設定の一覧取得.
-//
-// GET /?{"Filter":{"Provider.Class":["eventbusprocessconfiguration"]}}
-func (c *Client) GetProcessConfigurations(ctx context.Context) (GetProcessConfigurationsRes, error) {
-	res, err := c.sendGetProcessConfigurations(ctx)
-	return res, err
-}
-
-func (c *Client) sendGetProcessConfigurations(ctx context.Context) (res GetProcessConfigurationsRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/?{\"Filter\":{\"Provider.Class\":[\"eventbusprocessconfiguration\"]}}"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, GetProcessConfigurationsOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeGetProcessConfigurationsResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetScheduleById invokes getScheduleById operation.
-//
-// 指定されたIDに対応するスケジュール情報を取得します。.
-//
-// GET /{id}
-func (c *Client) GetScheduleById(ctx context.Context, params GetScheduleByIdParams) (GetScheduleByIdRes, error) {
-	res, err := c.sendGetScheduleById(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendGetScheduleById(ctx context.Context, params GetScheduleByIdParams) (res GetScheduleByIdRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/"
-	{
-		// Encode "id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.ID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, GetScheduleByIdOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeGetScheduleByIdResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetSchedules invokes getSchedulesByAccount operation.
-//
-// アカウントに紐づくscheduleの一覧取得.
-//
-// GET /?{"Filter":{"Provider.Class":["eventbusschedule"]}}
-func (c *Client) GetSchedules(ctx context.Context) (GetSchedulesRes, error) {
-	res, err := c.sendGetSchedules(ctx)
-	return res, err
-}
-
-func (c *Client) sendGetSchedules(ctx context.Context) (res GetSchedulesRes, err error) {
-
-	u := uri.Clone(c.requestURL(ctx))
-
-	// ogenベースのコードに合わせるため冗長にしていて、パラメータが固定値なので文字列に直接埋め込み
-	var pathParts [1]string
-	pathParts[0] = "/?{\"Filter\":{\"Provider.Class\":[\"eventbusschedule\"]}}"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-
-			switch err := c.securityCloudCtrlAuth(ctx, GetSchedulesOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"CloudCtrlAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	result, err := decodeGetSchedulesResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-

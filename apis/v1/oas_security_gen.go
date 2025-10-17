@@ -11,16 +11,16 @@ import (
 
 // SecuritySource is provider of security values (tokens, passwords, etc.).
 type SecuritySource interface {
-	// CloudCtrlAuth provides CloudCtrlAuth security value.
-	// Cloud-ctrl認証用のAPIキー.
-	CloudCtrlAuth(ctx context.Context, operationName OperationName) (CloudCtrlAuth, error)
+	// ApiKeyAuth provides ApiKeyAuth security value.
+	// APIキーを利用したBasic認証.
+	ApiKeyAuth(ctx context.Context, operationName OperationName) (ApiKeyAuth, error)
 }
 
-func (s *Client) securityCloudCtrlAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
-	t, err := s.sec.CloudCtrlAuth(ctx, operationName)
+func (s *Client) securityApiKeyAuth(ctx context.Context, operationName OperationName, req *http.Request) error {
+	t, err := s.sec.ApiKeyAuth(ctx, operationName)
 	if err != nil {
-		return errors.Wrap(err, "security source \"CloudCtrlAuth\"")
+		return errors.Wrap(err, "security source \"ApiKeyAuth\"")
 	}
-	req.Header.Set("Authorization", "Bearer "+t.Token)
+	req.SetBasicAuth(t.Username, t.Password)
 	return nil
 }

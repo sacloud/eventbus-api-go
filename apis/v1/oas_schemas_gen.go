@@ -3,880 +3,654 @@
 package v1
 
 import (
+	"time"
+
 	"github.com/go-faster/errors"
 )
 
-type CloudCtrlAuth struct {
-	Token string
+type ApiKeyAuth struct {
+	Username string
+	Password string
+	Roles    []string
 }
 
-// GetToken returns the value of Token.
-func (s *CloudCtrlAuth) GetToken() string {
-	return s.Token
+// GetUsername returns the value of Username.
+func (s *ApiKeyAuth) GetUsername() string {
+	return s.Username
 }
 
-// SetToken sets the value of Token.
-func (s *CloudCtrlAuth) SetToken(val string) {
-	s.Token = val
+// GetPassword returns the value of Password.
+func (s *ApiKeyAuth) GetPassword() string {
+	return s.Password
 }
 
-type ConfigureProcessConfigurationBadRequest Error
-
-func (*ConfigureProcessConfigurationBadRequest) configureProcessConfigurationRes() {}
-
-type ConfigureProcessConfigurationInternalServerError Error
-
-func (*ConfigureProcessConfigurationInternalServerError) configureProcessConfigurationRes() {}
-
-type ConfigureProcessConfigurationNotFound Error
-
-func (*ConfigureProcessConfigurationNotFound) configureProcessConfigurationRes() {}
-
-type ConfigureProcessConfigurationOK struct {
-	ProcessConfiguration ProcessConfiguration `json:"CommonServiceItem"`
+// GetRoles returns the value of Roles.
+func (s *ApiKeyAuth) GetRoles() []string {
+	return s.Roles
 }
 
-// GetProcess returns the value of Process.
-func (s *ConfigureProcessConfigurationOK) GetProcessConfiguration() ProcessConfiguration {
-	return s.ProcessConfiguration
+// SetUsername sets the value of Username.
+func (s *ApiKeyAuth) SetUsername(val string) {
+	s.Username = val
 }
 
-// SetProcess sets the value of Process.
-func (s *ConfigureProcessConfigurationOK) SetProcessConfiguration(val ProcessConfiguration) {
-	s.ProcessConfiguration = val
+// SetPassword sets the value of Password.
+func (s *ApiKeyAuth) SetPassword(val string) {
+	s.Password = val
 }
 
-func (*ConfigureProcessConfigurationOK) configureProcessConfigurationRes() {}
+// SetRoles sets the value of Roles.
+func (s *ApiKeyAuth) SetRoles(val []string) {
+	s.Roles = val
+}
 
-// Ref: #/components/schemas/ConfigureProcessConfigurationRequest
-type ConfigureProcessConfigurationRequest struct {
-	ProcessConfiguration ProcessConfigurationRequestSettings `json:"CommonServiceItem"`
+// Ref: #/components/schemas/CommonServiceItem
+type CommonServiceItem struct {
+	// リソースID.
+	ID string `json:"ID"`
+	// リソース名.
+	Name         string       `json:"Name"`
+	Description  OptNilString `json:"Description"`
+	Settings     Settings     `json:"Settings"`
+	SettingsHash string       `json:"SettingsHash"`
+	Status       OptNilStatus `json:"Status"`
+	ServiceClass OptNilString `json:"ServiceClass"`
+	Availability string       `json:"Availability"`
+	CreatedAt    time.Time    `json:"CreatedAt"`
+	ModifiedAt   time.Time    `json:"ModifiedAt"`
+	Provider     Provider     `json:"Provider"`
+	Icon         OptNilIcon   `json:"Icon"`
+	Tags         []string     `json:"Tags"`
+}
+
+// GetID returns the value of ID.
+func (s *CommonServiceItem) GetID() string {
+	return s.ID
 }
 
 // GetName returns the value of Name.
-func (s *ConfigureProcessConfigurationRequest) GetName() string {
-	return s.ProcessConfiguration.Name
+func (s *CommonServiceItem) GetName() string {
+	return s.Name
 }
 
-// GetDestination returns the value of Destination.
-func (s *ConfigureProcessConfigurationRequest) GetDestination() ConfigureProcessConfigurationRequestDestination {
-	return ConfigureProcessConfigurationRequestDestination(s.ProcessConfiguration.Settings.Destination)
+// GetDescription returns the value of Description.
+func (s *CommonServiceItem) GetDescription() OptNilString {
+	return s.Description
 }
 
-// GetParameters returns the value of Parameters.
-func (s *ConfigureProcessConfigurationRequest) GetParameters() string {
-	return s.ProcessConfiguration.Settings.Parameters
+// GetSettings returns the value of Settings.
+func (s *CommonServiceItem) GetSettings() Settings {
+	return s.Settings
+}
+
+// GetSettingsHash returns the value of SettingsHash.
+func (s *CommonServiceItem) GetSettingsHash() string {
+	return s.SettingsHash
+}
+
+// GetStatus returns the value of Status.
+func (s *CommonServiceItem) GetStatus() OptNilStatus {
+	return s.Status
+}
+
+// GetServiceClass returns the value of ServiceClass.
+func (s *CommonServiceItem) GetServiceClass() OptNilString {
+	return s.ServiceClass
+}
+
+// GetAvailability returns the value of Availability.
+func (s *CommonServiceItem) GetAvailability() string {
+	return s.Availability
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CommonServiceItem) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetModifiedAt returns the value of ModifiedAt.
+func (s *CommonServiceItem) GetModifiedAt() time.Time {
+	return s.ModifiedAt
+}
+
+// GetProvider returns the value of Provider.
+func (s *CommonServiceItem) GetProvider() Provider {
+	return s.Provider
+}
+
+// GetIcon returns the value of Icon.
+func (s *CommonServiceItem) GetIcon() OptNilIcon {
+	return s.Icon
+}
+
+// GetTags returns the value of Tags.
+func (s *CommonServiceItem) GetTags() []string {
+	return s.Tags
+}
+
+// SetID sets the value of ID.
+func (s *CommonServiceItem) SetID(val string) {
+	s.ID = val
 }
 
 // SetName sets the value of Name.
-func (s *ConfigureProcessConfigurationRequest) SetName(val string) {
-	s.ProcessConfiguration.Name = val
+func (s *CommonServiceItem) SetName(val string) {
+	s.Name = val
 }
 
-// SetDestination sets the value of Destination.
-func (s *ConfigureProcessConfigurationRequest) SetDestination(val ConfigureProcessConfigurationRequestDestination) {
-	s.ProcessConfiguration.Settings.Destination = CreateProcessConfigurationRequestDestination(val)
+// SetDescription sets the value of Description.
+func (s *CommonServiceItem) SetDescription(val OptNilString) {
+	s.Description = val
 }
 
-// SetParameters sets the value of Parameters.
-func (s *ConfigureProcessConfigurationRequest) SetParameters(val string) {
-	s.ProcessConfiguration.Settings.Parameters = val
+// SetSettings sets the value of Settings.
+func (s *CommonServiceItem) SetSettings(val Settings) {
+	s.Settings = val
 }
 
-type ConfigureProcessConfigurationRequestDestination string
-
-const (
-	ConfigureProcessConfigurationRequestDestinationSimplenotification ConfigureProcessConfigurationRequestDestination = "simplenotification"
-	ConfigureProcessConfigurationRequestDestinationSimplemq           ConfigureProcessConfigurationRequestDestination = "simplemq"
-)
-
-// AllValues returns all ConfigureProcessConfigurationRequestDestination values.
-func (ConfigureProcessConfigurationRequestDestination) AllValues() []ConfigureProcessConfigurationRequestDestination {
-	return []ConfigureProcessConfigurationRequestDestination{
-		ConfigureProcessConfigurationRequestDestinationSimplenotification,
-		ConfigureProcessConfigurationRequestDestinationSimplemq,
-	}
+// SetSettingsHash sets the value of SettingsHash.
+func (s *CommonServiceItem) SetSettingsHash(val string) {
+	s.SettingsHash = val
 }
 
-// MarshalText implements encoding.TextMarshaler.
-func (s ConfigureProcessConfigurationRequestDestination) MarshalText() ([]byte, error) {
-	switch s {
-	case ConfigureProcessConfigurationRequestDestinationSimplenotification:
-		return []byte(s), nil
-	case ConfigureProcessConfigurationRequestDestinationSimplemq:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
+// SetStatus sets the value of Status.
+func (s *CommonServiceItem) SetStatus(val OptNilStatus) {
+	s.Status = val
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ConfigureProcessConfigurationRequestDestination) UnmarshalText(data []byte) error {
-	switch ConfigureProcessConfigurationRequestDestination(data) {
-	case ConfigureProcessConfigurationRequestDestinationSimplenotification:
-		*s = ConfigureProcessConfigurationRequestDestinationSimplenotification
-		return nil
-	case ConfigureProcessConfigurationRequestDestinationSimplemq:
-		*s = ConfigureProcessConfigurationRequestDestinationSimplemq
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
+// SetServiceClass sets the value of ServiceClass.
+func (s *CommonServiceItem) SetServiceClass(val OptNilString) {
+	s.ServiceClass = val
 }
 
-type ConfigureProcessConfigurationSecretBadRequest Error
-
-func (*ConfigureProcessConfigurationSecretBadRequest) configureProcessConfigurationSecretRes() {}
-
-type ConfigureProcessConfigurationSecretInternalServerError Error
-
-func (*ConfigureProcessConfigurationSecretInternalServerError) configureProcessConfigurationSecretRes() {
+// SetAvailability sets the value of Availability.
+func (s *CommonServiceItem) SetAvailability(val string) {
+	s.Availability = val
 }
 
-type ConfigureProcessConfigurationSecretNotFound Error
-
-func (*ConfigureProcessConfigurationSecretNotFound) configureProcessConfigurationSecretRes() {}
-
-type ConfigureProcessConfigurationSecretOK struct {
-	Success bool `json:is_ok`
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CommonServiceItem) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
 }
 
-// GetResult returns the value of Result.
-func (s *ConfigureProcessConfigurationSecretOK) GetSuccess() bool {
+// SetModifiedAt sets the value of ModifiedAt.
+func (s *CommonServiceItem) SetModifiedAt(val time.Time) {
+	s.ModifiedAt = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *CommonServiceItem) SetProvider(val Provider) {
+	s.Provider = val
+}
+
+// SetIcon sets the value of Icon.
+func (s *CommonServiceItem) SetIcon(val OptNilIcon) {
+	s.Icon = val
+}
+
+// SetTags sets the value of Tags.
+func (s *CommonServiceItem) SetTags(val []string) {
+	s.Tags = val
+}
+
+type CreateCommonServiceItemBadRequest Error
+
+func (*CreateCommonServiceItemBadRequest) createCommonServiceItemRes() {}
+
+type CreateCommonServiceItemConflict Error
+
+func (*CreateCommonServiceItemConflict) createCommonServiceItemRes() {}
+
+type CreateCommonServiceItemCreated struct {
+	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	Success           OptBool           `json:"Success"`
+	IsOk              OptBool           `json:"is_ok"`
+}
+
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *CreateCommonServiceItemCreated) GetCommonServiceItem() CommonServiceItem {
+	return s.CommonServiceItem
+}
+
+// GetSuccess returns the value of Success.
+func (s *CreateCommonServiceItemCreated) GetSuccess() OptBool {
 	return s.Success
 }
 
-// SetResult sets the value of Result.
-func (s *ConfigureProcessConfigurationSecretOK) SetSuccess(val bool) {
+// GetIsOk returns the value of IsOk.
+func (s *CreateCommonServiceItemCreated) GetIsOk() OptBool {
+	return s.IsOk
+}
+
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *CreateCommonServiceItemCreated) SetCommonServiceItem(val CommonServiceItem) {
+	s.CommonServiceItem = val
+}
+
+// SetSuccess sets the value of Success.
+func (s *CreateCommonServiceItemCreated) SetSuccess(val OptBool) {
 	s.Success = val
 }
 
-func (*ConfigureProcessConfigurationSecretOK) configureProcessConfigurationSecretRes() {}
-
-type ProcessConfigurationSecret struct {
-	AccessToken       string `json:,omitempty`
-	AccessTokenSecret string `json:,omitempty`
-	APIKey            string `json:,omitempty`
+// SetIsOk sets the value of IsOk.
+func (s *CreateCommonServiceItemCreated) SetIsOk(val OptBool) {
+	s.IsOk = val
 }
 
-// Ref: #/components/schemas/ConfigureProcessConfigurationSecretRequest
-type ConfigureProcessConfigurationSecretRequest struct {
-	Secret ProcessConfigurationSecret `json:"Secret"`
+func (*CreateCommonServiceItemCreated) createCommonServiceItemRes() {}
+
+type CreateCommonServiceItemInternalServerError Error
+
+func (*CreateCommonServiceItemInternalServerError) createCommonServiceItemRes() {}
+
+// Ref: #/components/schemas/CreateCommonServiceItemRequest
+type CreateCommonServiceItemRequest struct {
+	CommonServiceItem CreateCommonServiceItemRequestCommonServiceItem `json:"CommonServiceItem"`
 }
 
-// GetSecrets returns the value of Secrets.
-func (s *ConfigureProcessConfigurationSecretRequest) GetSecret() ProcessConfigurationSecret {
-	return s.Secret
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *CreateCommonServiceItemRequest) GetCommonServiceItem() CreateCommonServiceItemRequestCommonServiceItem {
+	return s.CommonServiceItem
 }
 
-// SetSecrets sets the value of Secrets.
-func (s *ConfigureProcessConfigurationSecretRequest) SetSecret(val ProcessConfigurationSecret) {
-	s.Secret = val
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *CreateCommonServiceItemRequest) SetCommonServiceItem(val CreateCommonServiceItemRequestCommonServiceItem) {
+	s.CommonServiceItem = val
 }
 
-type ConfigureScheduleBadRequest Error
-
-func (*ConfigureScheduleBadRequest) configureScheduleRes() {}
-
-type ConfigureScheduleInternalServerError Error
-
-func (*ConfigureScheduleInternalServerError) configureScheduleRes() {}
-
-type ConfigureScheduleNotFound Error
-
-func (*ConfigureScheduleNotFound) configureScheduleRes() {}
-
-type ConfigureScheduleOK struct {
-	Schedule Schedule `json:"CommonServiceItem"`
-}
-
-// GetResult returns the value of Result.
-func (s *ConfigureScheduleOK) GetSchedule() Schedule {
-	return s.Schedule
-}
-
-// SetResult sets the value of Result.
-func (s *ConfigureScheduleOK) SetSchedule(val Schedule) {
-	s.Schedule = val
-}
-
-func (*ConfigureScheduleOK) configureScheduleRes() {}
-
-type ConfigureScheduleRequest struct {
-	Schedule ScheduleRequestSettings `json:"CommonServiceItem"`
-}
-
-type ConfigureScheduleRequestRecurringUnit string
-
-const (
-	ConfigureScheduleRequestRecurringUnitMin  ConfigureScheduleRequestRecurringUnit = "min"
-	ConfigureScheduleRequestRecurringUnitHour ConfigureScheduleRequestRecurringUnit = "hour"
-	ConfigureScheduleRequestRecurringUnitDay  ConfigureScheduleRequestRecurringUnit = "day"
-)
-
-// AllValues returns all ConfigureScheduleRequestRecurringUnit values.
-func (ConfigureScheduleRequestRecurringUnit) AllValues() []ConfigureScheduleRequestRecurringUnit {
-	return []ConfigureScheduleRequestRecurringUnit{
-		ConfigureScheduleRequestRecurringUnitMin,
-		ConfigureScheduleRequestRecurringUnitHour,
-		ConfigureScheduleRequestRecurringUnitDay,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s ConfigureScheduleRequestRecurringUnit) MarshalText() ([]byte, error) {
-	switch s {
-	case ConfigureScheduleRequestRecurringUnitMin:
-		return []byte(s), nil
-	case ConfigureScheduleRequestRecurringUnitHour:
-		return []byte(s), nil
-	case ConfigureScheduleRequestRecurringUnitDay:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ConfigureScheduleRequestRecurringUnit) UnmarshalText(data []byte) error {
-	switch ConfigureScheduleRequestRecurringUnit(data) {
-	case ConfigureScheduleRequestRecurringUnitMin:
-		*s = ConfigureScheduleRequestRecurringUnitMin
-		return nil
-	case ConfigureScheduleRequestRecurringUnitHour:
-		*s = ConfigureScheduleRequestRecurringUnitHour
-		return nil
-	case ConfigureScheduleRequestRecurringUnitDay:
-		*s = ConfigureScheduleRequestRecurringUnitDay
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
-type CreateProcessConfigurationBadRequest Error
-
-func (*CreateProcessConfigurationBadRequest) createProcessConfigurationRes() {}
-
-type CreateProcessConfigurationConflict Error
-
-func (*CreateProcessConfigurationConflict) createProcessConfigurationRes() {}
-
-type CreateProcessConfigurationInternalServerError Error
-
-func (*CreateProcessConfigurationInternalServerError) createProcessConfigurationRes() {}
-
-type CreateProcessConfigurationOK struct {
-	ProcessConfiguration ProcessConfiguration `json:"CommonServiceItem"`
-}
-
-// GetProcess returns the value of Process.
-func (s *CreateProcessConfigurationOK) GetProcessConfiguration() ProcessConfiguration {
-	return s.ProcessConfiguration
-}
-
-// SetProcess sets the value of Process.
-func (s *CreateProcessConfigurationOK) SetProcessConfiguration(val ProcessConfiguration) {
-	s.ProcessConfiguration = val
-}
-
-func (*CreateProcessConfigurationOK) createProcessConfigurationRes() {}
-
-type DestinationSettings struct {
-	Destination CreateProcessConfigurationRequestDestination `json:"Destination"`
-	Parameters  string                                       `json:"Parameters"`
-}
-
-type ProcessConfigurationProvider struct {
-	Class string `json:"Class"`
-}
-
-type ProcessConfigurationRequestSettings struct {
-	Name        string                       `json:"Name"`
-	Description string                       `json:"Description"`
-	Tags        []string                     `json:"Tags,omitempty"`
-	Settings    DestinationSettings          `json:"Settings"`
-	Provider    ProcessConfigurationProvider `json:"Provider"`
-}
-
-// Ref: #/components/schemas/CreateProcessConfigurationRequest
-type CreateProcessConfigurationRequest struct {
-	ProcessConfiguration ProcessConfigurationRequestSettings `json:"CommonServiceItem"`
+type CreateCommonServiceItemRequestCommonServiceItem struct {
+	// リソース名.
+	Name        string       `json:"Name"`
+	Description OptNilString `json:"Description"`
+	Settings    Settings     `json:"Settings"`
+	Provider    Provider     `json:"Provider"`
+	Icon        OptNilIcon   `json:"Icon"`
+	Tags        []string     `json:"Tags"`
 }
 
 // GetName returns the value of Name.
-func (s *CreateProcessConfigurationRequest) GetName() string {
-	return s.ProcessConfiguration.Name
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetName() string {
+	return s.Name
 }
 
-// GetDestination returns the value of Destination.
-func (s *CreateProcessConfigurationRequest) GetSettings() DestinationSettings {
-	return s.ProcessConfiguration.Settings
+// GetDescription returns the value of Description.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetDescription() OptNilString {
+	return s.Description
 }
 
-// GetParameters returns the value of Parameters.
-func (s *CreateProcessConfigurationRequest) GetParameters() string {
-	return s.ProcessConfiguration.Settings.Parameters
+// GetSettings returns the value of Settings.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetSettings() Settings {
+	return s.Settings
 }
 
-// SetName sets the value of Name.
-func (s *CreateProcessConfigurationRequest) SetName(val string) {
-	s.ProcessConfiguration.Name = val
+// GetProvider returns the value of Provider.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetProvider() Provider {
+	return s.Provider
 }
 
-// SetDestination sets the value of Destination.
-func (s *CreateProcessConfigurationRequest) SetDestination(val DestinationSettings) {
-	s.ProcessConfiguration.Settings = val
+// GetIcon returns the value of Icon.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetIcon() OptNilIcon {
+	return s.Icon
 }
 
-// SetParameters sets the value of Parameters.
-func (s *CreateProcessConfigurationRequest) SetParameters(val string) {
-	s.ProcessConfiguration.Settings.Parameters = val
-}
-
-type CreateProcessConfigurationRequestDestination string
-
-const (
-	CreateProcessConfigurationRequestDestinationSimplenotification CreateProcessConfigurationRequestDestination = "simplenotification"
-	CreateProcessConfigurationRequestDestinationSimplemq           CreateProcessConfigurationRequestDestination = "simplemq"
-)
-
-// AllValues returns all CreateProcessConfigurationRequestDestination values.
-func (CreateProcessConfigurationRequestDestination) AllValues() []CreateProcessConfigurationRequestDestination {
-	return []CreateProcessConfigurationRequestDestination{
-		CreateProcessConfigurationRequestDestinationSimplenotification,
-		CreateProcessConfigurationRequestDestinationSimplemq,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s CreateProcessConfigurationRequestDestination) MarshalText() ([]byte, error) {
-	switch s {
-	case CreateProcessConfigurationRequestDestinationSimplenotification:
-		return []byte(s), nil
-	case CreateProcessConfigurationRequestDestinationSimplemq:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *CreateProcessConfigurationRequestDestination) UnmarshalText(data []byte) error {
-	switch CreateProcessConfigurationRequestDestination(data) {
-	case CreateProcessConfigurationRequestDestinationSimplenotification:
-		*s = CreateProcessConfigurationRequestDestinationSimplenotification
-		return nil
-	case CreateProcessConfigurationRequestDestinationSimplemq:
-		*s = CreateProcessConfigurationRequestDestinationSimplemq
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
-type CreateProcessConfigurationUnauthorized Error
-
-func (*CreateProcessConfigurationUnauthorized) createProcessConfigurationRes() {}
-
-type CreateScheduleBadRequest Error
-
-func (*CreateScheduleBadRequest) createScheduleRes() {}
-
-type CreateScheduleConflict Error
-
-func (*CreateScheduleConflict) createScheduleRes() {}
-
-type CreateScheduleInternalServerError Error
-
-func (*CreateScheduleInternalServerError) createScheduleRes() {}
-
-type Schedule struct {
-	ID           int64                 `json:",omitempty"`
-	Name         string                `json:",omitempty"`
-	Description  string                `json:",omitempty"`
-	Settings     ScheduleSettings      `json:",omitempty"`
-	SettingsHash string                `json:",omitempty"`
-	Availability string                `json:",omitempty"`
-	CreatedAt    string                `json:",omitempty"`
-	ModifiedAt   string                `json:",omitempty"`
-	Status       OptScheduleLastResult `json:",omitempty"`
-	Tags         []string              `json:",omitempty"`
-}
-
-type CreateScheduleOK struct {
-	Schedule Schedule `json:"CommonServiceItem"`
-}
-
-// GetSchedule returns the value of Schedule.
-func (s *CreateScheduleOK) GetSchedule() Schedule {
-	return s.Schedule
-}
-
-// SetSchedule sets the value of Schedule.
-func (s *CreateScheduleOK) SetSchedule(val Schedule) {
-	s.Schedule = val
-}
-
-func (*CreateScheduleOK) createScheduleRes() {}
-
-type ScheduleSettings struct {
-	ProcessConfigurationID string                             `json:"ProcessConfigurationID"`
-	RecurringStep          int                                `json:"RecurringStep"`
-	RecurringUnit          CreateScheduleRequestRecurringUnit `json:"RecurringUnit"`
-	StartsAt               int64                              `json:"StartsAt,omitempty"`
-}
-
-type ScheduleProvider struct {
-	Class string `json:"Class"`
-}
-
-type ScheduleRequestSettings struct {
-	Name        string           `json:"Name"`
-	Description string           `json:"Description"`
-	Tags        []string         `json:"Tags,omitempty"`
-	Settings    ScheduleSettings `json:"Settings"`
-	Provider    ScheduleProvider `json:"Provider"`
-}
-
-// Ref: #/components/schemas/CreateScheduleRequest
-type CreateScheduleRequest struct {
-	Schedule ScheduleRequestSettings `json:"CommonServiceItem"`
-}
-
-// GetName returns the value of Name.
-func (s *CreateScheduleRequest) GetName() string {
-	return s.Schedule.Name
-}
-
-// GetProcessConfigurationID returns the value of ProcessConfigurationID.
-func (s *CreateScheduleRequest) GetProcessConfigurationID() string {
-	return s.Schedule.Settings.ProcessConfigurationID
-}
-
-// GetRecurringStep returns the value of RecurringStep.
-func (s *CreateScheduleRequest) GetRecurringStep() int {
-	return s.Schedule.Settings.RecurringStep
-}
-
-// GetRecurringUnit returns the value of RecurringUnit.
-func (s *CreateScheduleRequest) GetRecurringUnit() CreateScheduleRequestRecurringUnit {
-	return s.Schedule.Settings.RecurringUnit
-}
-
-// GetStartsAt returns the value of StartsAt.
-func (s *CreateScheduleRequest) GetStartsAt() int64 {
-	return s.Schedule.Settings.StartsAt
+// GetTags returns the value of Tags.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetTags() []string {
+	return s.Tags
 }
 
 // SetName sets the value of Name.
-func (s *CreateScheduleRequest) SetName(val string) {
-	s.Schedule.Name = val
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetName(val string) {
+	s.Name = val
 }
 
-// SetProcessConfigurationID sets the value of ProcessConfigurationID.
-func (s *CreateScheduleRequest) SetProcessConfigurationID(val string) {
-	s.Schedule.Settings.ProcessConfigurationID = val
+// SetDescription sets the value of Description.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetDescription(val OptNilString) {
+	s.Description = val
 }
 
-// SetRecurringStep sets the value of RecurringStep.
-func (s *CreateScheduleRequest) SetRecurringStep(val int) {
-	s.Schedule.Settings.RecurringStep = val
+// SetSettings sets the value of Settings.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetSettings(val Settings) {
+	s.Settings = val
 }
 
-// SetRecurringUnit sets the value of RecurringUnit.
-func (s *CreateScheduleRequest) SetRecurringUnit(val CreateScheduleRequestRecurringUnit) {
-	s.Schedule.Settings.RecurringUnit = val
+// SetProvider sets the value of Provider.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetProvider(val Provider) {
+	s.Provider = val
 }
 
-// SetStartsAt sets the value of StartsAt.
-func (s *CreateScheduleRequest) SetStartsAt(val int64) {
-	s.Schedule.Settings.StartsAt = val
+// SetIcon sets the value of Icon.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetIcon(val OptNilIcon) {
+	s.Icon = val
 }
 
-type CreateScheduleRequestRecurringUnit string
-
-const (
-	CreateScheduleRequestRecurringUnitMin  CreateScheduleRequestRecurringUnit = "min"
-	CreateScheduleRequestRecurringUnitHour CreateScheduleRequestRecurringUnit = "hour"
-	CreateScheduleRequestRecurringUnitDay  CreateScheduleRequestRecurringUnit = "day"
-)
-
-// AllValues returns all CreateScheduleRequestRecurringUnit values.
-func (CreateScheduleRequestRecurringUnit) AllValues() []CreateScheduleRequestRecurringUnit {
-	return []CreateScheduleRequestRecurringUnit{
-		CreateScheduleRequestRecurringUnitMin,
-		CreateScheduleRequestRecurringUnitHour,
-		CreateScheduleRequestRecurringUnitDay,
-	}
+// SetTags sets the value of Tags.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetTags(val []string) {
+	s.Tags = val
 }
 
-// MarshalText implements encoding.TextMarshaler.
-func (s CreateScheduleRequestRecurringUnit) MarshalText() ([]byte, error) {
-	switch s {
-	case CreateScheduleRequestRecurringUnitMin:
-		return []byte(s), nil
-	case CreateScheduleRequestRecurringUnitHour:
-		return []byte(s), nil
-	case CreateScheduleRequestRecurringUnitDay:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
+type CreateCommonServiceItemUnauthorized Error
+
+func (*CreateCommonServiceItemUnauthorized) createCommonServiceItemRes() {}
+
+type DeleteCommonServiceItemBadRequest Error
+
+func (*DeleteCommonServiceItemBadRequest) deleteCommonServiceItemRes() {}
+
+type DeleteCommonServiceItemInternalServerError Error
+
+func (*DeleteCommonServiceItemInternalServerError) deleteCommonServiceItemRes() {}
+
+type DeleteCommonServiceItemNotFound Error
+
+func (*DeleteCommonServiceItemNotFound) deleteCommonServiceItemRes() {}
+
+type DeleteCommonServiceItemOK struct {
+	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	Success           OptBool           `json:"Success"`
+	IsOk              OptBool           `json:"is_ok"`
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *CreateScheduleRequestRecurringUnit) UnmarshalText(data []byte) error {
-	switch CreateScheduleRequestRecurringUnit(data) {
-	case CreateScheduleRequestRecurringUnitMin:
-		*s = CreateScheduleRequestRecurringUnitMin
-		return nil
-	case CreateScheduleRequestRecurringUnitHour:
-		*s = CreateScheduleRequestRecurringUnitHour
-		return nil
-	case CreateScheduleRequestRecurringUnitDay:
-		*s = CreateScheduleRequestRecurringUnitDay
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *DeleteCommonServiceItemOK) GetCommonServiceItem() CommonServiceItem {
+	return s.CommonServiceItem
 }
 
-type CreateScheduleUnauthorized Error
-
-func (*CreateScheduleUnauthorized) createScheduleRes() {}
-
-type DeleteProcessConfigurationBadRequest Error
-
-func (*DeleteProcessConfigurationBadRequest) deleteProcessConfigurationRes() {}
-
-type DeleteProcessConfigurationConflict Error
-
-func (*DeleteProcessConfigurationConflict) deleteProcessConfigurationRes() {}
-
-type DeleteProcessConfigurationInternalServerError Error
-
-func (*DeleteProcessConfigurationInternalServerError) deleteProcessConfigurationRes() {}
-
-type DeleteProcessConfigurationNotFound Error
-
-func (*DeleteProcessConfigurationNotFound) deleteProcessConfigurationRes() {}
-
-type DeleteProcessConfigurationOK struct {
-	ProcessConfiguration ProcessConfiguration `json:"CommonServiceItem"`
+// GetSuccess returns the value of Success.
+func (s *DeleteCommonServiceItemOK) GetSuccess() OptBool {
+	return s.Success
 }
 
-// GetResult returns the value of Result.
-func (s *DeleteProcessConfigurationOK) GetProcessConfiguration() ProcessConfiguration {
-	return s.ProcessConfiguration
+// GetIsOk returns the value of IsOk.
+func (s *DeleteCommonServiceItemOK) GetIsOk() OptBool {
+	return s.IsOk
 }
 
-// SetResult sets the value of Result.
-func (s *DeleteProcessConfigurationOK) SetProcessConfiguration(val ProcessConfiguration) {
-	s.ProcessConfiguration = val
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *DeleteCommonServiceItemOK) SetCommonServiceItem(val CommonServiceItem) {
+	s.CommonServiceItem = val
 }
 
-func (*DeleteProcessConfigurationOK) deleteProcessConfigurationRes() {}
-
-type DeleteProcessConfigurationUnauthorized Error
-
-func (*DeleteProcessConfigurationUnauthorized) deleteProcessConfigurationRes() {}
-
-type DeleteScheduleBadRequest Error
-
-func (*DeleteScheduleBadRequest) deleteScheduleRes() {}
-
-type DeleteScheduleInternalServerError Error
-
-func (*DeleteScheduleInternalServerError) deleteScheduleRes() {}
-
-type DeleteScheduleNotFound Error
-
-func (*DeleteScheduleNotFound) deleteScheduleRes() {}
-
-type DeleteScheduleOK struct {
-	Schedule Schedule `json:"CommonServiceItem"`
+// SetSuccess sets the value of Success.
+func (s *DeleteCommonServiceItemOK) SetSuccess(val OptBool) {
+	s.Success = val
 }
 
-// GetResult returns the value of Result.
-func (s *DeleteScheduleOK) GetSchedule() Schedule {
-	return s.Schedule
+// SetIsOk sets the value of IsOk.
+func (s *DeleteCommonServiceItemOK) SetIsOk(val OptBool) {
+	s.IsOk = val
 }
 
-// SetResult sets the value of Result.
-func (s *DeleteScheduleOK) SetSchedule(val Schedule) {
-	s.Schedule = val
-}
+func (*DeleteCommonServiceItemOK) deleteCommonServiceItemRes() {}
 
-func (*DeleteScheduleOK) deleteScheduleRes() {}
+type DeleteCommonServiceItemUnauthorized Error
 
-type DeleteScheduleUnauthorized Error
+func (*DeleteCommonServiceItemUnauthorized) deleteCommonServiceItemRes() {}
 
-func (*DeleteScheduleUnauthorized) deleteScheduleRes() {}
-
-// Error content.
 // Ref: #/components/schemas/Error
 type Error struct {
-	Code    OptString `json:"error_code"`
-	Message OptString `json:"error_msg`
+	IsFatal   OptBool   `json:"is_fatal"`
+	Serial    OptString `json:"serial"`
+	Status    OptString `json:"status"`
+	ErrorCode OptString `json:"error_code"`
+	ErrorMsg  OptString `json:"error_msg"`
 }
 
-// GetCode returns the value of Code.
-func (s *Error) GetCode() OptString {
-	return s.Code
+// GetIsFatal returns the value of IsFatal.
+func (s *Error) GetIsFatal() OptBool {
+	return s.IsFatal
 }
 
-// GetMessage returns the value of Message.
-func (s *Error) GetMessage() OptString {
-	return s.Message
+// GetSerial returns the value of Serial.
+func (s *Error) GetSerial() OptString {
+	return s.Serial
 }
 
-// SetCode sets the value of Code.
-func (s *Error) SetCode(val OptString) {
-	s.Code = val
+// GetStatus returns the value of Status.
+func (s *Error) GetStatus() OptString {
+	return s.Status
 }
 
-// SetMessage sets the value of Message.
-func (s *Error) SetMessage(val OptString) {
-	s.Message = val
+// GetErrorCode returns the value of ErrorCode.
+func (s *Error) GetErrorCode() OptString {
+	return s.ErrorCode
 }
 
-type GetProcessConfigurationByIdBadRequest Error
-
-func (*GetProcessConfigurationByIdBadRequest) getProcessConfigurationByIdRes() {}
-
-type GetProcessConfigurationByIdInternalServerError Error
-
-func (*GetProcessConfigurationByIdInternalServerError) getProcessConfigurationByIdRes() {}
-
-type GetProcessConfigurationByIdNotFound Error
-
-func (*GetProcessConfigurationByIdNotFound) getProcessConfigurationByIdRes() {}
-
-type ProcessConfiguration struct {
-	Index        int64               `json:",omitempty"`
-	ID           int64               `json:",omitempty"`
-	Name         string              `json:",omitempty"`
-	Description  string              `json:",omitempty"`
-	Settings     DestinationSettings `json:",omitempty"`
-	SettingsHash string              `json:",omitempty"`
-	Availability string              `json:",omitempty"`
-	CreatedAt    string              `json:",omitempty"`
-	ModifiedAt   string              `json:",omitempty"`
-	Tags         []string            `json:",omitempty"`
+// GetErrorMsg returns the value of ErrorMsg.
+func (s *Error) GetErrorMsg() OptString {
+	return s.ErrorMsg
 }
 
-type GetProcessConfigurationByIdOK struct {
-	ProcessConfiguration ProcessConfiguration `json:"CommonServiceItem"`
+// SetIsFatal sets the value of IsFatal.
+func (s *Error) SetIsFatal(val OptBool) {
+	s.IsFatal = val
 }
 
-// GetProcessConfiguration returns the value of ProcessConfiguration.
-func (s *GetProcessConfigurationByIdOK) GetProcessConfiguration() ProcessConfiguration {
-	return s.ProcessConfiguration
+// SetSerial sets the value of Serial.
+func (s *Error) SetSerial(val OptString) {
+	s.Serial = val
 }
 
-// SetProcessConfiguration sets the value of ProcessConfiguration.
-func (s *GetProcessConfigurationByIdOK) SetProcessConfiguration(val ProcessConfiguration) {
-	s.ProcessConfiguration = val
+// SetStatus sets the value of Status.
+func (s *Error) SetStatus(val OptString) {
+	s.Status = val
 }
 
-func (*GetProcessConfigurationByIdOK) getProcessConfigurationByIdRes() {}
+// SetErrorCode sets the value of ErrorCode.
+func (s *Error) SetErrorCode(val OptString) {
+	s.ErrorCode = val
+}
 
-type GetProcessConfigurationByIdUnauthorized Error
+// SetErrorMsg sets the value of ErrorMsg.
+func (s *Error) SetErrorMsg(val OptString) {
+	s.ErrorMsg = val
+}
 
-func (*GetProcessConfigurationByIdUnauthorized) getProcessConfigurationByIdRes() {}
+type GetCommonServiceItemBadRequest Error
 
-type GetProcessConfigurationsBadRequest Error
+func (*GetCommonServiceItemBadRequest) getCommonServiceItemRes() {}
 
-func (*GetProcessConfigurationsBadRequest) getProcessConfigurationsByAccountRes() {}
+type GetCommonServiceItemInternalServerError Error
 
-type GetProcessConfigurationsInternalServerError Error
+func (*GetCommonServiceItemInternalServerError) getCommonServiceItemRes() {}
 
-func (*GetProcessConfigurationsInternalServerError) getProcessConfigurationsByAccountRes() {}
+type GetCommonServiceItemNotFound Error
 
-type GetProcessConfigurationsOK struct {
-	From                  int64
-	Count                 int64
-	Total                 int64
-	ProcessConfigurations []ProcessConfiguration `json:"CommonServiceItems"`
+func (*GetCommonServiceItemNotFound) getCommonServiceItemRes() {}
+
+type GetCommonServiceItemOK struct {
+	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	IsOk              OptBool           `json:"is_ok"`
+}
+
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *GetCommonServiceItemOK) GetCommonServiceItem() CommonServiceItem {
+	return s.CommonServiceItem
+}
+
+// GetIsOk returns the value of IsOk.
+func (s *GetCommonServiceItemOK) GetIsOk() OptBool {
+	return s.IsOk
+}
+
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *GetCommonServiceItemOK) SetCommonServiceItem(val CommonServiceItem) {
+	s.CommonServiceItem = val
+}
+
+// SetIsOk sets the value of IsOk.
+func (s *GetCommonServiceItemOK) SetIsOk(val OptBool) {
+	s.IsOk = val
+}
+
+func (*GetCommonServiceItemOK) getCommonServiceItemRes() {}
+
+type GetCommonServiceItemUnauthorized Error
+
+func (*GetCommonServiceItemUnauthorized) getCommonServiceItemRes() {}
+
+type GetCommonServiceItemsBadRequest Error
+
+func (*GetCommonServiceItemsBadRequest) getCommonServiceItemsRes() {}
+
+type GetCommonServiceItemsInternalServerError Error
+
+func (*GetCommonServiceItemsInternalServerError) getCommonServiceItemsRes() {}
+
+type GetCommonServiceItemsOK struct {
+	From               OptInt              `json:"From"`
+	Count              OptInt              `json:"Count"`
+	Total              OptInt              `json:"Total"`
+	CommonServiceItems []CommonServiceItem `json:"CommonServiceItems"`
+	IsOk               OptBool             `json:"is_ok"`
+}
+
+// GetFrom returns the value of From.
+func (s *GetCommonServiceItemsOK) GetFrom() OptInt {
+	return s.From
 }
 
 // GetCount returns the value of Count.
-func (s *GetProcessConfigurationsOK) GetCount() int64 {
+func (s *GetCommonServiceItemsOK) GetCount() OptInt {
 	return s.Count
 }
 
 // GetTotal returns the value of Total.
-func (s *GetProcessConfigurationsOK) GetTotal() int64 {
+func (s *GetCommonServiceItemsOK) GetTotal() OptInt {
 	return s.Total
 }
 
-// GetProcessConfigurations returns the value of ProcessConfigurations.
-func (s *GetProcessConfigurationsOK) GetProcessConfigurations() []ProcessConfiguration {
-	return s.ProcessConfigurations
+// GetCommonServiceItems returns the value of CommonServiceItems.
+func (s *GetCommonServiceItemsOK) GetCommonServiceItems() []CommonServiceItem {
+	return s.CommonServiceItems
+}
+
+// GetIsOk returns the value of IsOk.
+func (s *GetCommonServiceItemsOK) GetIsOk() OptBool {
+	return s.IsOk
+}
+
+// SetFrom sets the value of From.
+func (s *GetCommonServiceItemsOK) SetFrom(val OptInt) {
+	s.From = val
 }
 
 // SetCount sets the value of Count.
-func (s *GetProcessConfigurationsOK) SetCount(val int64) {
+func (s *GetCommonServiceItemsOK) SetCount(val OptInt) {
 	s.Count = val
 }
 
 // SetTotal sets the value of Total.
-func (s *GetProcessConfigurationsOK) SetTotal(val int64) {
+func (s *GetCommonServiceItemsOK) SetTotal(val OptInt) {
 	s.Total = val
 }
 
-// SetProcessConfigurations sets the value of ProcessConfigurations.
-func (s *GetProcessConfigurationsOK) SetProcessConfigurations(val []ProcessConfiguration) {
-	s.ProcessConfigurations = val
+// SetCommonServiceItems sets the value of CommonServiceItems.
+func (s *GetCommonServiceItemsOK) SetCommonServiceItems(val []CommonServiceItem) {
+	s.CommonServiceItems = val
 }
 
-func (*GetProcessConfigurationsOK) getProcessConfigurationsByAccountRes() {}
-
-type GetProcessConfigurationsUnauthorized Error
-
-func (*GetProcessConfigurationsUnauthorized) getProcessConfigurationsByAccountRes() {}
-
-type GetScheduleByIdBadRequest Error
-
-func (*GetScheduleByIdBadRequest) getScheduleByIdRes() {}
-
-type GetScheduleByIdInternalServerError Error
-
-func (*GetScheduleByIdInternalServerError) getScheduleByIdRes() {}
-
-type GetScheduleByIdNotFound Error
-
-func (*GetScheduleByIdNotFound) getScheduleByIdRes() {}
-
-type GetScheduleByIdOK struct {
-	Schedule Schedule `json:"CommonServiceItem"`
+// SetIsOk sets the value of IsOk.
+func (s *GetCommonServiceItemsOK) SetIsOk(val OptBool) {
+	s.IsOk = val
 }
 
-// GetSchedule returns the value of Schedule.
-func (s *GetScheduleByIdOK) GetSchedule() Schedule {
-	return s.Schedule
+func (*GetCommonServiceItemsOK) getCommonServiceItemsRes() {}
+
+type GetCommonServiceItemsUnauthorized Error
+
+func (*GetCommonServiceItemsUnauthorized) getCommonServiceItemsRes() {}
+
+// Ref: #/components/schemas/Icon
+type Icon struct {
+	ID    OptString `json:"ID"`
+	URL   OptString `json:"URL"`
+	Name  OptString `json:"Name"`
+	Scope OptString `json:"Scope"`
+	Tags  []string  `json:"Tags"`
 }
 
-// SetSchedule sets the value of Schedule.
-func (s *GetScheduleByIdOK) SetSchedule(val Schedule) {
-	s.Schedule = val
+// GetID returns the value of ID.
+func (s *Icon) GetID() OptString {
+	return s.ID
 }
 
-func (*GetScheduleByIdOK) getScheduleByIdRes() {}
-
-type GetScheduleByIdUnauthorized Error
-
-func (*GetScheduleByIdUnauthorized) getScheduleByIdRes() {}
-
-type GetSchedulesBadRequest Error
-
-func (*GetSchedulesBadRequest) getSchedulesByAccountRes() {}
-
-type GetSchedulesInternalServerError Error
-
-func (*GetSchedulesInternalServerError) getSchedulesByAccountRes() {}
-
-type GetSchedulesOK struct {
-	From      int64
-	Count     int64
-	Total     int64
-	Schedules []Schedule `json:"CommonServiceItems"`
+// GetURL returns the value of URL.
+func (s *Icon) GetURL() OptString {
+	return s.URL
 }
 
-// GetSchedules returns the value of Schedules.
-func (s *GetSchedulesOK) GetSchedules() []Schedule {
-	return s.Schedules
+// GetName returns the value of Name.
+func (s *Icon) GetName() OptString {
+	return s.Name
 }
 
-// SetSchedules sets the value of Schedules.
-func (s *GetSchedulesOK) SetSchedules(val []Schedule) {
-	s.Schedules = val
+// GetScope returns the value of Scope.
+func (s *Icon) GetScope() OptString {
+	return s.Scope
 }
 
-func (*GetSchedulesOK) getSchedulesByAccountRes() {}
-
-type GetSchedulesUnauthorized Error
-
-func (*GetSchedulesUnauthorized) getSchedulesByAccountRes() {}
-
-// NewNilString returns new NilString with value set to v.
-func NewNilString(v string) NilString {
-	return NilString{
-		Value: v,
-	}
+// GetTags returns the value of Tags.
+func (s *Icon) GetTags() []string {
+	return s.Tags
 }
 
-// NilString is nullable string.
-type NilString struct {
-	Value string
-	Null  bool
+// SetID sets the value of ID.
+func (s *Icon) SetID(val OptString) {
+	s.ID = val
 }
 
-// SetTo sets value to v.
-func (o *NilString) SetTo(v string) {
-	o.Null = false
-	o.Value = v
+// SetURL sets the value of URL.
+func (s *Icon) SetURL(val OptString) {
+	s.URL = val
 }
 
-// IsNull returns true if value is Null.
-func (o NilString) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilString) SetToNull() {
-	o.Null = true
-	var v string
-	o.Value = v
+// SetName sets the value of Name.
+func (s *Icon) SetName(val OptString) {
+	s.Name = val
 }
 
-// Get returns value and boolean that denotes whether value was set.
-func (o NilString) Get() (v string, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
+// SetScope sets the value of Scope.
+func (s *Icon) SetScope(val OptString) {
+	s.Scope = val
 }
 
-// Or returns value if set, or given parameter if does not.
-func (o NilString) Or(d string) string {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
+// SetTags sets the value of Tags.
+func (s *Icon) SetTags(val []string) {
+	s.Tags = val
 }
 
-// NewOptConfigureScheduleRequestRecurringUnit returns new OptConfigureScheduleRequestRecurringUnit with value set to v.
-func NewOptConfigureScheduleRequestRecurringUnit(v ConfigureScheduleRequestRecurringUnit) OptConfigureScheduleRequestRecurringUnit {
-	return OptConfigureScheduleRequestRecurringUnit{
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptConfigureScheduleRequestRecurringUnit is optional ConfigureScheduleRequestRecurringUnit.
-type OptConfigureScheduleRequestRecurringUnit struct {
-	Value ConfigureScheduleRequestRecurringUnit
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
 	Set   bool
 }
 
-// IsSet returns true if OptConfigureScheduleRequestRecurringUnit was set.
-func (o OptConfigureScheduleRequestRecurringUnit) IsSet() bool { return o.Set }
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptConfigureScheduleRequestRecurringUnit) Reset() {
-	var v ConfigureScheduleRequestRecurringUnit
+func (o *OptBool) Reset() {
+	var v bool
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptConfigureScheduleRequestRecurringUnit) SetTo(v ConfigureScheduleRequestRecurringUnit) {
+func (o *OptBool) SetTo(v bool) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptConfigureScheduleRequestRecurringUnit) Get() (v ConfigureScheduleRequestRecurringUnit, ok bool) {
+func (o OptBool) Get() (v bool, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -884,53 +658,7 @@ func (o OptConfigureScheduleRequestRecurringUnit) Get() (v ConfigureScheduleRequ
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptConfigureScheduleRequestRecurringUnit) Or(d ConfigureScheduleRequestRecurringUnit) ConfigureScheduleRequestRecurringUnit {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptCreateScheduleRequestRecurringUnit returns new OptCreateScheduleRequestRecurringUnit with value set to v.
-func NewOptCreateScheduleRequestRecurringUnit(v CreateScheduleRequestRecurringUnit) OptCreateScheduleRequestRecurringUnit {
-	return OptCreateScheduleRequestRecurringUnit{
-		Value: v,
-		Set:   true,
-	}
-}
-
-// OptCreateScheduleRequestRecurringUnit is optional CreateScheduleRequestRecurringUnit.
-type OptCreateScheduleRequestRecurringUnit struct {
-	Value CreateScheduleRequestRecurringUnit
-	Set   bool
-}
-
-// IsSet returns true if OptCreateScheduleRequestRecurringUnit was set.
-func (o OptCreateScheduleRequestRecurringUnit) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptCreateScheduleRequestRecurringUnit) Reset() {
-	var v CreateScheduleRequestRecurringUnit
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptCreateScheduleRequestRecurringUnit) SetTo(v CreateScheduleRequestRecurringUnit) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptCreateScheduleRequestRecurringUnit) Get() (v CreateScheduleRequestRecurringUnit, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptCreateScheduleRequestRecurringUnit) Or(d CreateScheduleRequestRecurringUnit) CreateScheduleRequestRecurringUnit {
+func (o OptBool) Or(d bool) bool {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -983,38 +711,55 @@ func (o OptInt) Or(d int) int {
 	return d
 }
 
-// NewOptInt64 returns new OptInt64 with value set to v.
-func NewOptInt64(v int64) OptInt64 {
-	return OptInt64{
+// NewOptNilIcon returns new OptNilIcon with value set to v.
+func NewOptNilIcon(v Icon) OptNilIcon {
+	return OptNilIcon{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptInt64 is optional int64.
-type OptInt64 struct {
-	Value int64
+// OptNilIcon is optional nullable Icon.
+type OptNilIcon struct {
+	Value Icon
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptInt64 was set.
-func (o OptInt64) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilIcon was set.
+func (o OptNilIcon) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptInt64) Reset() {
-	var v int64
+func (o *OptNilIcon) Reset() {
+	var v Icon
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptInt64) SetTo(v int64) {
+func (o *OptNilIcon) SetTo(v Icon) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilIcon) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilIcon) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v Icon
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptInt64) Get() (v int64, ok bool) {
+func (o OptNilIcon) Get() (v Icon, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -1022,45 +767,62 @@ func (o OptInt64) Get() (v int64, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptInt64) Or(d int64) int64 {
+func (o OptNilIcon) Or(d Icon) Icon {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptProcessConfiguration returns new OptProcessConfiguration with value set to v.
-func NewOptProcessConfiguration(v ProcessConfiguration) OptProcessConfiguration {
-	return OptProcessConfiguration{
+// NewOptNilStatus returns new OptNilStatus with value set to v.
+func NewOptNilStatus(v Status) OptNilStatus {
+	return OptNilStatus{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptProcessConfiguration is optional ProcessConfiguration.
-type OptProcessConfiguration struct {
-	Value ProcessConfiguration
+// OptNilStatus is optional nullable Status.
+type OptNilStatus struct {
+	Value Status
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptProcessConfiguration was set.
-func (o OptProcessConfiguration) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilStatus was set.
+func (o OptNilStatus) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptProcessConfiguration) Reset() {
-	var v ProcessConfiguration
+func (o *OptNilStatus) Reset() {
+	var v Status
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptProcessConfiguration) SetTo(v ProcessConfiguration) {
+func (o *OptNilStatus) SetTo(v Status) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilStatus) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilStatus) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v Status
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptProcessConfiguration) Get() (v ProcessConfiguration, ok bool) {
+func (o OptNilStatus) Get() (v Status, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -1068,45 +830,62 @@ func (o OptProcessConfiguration) Get() (v ProcessConfiguration, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptProcessConfiguration) Or(d ProcessConfiguration) ProcessConfiguration {
+func (o OptNilStatus) Or(d Status) Status {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptSchedule returns new OptSchedule with value set to v.
-func NewOptSchedule(v Schedule) OptSchedule {
-	return OptSchedule{
+// NewOptNilString returns new OptNilString with value set to v.
+func NewOptNilString(v string) OptNilString {
+	return OptNilString{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptSchedule is optional Schedule.
-type OptSchedule struct {
-	Value Schedule
+// OptNilString is optional nullable string.
+type OptNilString struct {
+	Value string
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptSchedule was set.
-func (o OptSchedule) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilString was set.
+func (o OptNilString) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptSchedule) Reset() {
-	var v Schedule
+func (o *OptNilString) Reset() {
+	var v string
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptSchedule) SetTo(v Schedule) {
+func (o *OptNilString) SetTo(v string) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilString) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v string
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptSchedule) Get() (v Schedule, ok bool) {
+func (o OptNilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -1114,45 +893,62 @@ func (o OptSchedule) Get() (v Schedule, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptSchedule) Or(d Schedule) Schedule {
+func (o OptNilString) Or(d string) string {
 	if v, ok := o.Get(); ok {
 		return v
 	}
 	return d
 }
 
-// NewOptScheduleLastResult returns new OptScheduleLastResult with value set to v.
-func NewOptScheduleLastResult(v ScheduleLastResult) OptScheduleLastResult {
-	return OptScheduleLastResult{
+// NewOptNilStringArray returns new OptNilStringArray with value set to v.
+func NewOptNilStringArray(v []string) OptNilStringArray {
+	return OptNilStringArray{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptScheduleLastResult is optional ScheduleLastResult.
-type OptScheduleLastResult struct {
-	Value ScheduleLastResult
+// OptNilStringArray is optional nullable []string.
+type OptNilStringArray struct {
+	Value []string
 	Set   bool
+	Null  bool
 }
 
-// IsSet returns true if OptScheduleLastResult was set.
-func (o OptScheduleLastResult) IsSet() bool { return o.Set }
+// IsSet returns true if OptNilStringArray was set.
+func (o OptNilStringArray) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptScheduleLastResult) Reset() {
-	var v ScheduleLastResult
+func (o *OptNilStringArray) Reset() {
+	var v []string
 	o.Value = v
 	o.Set = false
+	o.Null = false
 }
 
 // SetTo sets value to v.
-func (o *OptScheduleLastResult) SetTo(v ScheduleLastResult) {
+func (o *OptNilStringArray) SetTo(v []string) {
 	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilStringArray) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilStringArray) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v []string
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptScheduleLastResult) Get() (v ScheduleLastResult, ok bool) {
+func (o OptNilStringArray) Get() (v []string, ok bool) {
+	if o.Null {
+		return v, false
+	}
 	if !o.Set {
 		return v, false
 	}
@@ -1160,7 +956,254 @@ func (o OptScheduleLastResult) Get() (v ScheduleLastResult, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptScheduleLastResult) Or(d ScheduleLastResult) ScheduleLastResult {
+func (o OptNilStringArray) Or(d []string) []string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilTriggerSettingsConditionsItemArray returns new OptNilTriggerSettingsConditionsItemArray with value set to v.
+func NewOptNilTriggerSettingsConditionsItemArray(v []TriggerSettingsConditionsItem) OptNilTriggerSettingsConditionsItemArray {
+	return OptNilTriggerSettingsConditionsItemArray{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilTriggerSettingsConditionsItemArray is optional nullable []TriggerSettingsConditionsItem.
+type OptNilTriggerSettingsConditionsItemArray struct {
+	Value []TriggerSettingsConditionsItem
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilTriggerSettingsConditionsItemArray was set.
+func (o OptNilTriggerSettingsConditionsItemArray) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilTriggerSettingsConditionsItemArray) Reset() {
+	var v []TriggerSettingsConditionsItem
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilTriggerSettingsConditionsItemArray) SetTo(v []TriggerSettingsConditionsItem) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilTriggerSettingsConditionsItemArray) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilTriggerSettingsConditionsItemArray) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v []TriggerSettingsConditionsItem
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilTriggerSettingsConditionsItemArray) Get() (v []TriggerSettingsConditionsItem, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilTriggerSettingsConditionsItemArray) Or(d []TriggerSettingsConditionsItem) []TriggerSettingsConditionsItem {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptProvider returns new OptProvider with value set to v.
+func NewOptProvider(v Provider) OptProvider {
+	return OptProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptProvider is optional Provider.
+type OptProvider struct {
+	Value Provider
+	Set   bool
+}
+
+// IsSet returns true if OptProvider was set.
+func (o OptProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptProvider) Reset() {
+	var v Provider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptProvider) SetTo(v Provider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptProvider) Get() (v Provider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptProvider) Or(d Provider) Provider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptScheduleSettingsStartsAt returns new OptScheduleSettingsStartsAt with value set to v.
+func NewOptScheduleSettingsStartsAt(v ScheduleSettingsStartsAt) OptScheduleSettingsStartsAt {
+	return OptScheduleSettingsStartsAt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptScheduleSettingsStartsAt is optional ScheduleSettingsStartsAt.
+type OptScheduleSettingsStartsAt struct {
+	Value ScheduleSettingsStartsAt
+	Set   bool
+}
+
+// IsSet returns true if OptScheduleSettingsStartsAt was set.
+func (o OptScheduleSettingsStartsAt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptScheduleSettingsStartsAt) Reset() {
+	var v ScheduleSettingsStartsAt
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptScheduleSettingsStartsAt) SetTo(v ScheduleSettingsStartsAt) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptScheduleSettingsStartsAt) Get() (v ScheduleSettingsStartsAt, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptScheduleSettingsStartsAt) Or(d ScheduleSettingsStartsAt) ScheduleSettingsStartsAt {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSetProcessConfigurationSecretOKProcess returns new OptSetProcessConfigurationSecretOKProcess with value set to v.
+func NewOptSetProcessConfigurationSecretOKProcess(v SetProcessConfigurationSecretOKProcess) OptSetProcessConfigurationSecretOKProcess {
+	return OptSetProcessConfigurationSecretOKProcess{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSetProcessConfigurationSecretOKProcess is optional SetProcessConfigurationSecretOKProcess.
+type OptSetProcessConfigurationSecretOKProcess struct {
+	Value SetProcessConfigurationSecretOKProcess
+	Set   bool
+}
+
+// IsSet returns true if OptSetProcessConfigurationSecretOKProcess was set.
+func (o OptSetProcessConfigurationSecretOKProcess) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSetProcessConfigurationSecretOKProcess) Reset() {
+	var v SetProcessConfigurationSecretOKProcess
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSetProcessConfigurationSecretOKProcess) SetTo(v SetProcessConfigurationSecretOKProcess) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSetProcessConfigurationSecretOKProcess) Get() (v SetProcessConfigurationSecretOKProcess, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSetProcessConfigurationSecretOKProcess) Or(d SetProcessConfigurationSecretOKProcess) SetProcessConfigurationSecretOKProcess {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSettings returns new OptSettings with value set to v.
+func NewOptSettings(v Settings) OptSettings {
+	return OptSettings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSettings is optional Settings.
+type OptSettings struct {
+	Value Settings
+	Set   bool
+}
+
+// IsSet returns true if OptSettings was set.
+func (o OptSettings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSettings) Reset() {
+	var v Settings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSettings) SetTo(v Settings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSettings) Get() (v Settings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSettings) Or(d Settings) Settings {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1213,27 +1256,56 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-type ProcessConfigurationDestination string
+// Ref: #/components/schemas/ProcessConfigurationSettings
+type ProcessConfigurationSettings struct {
+	// ジョブの宛先（simplenotification/simplemq）.
+	Destination ProcessConfigurationSettingsDestination `json:"Destination"`
+	// Destinationごとのパラメータ（group_id, message, queue_name, content等）.
+	Parameters string `json:"Parameters"`
+}
+
+// GetDestination returns the value of Destination.
+func (s *ProcessConfigurationSettings) GetDestination() ProcessConfigurationSettingsDestination {
+	return s.Destination
+}
+
+// GetParameters returns the value of Parameters.
+func (s *ProcessConfigurationSettings) GetParameters() string {
+	return s.Parameters
+}
+
+// SetDestination sets the value of Destination.
+func (s *ProcessConfigurationSettings) SetDestination(val ProcessConfigurationSettingsDestination) {
+	s.Destination = val
+}
+
+// SetParameters sets the value of Parameters.
+func (s *ProcessConfigurationSettings) SetParameters(val string) {
+	s.Parameters = val
+}
+
+// ジョブの宛先（simplenotification/simplemq）.
+type ProcessConfigurationSettingsDestination string
 
 const (
-	ProcessConfigurationDestinationSimplenotification ProcessConfigurationDestination = "simplenotification"
-	ProcessConfigurationDestinationSimplemq           ProcessConfigurationDestination = "simplemq"
+	ProcessConfigurationSettingsDestinationSimplenotification ProcessConfigurationSettingsDestination = "simplenotification"
+	ProcessConfigurationSettingsDestinationSimplemq           ProcessConfigurationSettingsDestination = "simplemq"
 )
 
-// AllValues returns all ProcessConfigurationDestination values.
-func (ProcessConfigurationDestination) AllValues() []ProcessConfigurationDestination {
-	return []ProcessConfigurationDestination{
-		ProcessConfigurationDestinationSimplenotification,
-		ProcessConfigurationDestinationSimplemq,
+// AllValues returns all ProcessConfigurationSettingsDestination values.
+func (ProcessConfigurationSettingsDestination) AllValues() []ProcessConfigurationSettingsDestination {
+	return []ProcessConfigurationSettingsDestination{
+		ProcessConfigurationSettingsDestinationSimplenotification,
+		ProcessConfigurationSettingsDestinationSimplemq,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s ProcessConfigurationDestination) MarshalText() ([]byte, error) {
+func (s ProcessConfigurationSettingsDestination) MarshalText() ([]byte, error) {
 	switch s {
-	case ProcessConfigurationDestinationSimplenotification:
+	case ProcessConfigurationSettingsDestinationSimplenotification:
 		return []byte(s), nil
-	case ProcessConfigurationDestinationSimplemq:
+	case ProcessConfigurationSettingsDestinationSimplemq:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1241,81 +1313,619 @@ func (s ProcessConfigurationDestination) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ProcessConfigurationDestination) UnmarshalText(data []byte) error {
-	switch ProcessConfigurationDestination(data) {
-	case ProcessConfigurationDestinationSimplenotification:
-		*s = ProcessConfigurationDestinationSimplenotification
+func (s *ProcessConfigurationSettingsDestination) UnmarshalText(data []byte) error {
+	switch ProcessConfigurationSettingsDestination(data) {
+	case ProcessConfigurationSettingsDestinationSimplenotification:
+		*s = ProcessConfigurationSettingsDestinationSimplenotification
 		return nil
-	case ProcessConfigurationDestinationSimplemq:
-		*s = ProcessConfigurationDestinationSimplemq
+	case ProcessConfigurationSettingsDestinationSimplemq:
+		*s = ProcessConfigurationSettingsDestinationSimplemq
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
 
-// Ref: #/components/schemas/ScheduleLastResult
-type ScheduleLastResult struct {
-	Success   bool   `json:"Success"`
-	Message   string `json:"Message"`
-	UpdatedAt int64  `json:"UpdatedAt"`
+// Ref: #/components/schemas/Provider
+type Provider struct {
+	ID           OptInt        `json:"ID"`
+	Class        ProviderClass `json:"Class"`
+	Name         OptString     `json:"Name"`
+	ServiceClass OptString     `json:"ServiceClass"`
+}
+
+// GetID returns the value of ID.
+func (s *Provider) GetID() OptInt {
+	return s.ID
+}
+
+// GetClass returns the value of Class.
+func (s *Provider) GetClass() ProviderClass {
+	return s.Class
+}
+
+// GetName returns the value of Name.
+func (s *Provider) GetName() OptString {
+	return s.Name
+}
+
+// GetServiceClass returns the value of ServiceClass.
+func (s *Provider) GetServiceClass() OptString {
+	return s.ServiceClass
+}
+
+// SetID sets the value of ID.
+func (s *Provider) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetClass sets the value of Class.
+func (s *Provider) SetClass(val ProviderClass) {
+	s.Class = val
+}
+
+// SetName sets the value of Name.
+func (s *Provider) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetServiceClass sets the value of ServiceClass.
+func (s *Provider) SetServiceClass(val OptString) {
+	s.ServiceClass = val
+}
+
+type ProviderClass string
+
+const (
+	ProviderClassEventbusprocessconfiguration ProviderClass = "eventbusprocessconfiguration"
+	ProviderClassEventbusschedule             ProviderClass = "eventbusschedule"
+	ProviderClassEventbustrigger              ProviderClass = "eventbustrigger"
+)
+
+// AllValues returns all ProviderClass values.
+func (ProviderClass) AllValues() []ProviderClass {
+	return []ProviderClass{
+		ProviderClassEventbusprocessconfiguration,
+		ProviderClassEventbusschedule,
+		ProviderClassEventbustrigger,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ProviderClass) MarshalText() ([]byte, error) {
+	switch s {
+	case ProviderClassEventbusprocessconfiguration:
+		return []byte(s), nil
+	case ProviderClassEventbusschedule:
+		return []byte(s), nil
+	case ProviderClassEventbustrigger:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ProviderClass) UnmarshalText(data []byte) error {
+	switch ProviderClass(data) {
+	case ProviderClassEventbusprocessconfiguration:
+		*s = ProviderClassEventbusprocessconfiguration
+		return nil
+	case ProviderClassEventbusschedule:
+		*s = ProviderClassEventbusschedule
+		return nil
+	case ProviderClassEventbustrigger:
+		*s = ProviderClassEventbustrigger
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/SacloudAPISecret
+type SacloudAPISecret struct {
+	// さくらのクラウドのアクセストークン.
+	AccessToken string `json:"AccessToken"`
+	// さくらのクラウドのアクセストークンシークレット.
+	AccessTokenSecret string `json:"AccessTokenSecret"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *SacloudAPISecret) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetAccessTokenSecret returns the value of AccessTokenSecret.
+func (s *SacloudAPISecret) GetAccessTokenSecret() string {
+	return s.AccessTokenSecret
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *SacloudAPISecret) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetAccessTokenSecret sets the value of AccessTokenSecret.
+func (s *SacloudAPISecret) SetAccessTokenSecret(val string) {
+	s.AccessTokenSecret = val
+}
+
+// Ref: #/components/schemas/ScheduleSettings
+type ScheduleSettings struct {
+	// 実行設定ID.
+	ProcessConfigurationID string `json:"ProcessConfigurationID"`
+	// 実行間隔.
+	RecurringStep OptInt `json:"RecurringStep"`
+	// 実行間隔単位（min/hour/day）.
+	RecurringUnit OptString `json:"RecurringUnit"`
+	// Crontab形式.
+	Crontab OptString `json:"Crontab"`
+	// スケジュール開始時刻（エポックミリ秒）
+	// リクエスト時はintegerで指定する必要があります。
+	// レスポンスはstringで返却されます。.
+	StartsAt OptScheduleSettingsStartsAt `json:"StartsAt"`
+}
+
+// GetProcessConfigurationID returns the value of ProcessConfigurationID.
+func (s *ScheduleSettings) GetProcessConfigurationID() string {
+	return s.ProcessConfigurationID
+}
+
+// GetRecurringStep returns the value of RecurringStep.
+func (s *ScheduleSettings) GetRecurringStep() OptInt {
+	return s.RecurringStep
+}
+
+// GetRecurringUnit returns the value of RecurringUnit.
+func (s *ScheduleSettings) GetRecurringUnit() OptString {
+	return s.RecurringUnit
+}
+
+// GetCrontab returns the value of Crontab.
+func (s *ScheduleSettings) GetCrontab() OptString {
+	return s.Crontab
+}
+
+// GetStartsAt returns the value of StartsAt.
+func (s *ScheduleSettings) GetStartsAt() OptScheduleSettingsStartsAt {
+	return s.StartsAt
+}
+
+// SetProcessConfigurationID sets the value of ProcessConfigurationID.
+func (s *ScheduleSettings) SetProcessConfigurationID(val string) {
+	s.ProcessConfigurationID = val
+}
+
+// SetRecurringStep sets the value of RecurringStep.
+func (s *ScheduleSettings) SetRecurringStep(val OptInt) {
+	s.RecurringStep = val
+}
+
+// SetRecurringUnit sets the value of RecurringUnit.
+func (s *ScheduleSettings) SetRecurringUnit(val OptString) {
+	s.RecurringUnit = val
+}
+
+// SetCrontab sets the value of Crontab.
+func (s *ScheduleSettings) SetCrontab(val OptString) {
+	s.Crontab = val
+}
+
+// SetStartsAt sets the value of StartsAt.
+func (s *ScheduleSettings) SetStartsAt(val OptScheduleSettingsStartsAt) {
+	s.StartsAt = val
+}
+
+// スケジュール開始時刻（エポックミリ秒）
+// リクエスト時はintegerで指定する必要があります。
+// レスポンスはstringで返却されます。.
+// ScheduleSettingsStartsAt represents sum type.
+type ScheduleSettingsStartsAt struct {
+	Type   ScheduleSettingsStartsAtType // switch on this field
+	Int64  int64
+	String string
+}
+
+// ScheduleSettingsStartsAtType is oneOf type of ScheduleSettingsStartsAt.
+type ScheduleSettingsStartsAtType string
+
+// Possible values for ScheduleSettingsStartsAtType.
+const (
+	Int64ScheduleSettingsStartsAt  ScheduleSettingsStartsAtType = "int64"
+	StringScheduleSettingsStartsAt ScheduleSettingsStartsAtType = "string"
+)
+
+// IsInt64 reports whether ScheduleSettingsStartsAt is int64.
+func (s ScheduleSettingsStartsAt) IsInt64() bool { return s.Type == Int64ScheduleSettingsStartsAt }
+
+// IsString reports whether ScheduleSettingsStartsAt is string.
+func (s ScheduleSettingsStartsAt) IsString() bool { return s.Type == StringScheduleSettingsStartsAt }
+
+// SetInt64 sets ScheduleSettingsStartsAt to int64.
+func (s *ScheduleSettingsStartsAt) SetInt64(v int64) {
+	s.Type = Int64ScheduleSettingsStartsAt
+	s.Int64 = v
+}
+
+// GetInt64 returns int64 and true boolean if ScheduleSettingsStartsAt is int64.
+func (s ScheduleSettingsStartsAt) GetInt64() (v int64, ok bool) {
+	if !s.IsInt64() {
+		return v, false
+	}
+	return s.Int64, true
+}
+
+// NewInt64ScheduleSettingsStartsAt returns new ScheduleSettingsStartsAt from int64.
+func NewInt64ScheduleSettingsStartsAt(v int64) ScheduleSettingsStartsAt {
+	var s ScheduleSettingsStartsAt
+	s.SetInt64(v)
+	return s
+}
+
+// SetString sets ScheduleSettingsStartsAt to string.
+func (s *ScheduleSettingsStartsAt) SetString(v string) {
+	s.Type = StringScheduleSettingsStartsAt
+	s.String = v
+}
+
+// GetString returns string and true boolean if ScheduleSettingsStartsAt is string.
+func (s ScheduleSettingsStartsAt) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
+	}
+	return s.String, true
+}
+
+// NewStringScheduleSettingsStartsAt returns new ScheduleSettingsStartsAt from string.
+func NewStringScheduleSettingsStartsAt(v string) ScheduleSettingsStartsAt {
+	var s ScheduleSettingsStartsAt
+	s.SetString(v)
+	return s
+}
+
+type SetProcessConfigurationSecretBadRequest Error
+
+func (*SetProcessConfigurationSecretBadRequest) setProcessConfigurationSecretRes() {}
+
+type SetProcessConfigurationSecretInternalServerError Error
+
+func (*SetProcessConfigurationSecretInternalServerError) setProcessConfigurationSecretRes() {}
+
+type SetProcessConfigurationSecretNotFound Error
+
+func (*SetProcessConfigurationSecretNotFound) setProcessConfigurationSecretRes() {}
+
+type SetProcessConfigurationSecretOK struct {
+	Process OptSetProcessConfigurationSecretOKProcess `json:"process"`
+	IsOk    OptBool                                   `json:"is_ok"`
+}
+
+// GetProcess returns the value of Process.
+func (s *SetProcessConfigurationSecretOK) GetProcess() OptSetProcessConfigurationSecretOKProcess {
+	return s.Process
+}
+
+// GetIsOk returns the value of IsOk.
+func (s *SetProcessConfigurationSecretOK) GetIsOk() OptBool {
+	return s.IsOk
+}
+
+// SetProcess sets the value of Process.
+func (s *SetProcessConfigurationSecretOK) SetProcess(val OptSetProcessConfigurationSecretOKProcess) {
+	s.Process = val
+}
+
+// SetIsOk sets the value of IsOk.
+func (s *SetProcessConfigurationSecretOK) SetIsOk(val OptBool) {
+	s.IsOk = val
+}
+
+func (*SetProcessConfigurationSecretOK) setProcessConfigurationSecretRes() {}
+
+type SetProcessConfigurationSecretOKProcess struct {
+	Result OptString `json:"result"`
+}
+
+// GetResult returns the value of Result.
+func (s *SetProcessConfigurationSecretOKProcess) GetResult() OptString {
+	return s.Result
+}
+
+// SetResult sets the value of Result.
+func (s *SetProcessConfigurationSecretOKProcess) SetResult(val OptString) {
+	s.Result = val
+}
+
+type SetProcessConfigurationSecretUnauthorized Error
+
+func (*SetProcessConfigurationSecretUnauthorized) setProcessConfigurationSecretRes() {}
+
+// Ref: #/components/schemas/SetSecretRequest
+type SetSecretRequest struct {
+	// 設定するシークレット値.
+	Secret SetSecretRequestSecret `json:"Secret"`
+}
+
+// GetSecret returns the value of Secret.
+func (s *SetSecretRequest) GetSecret() SetSecretRequestSecret {
+	return s.Secret
+}
+
+// SetSecret sets the value of Secret.
+func (s *SetSecretRequest) SetSecret(val SetSecretRequestSecret) {
+	s.Secret = val
+}
+
+// 設定するシークレット値.
+// SetSecretRequestSecret represents sum type.
+type SetSecretRequestSecret struct {
+	Type             SetSecretRequestSecretType // switch on this field
+	SacloudAPISecret SacloudAPISecret
+	SimpleMQSecret   SimpleMQSecret
+}
+
+// SetSecretRequestSecretType is oneOf type of SetSecretRequestSecret.
+type SetSecretRequestSecretType string
+
+// Possible values for SetSecretRequestSecretType.
+const (
+	SacloudAPISecretSetSecretRequestSecret SetSecretRequestSecretType = "SacloudAPISecret"
+	SimpleMQSecretSetSecretRequestSecret   SetSecretRequestSecretType = "SimpleMQSecret"
+)
+
+// IsSacloudAPISecret reports whether SetSecretRequestSecret is SacloudAPISecret.
+func (s SetSecretRequestSecret) IsSacloudAPISecret() bool {
+	return s.Type == SacloudAPISecretSetSecretRequestSecret
+}
+
+// IsSimpleMQSecret reports whether SetSecretRequestSecret is SimpleMQSecret.
+func (s SetSecretRequestSecret) IsSimpleMQSecret() bool {
+	return s.Type == SimpleMQSecretSetSecretRequestSecret
+}
+
+// SetSacloudAPISecret sets SetSecretRequestSecret to SacloudAPISecret.
+func (s *SetSecretRequestSecret) SetSacloudAPISecret(v SacloudAPISecret) {
+	s.Type = SacloudAPISecretSetSecretRequestSecret
+	s.SacloudAPISecret = v
+}
+
+// GetSacloudAPISecret returns SacloudAPISecret and true boolean if SetSecretRequestSecret is SacloudAPISecret.
+func (s SetSecretRequestSecret) GetSacloudAPISecret() (v SacloudAPISecret, ok bool) {
+	if !s.IsSacloudAPISecret() {
+		return v, false
+	}
+	return s.SacloudAPISecret, true
+}
+
+// NewSacloudAPISecretSetSecretRequestSecret returns new SetSecretRequestSecret from SacloudAPISecret.
+func NewSacloudAPISecretSetSecretRequestSecret(v SacloudAPISecret) SetSecretRequestSecret {
+	var s SetSecretRequestSecret
+	s.SetSacloudAPISecret(v)
+	return s
+}
+
+// SetSimpleMQSecret sets SetSecretRequestSecret to SimpleMQSecret.
+func (s *SetSecretRequestSecret) SetSimpleMQSecret(v SimpleMQSecret) {
+	s.Type = SimpleMQSecretSetSecretRequestSecret
+	s.SimpleMQSecret = v
+}
+
+// GetSimpleMQSecret returns SimpleMQSecret and true boolean if SetSecretRequestSecret is SimpleMQSecret.
+func (s SetSecretRequestSecret) GetSimpleMQSecret() (v SimpleMQSecret, ok bool) {
+	if !s.IsSimpleMQSecret() {
+		return v, false
+	}
+	return s.SimpleMQSecret, true
+}
+
+// NewSimpleMQSecretSetSecretRequestSecret returns new SetSecretRequestSecret from SimpleMQSecret.
+func NewSimpleMQSecretSetSecretRequestSecret(v SimpleMQSecret) SetSecretRequestSecret {
+	var s SetSecretRequestSecret
+	s.SetSimpleMQSecret(v)
+	return s
+}
+
+// 実行設定(ProcessConfiguration)、トリガー(Trigger)またはスケジュール(Schedule)用設定.
+// Ref: #/components/schemas/Settings
+// Settings represents sum type.
+type Settings struct {
+	Type                         SettingsType // switch on this field
+	ProcessConfigurationSettings ProcessConfigurationSettings
+	ScheduleSettings             ScheduleSettings
+	TriggerSettings              TriggerSettings
+}
+
+// SettingsType is oneOf type of Settings.
+type SettingsType string
+
+// Possible values for SettingsType.
+const (
+	ProcessConfigurationSettingsSettings SettingsType = "ProcessConfigurationSettings"
+	ScheduleSettingsSettings             SettingsType = "ScheduleSettings"
+	TriggerSettingsSettings              SettingsType = "TriggerSettings"
+)
+
+// IsProcessConfigurationSettings reports whether Settings is ProcessConfigurationSettings.
+func (s Settings) IsProcessConfigurationSettings() bool {
+	return s.Type == ProcessConfigurationSettingsSettings
+}
+
+// IsScheduleSettings reports whether Settings is ScheduleSettings.
+func (s Settings) IsScheduleSettings() bool { return s.Type == ScheduleSettingsSettings }
+
+// IsTriggerSettings reports whether Settings is TriggerSettings.
+func (s Settings) IsTriggerSettings() bool { return s.Type == TriggerSettingsSettings }
+
+// SetProcessConfigurationSettings sets Settings to ProcessConfigurationSettings.
+func (s *Settings) SetProcessConfigurationSettings(v ProcessConfigurationSettings) {
+	s.Type = ProcessConfigurationSettingsSettings
+	s.ProcessConfigurationSettings = v
+}
+
+// GetProcessConfigurationSettings returns ProcessConfigurationSettings and true boolean if Settings is ProcessConfigurationSettings.
+func (s Settings) GetProcessConfigurationSettings() (v ProcessConfigurationSettings, ok bool) {
+	if !s.IsProcessConfigurationSettings() {
+		return v, false
+	}
+	return s.ProcessConfigurationSettings, true
+}
+
+// NewProcessConfigurationSettingsSettings returns new Settings from ProcessConfigurationSettings.
+func NewProcessConfigurationSettingsSettings(v ProcessConfigurationSettings) Settings {
+	var s Settings
+	s.SetProcessConfigurationSettings(v)
+	return s
+}
+
+// SetScheduleSettings sets Settings to ScheduleSettings.
+func (s *Settings) SetScheduleSettings(v ScheduleSettings) {
+	s.Type = ScheduleSettingsSettings
+	s.ScheduleSettings = v
+}
+
+// GetScheduleSettings returns ScheduleSettings and true boolean if Settings is ScheduleSettings.
+func (s Settings) GetScheduleSettings() (v ScheduleSettings, ok bool) {
+	if !s.IsScheduleSettings() {
+		return v, false
+	}
+	return s.ScheduleSettings, true
+}
+
+// NewScheduleSettingsSettings returns new Settings from ScheduleSettings.
+func NewScheduleSettingsSettings(v ScheduleSettings) Settings {
+	var s Settings
+	s.SetScheduleSettings(v)
+	return s
+}
+
+// SetTriggerSettings sets Settings to TriggerSettings.
+func (s *Settings) SetTriggerSettings(v TriggerSettings) {
+	s.Type = TriggerSettingsSettings
+	s.TriggerSettings = v
+}
+
+// GetTriggerSettings returns TriggerSettings and true boolean if Settings is TriggerSettings.
+func (s Settings) GetTriggerSettings() (v TriggerSettings, ok bool) {
+	if !s.IsTriggerSettings() {
+		return v, false
+	}
+	return s.TriggerSettings, true
+}
+
+// NewTriggerSettingsSettings returns new Settings from TriggerSettings.
+func NewTriggerSettingsSettings(v TriggerSettings) Settings {
+	var s Settings
+	s.SetTriggerSettings(v)
+	return s
+}
+
+// Ref: #/components/schemas/SimpleMQSecret
+type SimpleMQSecret struct {
+	// SimpleMQのキューのAPIキー.
+	APIKey string `json:"APIKey"`
+}
+
+// GetAPIKey returns the value of APIKey.
+func (s *SimpleMQSecret) GetAPIKey() string {
+	return s.APIKey
+}
+
+// SetAPIKey sets the value of APIKey.
+func (s *SimpleMQSecret) SetAPIKey(val string) {
+	s.APIKey = val
+}
+
+// Ref: #/components/schemas/Status
+type Status struct {
+	Success   OptBool   `json:"Success"`
+	Message   OptString `json:"Message"`
+	UpdatedAt OptString `json:"UpdatedAt"`
 }
 
 // GetSuccess returns the value of Success.
-func (s *ScheduleLastResult) GetSuccess() bool {
+func (s *Status) GetSuccess() OptBool {
 	return s.Success
 }
 
 // GetMessage returns the value of Message.
-func (s *ScheduleLastResult) GetMessage() string {
+func (s *Status) GetMessage() OptString {
 	return s.Message
 }
 
 // GetUpdatedAt returns the value of UpdatedAt.
-func (s *ScheduleLastResult) GetUpdatedAt() int64 {
+func (s *Status) GetUpdatedAt() OptString {
 	return s.UpdatedAt
 }
 
 // SetSuccess sets the value of Success.
-func (s *ScheduleLastResult) SetSuccess(val bool) {
+func (s *Status) SetSuccess(val OptBool) {
 	s.Success = val
 }
 
 // SetMessage sets the value of Message.
-func (s *ScheduleLastResult) SetMessage(val string) {
+func (s *Status) SetMessage(val OptString) {
 	s.Message = val
 }
 
 // SetUpdatedAt sets the value of UpdatedAt.
-func (s *ScheduleLastResult) SetUpdatedAt(val int64) {
+func (s *Status) SetUpdatedAt(val OptString) {
 	s.UpdatedAt = val
 }
 
-type ScheduleRecurringUnit string
+// Ref: #/components/schemas/TriggerConditionEq
+type TriggerConditionEq struct {
+	Key    string               `json:"Key"`
+	Op     TriggerConditionEqOp `json:"Op"`
+	Values []string             `json:"Values"`
+}
+
+// GetKey returns the value of Key.
+func (s *TriggerConditionEq) GetKey() string {
+	return s.Key
+}
+
+// GetOp returns the value of Op.
+func (s *TriggerConditionEq) GetOp() TriggerConditionEqOp {
+	return s.Op
+}
+
+// GetValues returns the value of Values.
+func (s *TriggerConditionEq) GetValues() []string {
+	return s.Values
+}
+
+// SetKey sets the value of Key.
+func (s *TriggerConditionEq) SetKey(val string) {
+	s.Key = val
+}
+
+// SetOp sets the value of Op.
+func (s *TriggerConditionEq) SetOp(val TriggerConditionEqOp) {
+	s.Op = val
+}
+
+// SetValues sets the value of Values.
+func (s *TriggerConditionEq) SetValues(val []string) {
+	s.Values = val
+}
+
+type TriggerConditionEqOp string
 
 const (
-	ScheduleRecurringUnitMin  ScheduleRecurringUnit = "min"
-	ScheduleRecurringUnitHour ScheduleRecurringUnit = "hour"
-	ScheduleRecurringUnitDay  ScheduleRecurringUnit = "day"
+	TriggerConditionEqOpEq TriggerConditionEqOp = "eq"
 )
 
-// AllValues returns all ScheduleRecurringUnit values.
-func (ScheduleRecurringUnit) AllValues() []ScheduleRecurringUnit {
-	return []ScheduleRecurringUnit{
-		ScheduleRecurringUnitMin,
-		ScheduleRecurringUnitHour,
-		ScheduleRecurringUnitDay,
+// AllValues returns all TriggerConditionEqOp values.
+func (TriggerConditionEqOp) AllValues() []TriggerConditionEqOp {
+	return []TriggerConditionEqOp{
+		TriggerConditionEqOpEq,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s ScheduleRecurringUnit) MarshalText() ([]byte, error) {
+func (s TriggerConditionEqOp) MarshalText() ([]byte, error) {
 	switch s {
-	case ScheduleRecurringUnitMin:
-		return []byte(s), nil
-	case ScheduleRecurringUnitHour:
-		return []byte(s), nil
-	case ScheduleRecurringUnitDay:
+	case TriggerConditionEqOpEq:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1323,18 +1933,338 @@ func (s ScheduleRecurringUnit) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *ScheduleRecurringUnit) UnmarshalText(data []byte) error {
-	switch ScheduleRecurringUnit(data) {
-	case ScheduleRecurringUnitMin:
-		*s = ScheduleRecurringUnitMin
-		return nil
-	case ScheduleRecurringUnitHour:
-		*s = ScheduleRecurringUnitHour
-		return nil
-	case ScheduleRecurringUnitDay:
-		*s = ScheduleRecurringUnitDay
+func (s *TriggerConditionEqOp) UnmarshalText(data []byte) error {
+	switch TriggerConditionEqOp(data) {
+	case TriggerConditionEqOpEq:
+		*s = TriggerConditionEqOpEq
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// Ref: #/components/schemas/TriggerConditionIn
+type TriggerConditionIn struct {
+	Key    string               `json:"Key"`
+	Op     TriggerConditionInOp `json:"Op"`
+	Values []string             `json:"Values"`
+}
+
+// GetKey returns the value of Key.
+func (s *TriggerConditionIn) GetKey() string {
+	return s.Key
+}
+
+// GetOp returns the value of Op.
+func (s *TriggerConditionIn) GetOp() TriggerConditionInOp {
+	return s.Op
+}
+
+// GetValues returns the value of Values.
+func (s *TriggerConditionIn) GetValues() []string {
+	return s.Values
+}
+
+// SetKey sets the value of Key.
+func (s *TriggerConditionIn) SetKey(val string) {
+	s.Key = val
+}
+
+// SetOp sets the value of Op.
+func (s *TriggerConditionIn) SetOp(val TriggerConditionInOp) {
+	s.Op = val
+}
+
+// SetValues sets the value of Values.
+func (s *TriggerConditionIn) SetValues(val []string) {
+	s.Values = val
+}
+
+type TriggerConditionInOp string
+
+const (
+	TriggerConditionInOpIn TriggerConditionInOp = "in"
+)
+
+// AllValues returns all TriggerConditionInOp values.
+func (TriggerConditionInOp) AllValues() []TriggerConditionInOp {
+	return []TriggerConditionInOp{
+		TriggerConditionInOpIn,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s TriggerConditionInOp) MarshalText() ([]byte, error) {
+	switch s {
+	case TriggerConditionInOpIn:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *TriggerConditionInOp) UnmarshalText(data []byte) error {
+	switch TriggerConditionInOp(data) {
+	case TriggerConditionInOpIn:
+		*s = TriggerConditionInOpIn
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/TriggerSettings
+type TriggerSettings struct {
+	Source                 string                                   `json:"Source"`
+	Types                  OptNilStringArray                        `json:"Types"`
+	Conditions             OptNilTriggerSettingsConditionsItemArray `json:"Conditions"`
+	ProcessConfigurationID string                                   `json:"ProcessConfigurationID"`
+}
+
+// GetSource returns the value of Source.
+func (s *TriggerSettings) GetSource() string {
+	return s.Source
+}
+
+// GetTypes returns the value of Types.
+func (s *TriggerSettings) GetTypes() OptNilStringArray {
+	return s.Types
+}
+
+// GetConditions returns the value of Conditions.
+func (s *TriggerSettings) GetConditions() OptNilTriggerSettingsConditionsItemArray {
+	return s.Conditions
+}
+
+// GetProcessConfigurationID returns the value of ProcessConfigurationID.
+func (s *TriggerSettings) GetProcessConfigurationID() string {
+	return s.ProcessConfigurationID
+}
+
+// SetSource sets the value of Source.
+func (s *TriggerSettings) SetSource(val string) {
+	s.Source = val
+}
+
+// SetTypes sets the value of Types.
+func (s *TriggerSettings) SetTypes(val OptNilStringArray) {
+	s.Types = val
+}
+
+// SetConditions sets the value of Conditions.
+func (s *TriggerSettings) SetConditions(val OptNilTriggerSettingsConditionsItemArray) {
+	s.Conditions = val
+}
+
+// SetProcessConfigurationID sets the value of ProcessConfigurationID.
+func (s *TriggerSettings) SetProcessConfigurationID(val string) {
+	s.ProcessConfigurationID = val
+}
+
+// TriggerSettingsConditionsItem represents sum type.
+type TriggerSettingsConditionsItem struct {
+	Type               TriggerSettingsConditionsItemType // switch on this field
+	TriggerConditionEq TriggerConditionEq
+	TriggerConditionIn TriggerConditionIn
+}
+
+// TriggerSettingsConditionsItemType is oneOf type of TriggerSettingsConditionsItem.
+type TriggerSettingsConditionsItemType string
+
+// Possible values for TriggerSettingsConditionsItemType.
+const (
+	TriggerConditionEqTriggerSettingsConditionsItem TriggerSettingsConditionsItemType = "eq"
+	TriggerConditionInTriggerSettingsConditionsItem TriggerSettingsConditionsItemType = "in"
+)
+
+// IsTriggerConditionEq reports whether TriggerSettingsConditionsItem is TriggerConditionEq.
+func (s TriggerSettingsConditionsItem) IsTriggerConditionEq() bool {
+	return s.Type == TriggerConditionEqTriggerSettingsConditionsItem
+}
+
+// IsTriggerConditionIn reports whether TriggerSettingsConditionsItem is TriggerConditionIn.
+func (s TriggerSettingsConditionsItem) IsTriggerConditionIn() bool {
+	return s.Type == TriggerConditionInTriggerSettingsConditionsItem
+}
+
+// SetTriggerConditionEq sets TriggerSettingsConditionsItem to TriggerConditionEq.
+func (s *TriggerSettingsConditionsItem) SetTriggerConditionEq(v TriggerConditionEq) {
+	s.Type = TriggerConditionEqTriggerSettingsConditionsItem
+	s.TriggerConditionEq = v
+}
+
+// GetTriggerConditionEq returns TriggerConditionEq and true boolean if TriggerSettingsConditionsItem is TriggerConditionEq.
+func (s TriggerSettingsConditionsItem) GetTriggerConditionEq() (v TriggerConditionEq, ok bool) {
+	if !s.IsTriggerConditionEq() {
+		return v, false
+	}
+	return s.TriggerConditionEq, true
+}
+
+// NewTriggerConditionEqTriggerSettingsConditionsItem returns new TriggerSettingsConditionsItem from TriggerConditionEq.
+func NewTriggerConditionEqTriggerSettingsConditionsItem(v TriggerConditionEq) TriggerSettingsConditionsItem {
+	var s TriggerSettingsConditionsItem
+	s.SetTriggerConditionEq(v)
+	return s
+}
+
+// SetTriggerConditionIn sets TriggerSettingsConditionsItem to TriggerConditionIn.
+func (s *TriggerSettingsConditionsItem) SetTriggerConditionIn(v TriggerConditionIn) {
+	s.Type = TriggerConditionInTriggerSettingsConditionsItem
+	s.TriggerConditionIn = v
+}
+
+// GetTriggerConditionIn returns TriggerConditionIn and true boolean if TriggerSettingsConditionsItem is TriggerConditionIn.
+func (s TriggerSettingsConditionsItem) GetTriggerConditionIn() (v TriggerConditionIn, ok bool) {
+	if !s.IsTriggerConditionIn() {
+		return v, false
+	}
+	return s.TriggerConditionIn, true
+}
+
+// NewTriggerConditionInTriggerSettingsConditionsItem returns new TriggerSettingsConditionsItem from TriggerConditionIn.
+func NewTriggerConditionInTriggerSettingsConditionsItem(v TriggerConditionIn) TriggerSettingsConditionsItem {
+	var s TriggerSettingsConditionsItem
+	s.SetTriggerConditionIn(v)
+	return s
+}
+
+type UpdateCommonServiceItemBadRequest Error
+
+func (*UpdateCommonServiceItemBadRequest) updateCommonServiceItemRes() {}
+
+type UpdateCommonServiceItemInternalServerError Error
+
+func (*UpdateCommonServiceItemInternalServerError) updateCommonServiceItemRes() {}
+
+type UpdateCommonServiceItemNotFound Error
+
+func (*UpdateCommonServiceItemNotFound) updateCommonServiceItemRes() {}
+
+type UpdateCommonServiceItemOK struct {
+	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	Success           OptBool           `json:"Success"`
+	IsOk              OptBool           `json:"is_ok"`
+}
+
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *UpdateCommonServiceItemOK) GetCommonServiceItem() CommonServiceItem {
+	return s.CommonServiceItem
+}
+
+// GetSuccess returns the value of Success.
+func (s *UpdateCommonServiceItemOK) GetSuccess() OptBool {
+	return s.Success
+}
+
+// GetIsOk returns the value of IsOk.
+func (s *UpdateCommonServiceItemOK) GetIsOk() OptBool {
+	return s.IsOk
+}
+
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *UpdateCommonServiceItemOK) SetCommonServiceItem(val CommonServiceItem) {
+	s.CommonServiceItem = val
+}
+
+// SetSuccess sets the value of Success.
+func (s *UpdateCommonServiceItemOK) SetSuccess(val OptBool) {
+	s.Success = val
+}
+
+// SetIsOk sets the value of IsOk.
+func (s *UpdateCommonServiceItemOK) SetIsOk(val OptBool) {
+	s.IsOk = val
+}
+
+func (*UpdateCommonServiceItemOK) updateCommonServiceItemRes() {}
+
+// Ref: #/components/schemas/UpdateCommonServiceItemRequest
+type UpdateCommonServiceItemRequest struct {
+	CommonServiceItem UpdateCommonServiceItemRequestCommonServiceItem `json:"CommonServiceItem"`
+}
+
+// GetCommonServiceItem returns the value of CommonServiceItem.
+func (s *UpdateCommonServiceItemRequest) GetCommonServiceItem() UpdateCommonServiceItemRequestCommonServiceItem {
+	return s.CommonServiceItem
+}
+
+// SetCommonServiceItem sets the value of CommonServiceItem.
+func (s *UpdateCommonServiceItemRequest) SetCommonServiceItem(val UpdateCommonServiceItemRequestCommonServiceItem) {
+	s.CommonServiceItem = val
+}
+
+type UpdateCommonServiceItemRequestCommonServiceItem struct {
+	// リソース名.
+	Name        OptString    `json:"Name"`
+	Description OptNilString `json:"Description"`
+	Settings    OptSettings  `json:"Settings"`
+	Provider    OptProvider  `json:"Provider"`
+	Icon        OptNilIcon   `json:"Icon"`
+	Tags        []string     `json:"Tags"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetName() OptString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetSettings returns the value of Settings.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetSettings() OptSettings {
+	return s.Settings
+}
+
+// GetProvider returns the value of Provider.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetProvider() OptProvider {
+	return s.Provider
+}
+
+// GetIcon returns the value of Icon.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetIcon() OptNilIcon {
+	return s.Icon
+}
+
+// GetTags returns the value of Tags.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetSettings(val OptSettings) {
+	s.Settings = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetProvider(val OptProvider) {
+	s.Provider = val
+}
+
+// SetIcon sets the value of Icon.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetIcon(val OptNilIcon) {
+	s.Icon = val
+}
+
+// SetTags sets the value of Tags.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetTags(val []string) {
+	s.Tags = val
+}
+
+type UpdateCommonServiceItemUnauthorized Error
+
+func (*UpdateCommonServiceItemUnauthorized) updateCommonServiceItemRes() {}
