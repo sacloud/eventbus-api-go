@@ -3,10 +3,13 @@ package eventbus
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
 )
+
+var _ http.RoundTripper = (*filterInjector)(nil)
 
 type filterInjector struct{}
 

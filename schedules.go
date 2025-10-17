@@ -84,6 +84,7 @@ func (op *scheduleOp) Read(ctx context.Context, id string) (*v1.CommonServiceIte
 }
 
 func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
+	request.CommonServiceItem.Provider.Class = v1.ProviderClassEventbusschedule
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
 		return nil, NewAPIError("Schedule.Create", 0, err)
@@ -96,6 +97,8 @@ func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonService
 		return nil, NewAPIError("Schedule.Create", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.CreateCommonServiceItemUnauthorized:
 		return nil, NewAPIError("Schedule.Create", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.CreateCommonServiceItemConflict:
+		return nil, NewAPIError("Schedule.Create", 409, errors.New(p.ErrorMsg.Value))
 	case *v1.CreateCommonServiceItemInternalServerError:
 		return nil, NewAPIError("Schedule.Create", 500, errors.New(p.ErrorMsg.Value))
 	default:
@@ -114,6 +117,8 @@ func (op *scheduleOp) Update(ctx context.Context, id string, request v1.UpdateCo
 		return &p.CommonServiceItem, nil
 	case *v1.UpdateCommonServiceItemBadRequest:
 		return nil, NewAPIError("Schedule.Update", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemUnauthorized:
+		return nil, NewAPIError("Schedule.Update", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.UpdateCommonServiceItemNotFound:
 		return nil, NewAPIError("Schedule.Update", 404, errors.New(p.ErrorMsg.Value))
 	// TODO: FBed. waiting till oapi updated

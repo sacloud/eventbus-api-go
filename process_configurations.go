@@ -87,6 +87,7 @@ func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.Comm
 
 func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
 	// TODO: want {Create,Update}ProcessConfigurationRequest. FBed. waiting till oapi updated
+	request.CommonServiceItem.Provider.Class = v1.ProviderClassEventbusprocessconfiguration
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.Create", 0, err)
@@ -99,6 +100,8 @@ func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateC
 		return nil, NewAPIError("ProcessConfiguration.Create", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.CreateCommonServiceItemUnauthorized:
 		return nil, NewAPIError("ProcessConfiguration.Create", 401, errors.New(p.ErrorMsg.Value))
+	case *v1.CreateCommonServiceItemConflict:
+		return nil, NewAPIError("ProcessConfiguration.Create", 409, errors.New(p.ErrorMsg.Value))
 	case *v1.CreateCommonServiceItemInternalServerError:
 		return nil, NewAPIError("ProcessConfiguration.Create", 500, errors.New(p.ErrorMsg.Value))
 	default:
@@ -118,6 +121,8 @@ func (op *processConfigurationOp) Update(ctx context.Context, id string, request
 		return &p.CommonServiceItem, nil
 	case *v1.UpdateCommonServiceItemBadRequest:
 		return nil, NewAPIError("ProcessConfiguration.Update", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemUnauthorized:
+		return nil, NewAPIError("ProcessConfiguration.Update", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.UpdateCommonServiceItemNotFound:
 		return nil, NewAPIError("ProcessConfiguration.Update", 404, errors.New(p.ErrorMsg.Value))
 	// TODO: FBed. waiting till oapi updated
@@ -139,6 +144,8 @@ func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, s
 		return nil
 	case *v1.SetProcessConfigurationSecretBadRequest:
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 400, errors.New(p.ErrorMsg.Value))
+	case *v1.SetProcessConfigurationSecretUnauthorized:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.SetProcessConfigurationSecretNotFound:
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 404, errors.New(p.ErrorMsg.Value))
 	// TODO: FBed. waiting till oapi updated
