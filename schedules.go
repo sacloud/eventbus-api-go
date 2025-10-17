@@ -83,8 +83,10 @@ func (op *scheduleOp) Read(ctx context.Context, id string) (*v1.CommonServiceIte
 }
 
 func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
-	// TODO: request schema
-	request.CommonServiceItem.Provider.Class = v1.ProviderClassEventbusschedule
+	if !request.CommonServiceItem.Settings.IsScheduleSettings() {
+		return nil, errors.New("invalid settings as Schedule")
+	}
+	request.CommonServiceItem.Provider = v1.Provider{Class: v1.ProviderClassEventbusschedule}
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
 		return nil, NewAPIError("Schedule.Create", 0, err)
@@ -107,7 +109,10 @@ func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonService
 }
 
 func (op *scheduleOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
-	// TODO: request schema
+	if settings := request.CommonServiceItem.Settings; settings.IsSet() && !settings.Value.IsScheduleSettings() {
+		return nil, errors.New("invalid settings as Schedule")
+	}
+	request.CommonServiceItem.Provider = v1.NewOptProvider(v1.Provider{Class: v1.ProviderClassEventbusschedule})
 	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})
 	if err != nil {
 		return nil, NewAPIError("Schedule.Update", 0, err)

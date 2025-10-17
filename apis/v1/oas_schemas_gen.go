@@ -245,17 +245,87 @@ func (*CreateCommonServiceItemInternalServerError) createCommonServiceItemRes() 
 
 // Ref: #/components/schemas/CreateCommonServiceItemRequest
 type CreateCommonServiceItemRequest struct {
-	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	CommonServiceItem CreateCommonServiceItemRequestCommonServiceItem `json:"CommonServiceItem"`
 }
 
 // GetCommonServiceItem returns the value of CommonServiceItem.
-func (s *CreateCommonServiceItemRequest) GetCommonServiceItem() CommonServiceItem {
+func (s *CreateCommonServiceItemRequest) GetCommonServiceItem() CreateCommonServiceItemRequestCommonServiceItem {
 	return s.CommonServiceItem
 }
 
 // SetCommonServiceItem sets the value of CommonServiceItem.
-func (s *CreateCommonServiceItemRequest) SetCommonServiceItem(val CommonServiceItem) {
+func (s *CreateCommonServiceItemRequest) SetCommonServiceItem(val CreateCommonServiceItemRequestCommonServiceItem) {
 	s.CommonServiceItem = val
+}
+
+type CreateCommonServiceItemRequestCommonServiceItem struct {
+	// リソース名.
+	Name        string       `json:"Name"`
+	Description OptNilString `json:"Description"`
+	Settings    Settings     `json:"Settings"`
+	Provider    Provider     `json:"Provider"`
+	Icon        OptNilIcon   `json:"Icon"`
+	Tags        []string     `json:"Tags"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetSettings returns the value of Settings.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetSettings() Settings {
+	return s.Settings
+}
+
+// GetProvider returns the value of Provider.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetProvider() Provider {
+	return s.Provider
+}
+
+// GetIcon returns the value of Icon.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetIcon() OptNilIcon {
+	return s.Icon
+}
+
+// GetTags returns the value of Tags.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetSettings(val Settings) {
+	s.Settings = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetProvider(val Provider) {
+	s.Provider = val
+}
+
+// SetIcon sets the value of Icon.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetIcon(val OptNilIcon) {
+	s.Icon = val
+}
+
+// SetTags sets the value of Tags.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetTags(val []string) {
+	s.Tags = val
 }
 
 type CreateCommonServiceItemUnauthorized Error
@@ -956,6 +1026,52 @@ func (o OptNilTriggerSettingsConditionsItemArray) Or(d []TriggerSettingsConditio
 	return d
 }
 
+// NewOptProvider returns new OptProvider with value set to v.
+func NewOptProvider(v Provider) OptProvider {
+	return OptProvider{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptProvider is optional Provider.
+type OptProvider struct {
+	Value Provider
+	Set   bool
+}
+
+// IsSet returns true if OptProvider was set.
+func (o OptProvider) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptProvider) Reset() {
+	var v Provider
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptProvider) SetTo(v Provider) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptProvider) Get() (v Provider, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptProvider) Or(d Provider) Provider {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptScheduleSettingsStartsAt returns new OptScheduleSettingsStartsAt with value set to v.
 func NewOptScheduleSettingsStartsAt(v ScheduleSettingsStartsAt) OptScheduleSettingsStartsAt {
 	return OptScheduleSettingsStartsAt{
@@ -1042,6 +1158,52 @@ func (o OptSetProcessConfigurationSecretOKProcess) Get() (v SetProcessConfigurat
 
 // Or returns value if set, or given parameter if does not.
 func (o OptSetProcessConfigurationSecretOKProcess) Or(d SetProcessConfigurationSecretOKProcess) SetProcessConfigurationSecretOKProcess {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSettings returns new OptSettings with value set to v.
+func NewOptSettings(v Settings) OptSettings {
+	return OptSettings{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSettings is optional Settings.
+type OptSettings struct {
+	Value Settings
+	Set   bool
+}
+
+// IsSet returns true if OptSettings was set.
+func (o OptSettings) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSettings) Reset() {
+	var v Settings
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSettings) SetTo(v Settings) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSettings) Get() (v Settings, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSettings) Or(d Settings) Settings {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1166,14 +1328,14 @@ func (s *ProcessConfigurationSettingsDestination) UnmarshalText(data []byte) err
 
 // Ref: #/components/schemas/Provider
 type Provider struct {
-	ID           int           `json:"ID"`
+	ID           OptInt        `json:"ID"`
 	Class        ProviderClass `json:"Class"`
-	Name         string        `json:"Name"`
-	ServiceClass string        `json:"ServiceClass"`
+	Name         OptString     `json:"Name"`
+	ServiceClass OptString     `json:"ServiceClass"`
 }
 
 // GetID returns the value of ID.
-func (s *Provider) GetID() int {
+func (s *Provider) GetID() OptInt {
 	return s.ID
 }
 
@@ -1183,17 +1345,17 @@ func (s *Provider) GetClass() ProviderClass {
 }
 
 // GetName returns the value of Name.
-func (s *Provider) GetName() string {
+func (s *Provider) GetName() OptString {
 	return s.Name
 }
 
 // GetServiceClass returns the value of ServiceClass.
-func (s *Provider) GetServiceClass() string {
+func (s *Provider) GetServiceClass() OptString {
 	return s.ServiceClass
 }
 
 // SetID sets the value of ID.
-func (s *Provider) SetID(val int) {
+func (s *Provider) SetID(val OptInt) {
 	s.ID = val
 }
 
@@ -1203,12 +1365,12 @@ func (s *Provider) SetClass(val ProviderClass) {
 }
 
 // SetName sets the value of Name.
-func (s *Provider) SetName(val string) {
+func (s *Provider) SetName(val OptString) {
 	s.Name = val
 }
 
 // SetServiceClass sets the value of ServiceClass.
-func (s *Provider) SetServiceClass(val string) {
+func (s *Provider) SetServiceClass(val OptString) {
 	s.ServiceClass = val
 }
 
@@ -2020,17 +2182,87 @@ func (*UpdateCommonServiceItemOK) updateCommonServiceItemRes() {}
 
 // Ref: #/components/schemas/UpdateCommonServiceItemRequest
 type UpdateCommonServiceItemRequest struct {
-	CommonServiceItem CommonServiceItem `json:"CommonServiceItem"`
+	CommonServiceItem UpdateCommonServiceItemRequestCommonServiceItem `json:"CommonServiceItem"`
 }
 
 // GetCommonServiceItem returns the value of CommonServiceItem.
-func (s *UpdateCommonServiceItemRequest) GetCommonServiceItem() CommonServiceItem {
+func (s *UpdateCommonServiceItemRequest) GetCommonServiceItem() UpdateCommonServiceItemRequestCommonServiceItem {
 	return s.CommonServiceItem
 }
 
 // SetCommonServiceItem sets the value of CommonServiceItem.
-func (s *UpdateCommonServiceItemRequest) SetCommonServiceItem(val CommonServiceItem) {
+func (s *UpdateCommonServiceItemRequest) SetCommonServiceItem(val UpdateCommonServiceItemRequestCommonServiceItem) {
 	s.CommonServiceItem = val
+}
+
+type UpdateCommonServiceItemRequestCommonServiceItem struct {
+	// リソース名.
+	Name        OptString    `json:"Name"`
+	Description OptNilString `json:"Description"`
+	Settings    OptSettings  `json:"Settings"`
+	Provider    OptProvider  `json:"Provider"`
+	Icon        OptNilIcon   `json:"Icon"`
+	Tags        []string     `json:"Tags"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetName() OptString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetDescription() OptNilString {
+	return s.Description
+}
+
+// GetSettings returns the value of Settings.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetSettings() OptSettings {
+	return s.Settings
+}
+
+// GetProvider returns the value of Provider.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetProvider() OptProvider {
+	return s.Provider
+}
+
+// GetIcon returns the value of Icon.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetIcon() OptNilIcon {
+	return s.Icon
+}
+
+// GetTags returns the value of Tags.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) GetTags() []string {
+	return s.Tags
+}
+
+// SetName sets the value of Name.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetDescription(val OptNilString) {
+	s.Description = val
+}
+
+// SetSettings sets the value of Settings.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetSettings(val OptSettings) {
+	s.Settings = val
+}
+
+// SetProvider sets the value of Provider.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetProvider(val OptProvider) {
+	s.Provider = val
+}
+
+// SetIcon sets the value of Icon.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetIcon(val OptNilIcon) {
+	s.Icon = val
+}
+
+// SetTags sets the value of Tags.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetTags(val []string) {
+	s.Tags = val
 }
 
 type UpdateCommonServiceItemUnauthorized Error

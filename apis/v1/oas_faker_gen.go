@@ -138,6 +138,47 @@ func (s *CreateCommonServiceItemRequest) SetFake() {
 }
 
 // SetFake set fake values.
+func (s *CreateCommonServiceItemRequestCommonServiceItem) SetFake() {
+	{
+		{
+			s.Name = "string"
+		}
+	}
+	{
+		{
+			s.Description.SetFake()
+		}
+	}
+	{
+		{
+			s.Settings.SetFake()
+		}
+	}
+	{
+		{
+			s.Provider.SetFake()
+		}
+	}
+	{
+		{
+			s.Icon.SetFake()
+		}
+	}
+	{
+		{
+			s.Tags = nil
+			for i := 0; i < 0; i++ {
+				var elem string
+				{
+					elem = "string"
+				}
+				s.Tags = append(s.Tags, elem)
+			}
+		}
+	}
+}
+
+// SetFake set fake values.
 func (s *CreateCommonServiceItemUnauthorized) SetFake() {
 	var unwrapped Error
 	{
@@ -428,6 +469,15 @@ func (s *OptNilTriggerSettingsConditionsItemArray) SetFake() {
 }
 
 // SetFake set fake values.
+func (s *OptProvider) SetFake() {
+	var elem Provider
+	{
+		elem.SetFake()
+	}
+	s.SetTo(elem)
+}
+
+// SetFake set fake values.
 func (s *OptScheduleSettingsStartsAt) SetFake() {
 	var elem ScheduleSettingsStartsAt
 	{
@@ -439,6 +489,15 @@ func (s *OptScheduleSettingsStartsAt) SetFake() {
 // SetFake set fake values.
 func (s *OptSetProcessConfigurationSecretOKProcess) SetFake() {
 	var elem SetProcessConfigurationSecretOKProcess
+	{
+		elem.SetFake()
+	}
+	s.SetTo(elem)
+}
+
+// SetFake set fake values.
+func (s *OptSettings) SetFake() {
+	var elem Settings
 	{
 		elem.SetFake()
 	}
@@ -477,7 +536,7 @@ func (s *ProcessConfigurationSettingsDestination) SetFake() {
 func (s *Provider) SetFake() {
 	{
 		{
-			s.ID = int(0)
+			s.ID.SetFake()
 		}
 	}
 	{
@@ -487,12 +546,12 @@ func (s *Provider) SetFake() {
 	}
 	{
 		{
-			s.Name = "string"
+			s.Name.SetFake()
 		}
 	}
 	{
 		{
-			s.ServiceClass = "string"
+			s.ServiceClass.SetFake()
 		}
 	}
 }
@@ -818,6 +877,47 @@ func (s *UpdateCommonServiceItemRequest) SetFake() {
 	{
 		{
 			s.CommonServiceItem.SetFake()
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *UpdateCommonServiceItemRequestCommonServiceItem) SetFake() {
+	{
+		{
+			s.Name.SetFake()
+		}
+	}
+	{
+		{
+			s.Description.SetFake()
+		}
+	}
+	{
+		{
+			s.Settings.SetFake()
+		}
+	}
+	{
+		{
+			s.Provider.SetFake()
+		}
+	}
+	{
+		{
+			s.Icon.SetFake()
+		}
+	}
+	{
+		{
+			s.Tags = nil
+			for i := 0; i < 0; i++ {
+				var elem string
+				{
+					elem = "string"
+				}
+				s.Tags = append(s.Tags, elem)
+			}
 		}
 	}
 }

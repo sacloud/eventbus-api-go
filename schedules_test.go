@@ -26,7 +26,7 @@ func TestScheduleAPI(t *testing.T) {
 	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
 
 	pc, err := pcOp.Create(ctx, v1.CreateCommonServiceItemRequest{
-		CommonServiceItem: v1.CommonServiceItem{
+		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
 			Name: "SDK Test", Description: v1.NewOptNilString("SDK Testの概要"), Tags: []string{"tag1", "tag2"},
 			Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ"),
 		},
@@ -38,7 +38,7 @@ func TestScheduleAPI(t *testing.T) {
 	}()
 
 	resCreate, err := schedOp.Create(ctx, v1.CreateCommonServiceItemRequest{
-		CommonServiceItem: v1.CommonServiceItem{
+		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
 			Name: "SDK Test", Description: v1.NewOptNilString("SDK Testの概要"),
 			Settings: v1.NewScheduleSettingsSettings(v1.ScheduleSettings{
 				ProcessConfigurationID: pcId,
@@ -64,14 +64,14 @@ func TestScheduleAPI(t *testing.T) {
 	assert.True(t, found, "Created Schedule not found in list")
 
 	_, err = schedOp.Update(ctx, schedId, v1.UpdateCommonServiceItemRequest{
-		CommonServiceItem: v1.CommonServiceItem{
-			Name: "SDK Test 2", Description: v1.NewOptNilString("SDK Test 2の概要"), Tags: []string{"tag1", "tag2"},
-			Settings: v1.NewScheduleSettingsSettings(v1.ScheduleSettings{
+		CommonServiceItem: v1.UpdateCommonServiceItemRequestCommonServiceItem{
+			Name: v1.NewOptString("SDK Test 2"), Description: v1.NewOptNilString("SDK Test 2の概要"), Tags: []string{"tag1", "tag2"},
+			Settings: v1.NewOptSettings(v1.NewScheduleSettingsSettings(v1.ScheduleSettings{
 				ProcessConfigurationID: pcId,
 				RecurringStep:          v1.NewOptInt(1),
 				RecurringUnit:          v1.NewOptString("hour"),
 				StartsAt:               v1.NewOptScheduleSettingsStartsAt(v1.NewInt64ScheduleSettingsStartsAt(time.Now().UnixMilli())),
-			}),
+			})),
 		},
 	})
 	assert.NoError(t, err)

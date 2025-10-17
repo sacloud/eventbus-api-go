@@ -25,7 +25,7 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
 
 	resCreate, err := pcOp.Create(ctx, v1.CreateCommonServiceItemRequest{
-		CommonServiceItem: v1.CommonServiceItem{
+		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
 			Name: "SDK Test", Description: v1.NewOptNilString("SDK Testの概要"), Tags: []string{"test"},
 			Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ"),
 		},
@@ -46,9 +46,9 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	assert.True(t, found, "Created ProcessConfiguration not found in list")
 
 	_, err = pcOp.Update(ctx, pcId, v1.UpdateCommonServiceItemRequest{
-		CommonServiceItem: v1.CommonServiceItem{
-			Name: "SDK Test 2", Description: v1.NewOptNilString("SDK Test 2の概要"), Tags: []string{"test2"},
-			Settings: eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ2"),
+		CommonServiceItem: v1.UpdateCommonServiceItemRequestCommonServiceItem{
+			Name: v1.NewOptString("SDK Test 2"), Description: v1.NewOptNilString("SDK Test 2の概要"), Tags: []string{"test2"},
+			Settings: v1.NewOptSettings(eventbus.CreateSimpleNotificationSettings(groupId, "メッセージ2")),
 		},
 	})
 	assert.NoError(t, err)

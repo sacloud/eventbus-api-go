@@ -87,6 +87,18 @@ func TestCreateCommonServiceItemRequest_EncodeDecode(t *testing.T) {
 	var typ2 CreateCommonServiceItemRequest
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestCreateCommonServiceItemRequestCommonServiceItem_EncodeDecode(t *testing.T) {
+	var typ CreateCommonServiceItemRequestCommonServiceItem
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 CreateCommonServiceItemRequestCommonServiceItem
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestCreateCommonServiceItemUnauthorized_EncodeDecode(t *testing.T) {
 	var typ CreateCommonServiceItemUnauthorized
 	typ.SetFake()
@@ -697,6 +709,18 @@ func TestUpdateCommonServiceItemRequest_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 UpdateCommonServiceItemRequest
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestUpdateCommonServiceItemRequestCommonServiceItem_EncodeDecode(t *testing.T) {
+	var typ UpdateCommonServiceItemRequestCommonServiceItem
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 UpdateCommonServiceItemRequestCommonServiceItem
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestUpdateCommonServiceItemUnauthorized_EncodeDecode(t *testing.T) {
