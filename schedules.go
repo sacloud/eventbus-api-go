@@ -75,15 +75,15 @@ func (op *scheduleOp) Read(ctx context.Context, id string) (*v1.CommonServiceIte
 		return nil, NewAPIError("Schedule.Read", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.GetCommonServiceItemNotFound:
 		return nil, NewAPIError("Schedule.Read", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.GetCommonServiceItemInternalServerError:
-	// 	return nil, NewAPIError("Schedule.Read", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemInternalServerError:
+		return nil, NewAPIError("Schedule.Read", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("Schedule.Read", 0, nil)
 	}
 }
 
 func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
+	// TODO: request schema
 	request.CommonServiceItem.Provider.Class = v1.ProviderClassEventbusschedule
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
@@ -107,6 +107,7 @@ func (op *scheduleOp) Create(ctx context.Context, request v1.CreateCommonService
 }
 
 func (op *scheduleOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
+	// TODO: request schema
 	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})
 	if err != nil {
 		return nil, NewAPIError("Schedule.Update", 0, err)
@@ -121,9 +122,8 @@ func (op *scheduleOp) Update(ctx context.Context, id string, request v1.UpdateCo
 		return nil, NewAPIError("Schedule.Update", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.UpdateCommonServiceItemNotFound:
 		return nil, NewAPIError("Schedule.Update", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.UpdateCommonServiceItemInternalServerError:
-	// 	return nil, NewAPIError("Schedule.Update", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemInternalServerError:
+		return nil, NewAPIError("Schedule.Update", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("Schedule.Update", 0, nil)
 	}
@@ -144,9 +144,8 @@ func (op *scheduleOp) Delete(ctx context.Context, id string) error {
 		return NewAPIError("Schedule.Delete", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.DeleteCommonServiceItemNotFound:
 		return NewAPIError("Schedule.Delete", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.DeleteCommonServiceItemInternalServerError:
-	// 	return NewAPIError("Schedule.Delete", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.DeleteCommonServiceItemInternalServerError:
+		return NewAPIError("Schedule.Delete", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return NewAPIError("Schedule.Delete", 0, nil)
 	}

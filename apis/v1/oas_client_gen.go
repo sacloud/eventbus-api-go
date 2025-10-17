@@ -23,26 +23,26 @@ func trimTrailingSlashes(u *url.URL) {
 type Invoker interface {
 	// CreateCommonServiceItem invokes createCommonServiceItem operation.
 	//
-	// 実行設定またはスケジュールの作成.
+	// 実行設定・スケジュール・トリガーの作成.
 	//
 	// POST /commonserviceitem
 	CreateCommonServiceItem(ctx context.Context, request *CreateCommonServiceItemRequest) (CreateCommonServiceItemRes, error)
 	// DeleteCommonServiceItem invokes deleteCommonServiceItem operation.
 	//
-	// 実行設定・スケジュールの削除.
+	// 実行設定・スケジュール・トリガーの削除.
 	//
 	// DELETE /commonserviceitem/{id}
 	DeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (DeleteCommonServiceItemRes, error)
 	// GetCommonServiceItem invokes getCommonServiceItem operation.
 	//
-	// 実行設定・スケジュールの取得.
+	// 実行設定・スケジュール・トリガーの取得.
 	//
 	// GET /commonserviceitem/{id}
 	GetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (GetCommonServiceItemRes, error)
 	// GetCommonServiceItems invokes getCommonServiceItems operation.
 	//
 	// Provider.
-	// Classでeventbusscheduleまたはeventbusprocessconfigurationを指定してフィルタ可能。
+	// Classでeventbusschedule、eventbustriggerまたはeventbusprocessconfigurationを指定してフィルタ可能。
 	// クエリパラメータに下記のようにフィルタを設定することでスケジュール、トリガーまたは実行設定のリソースのみを取得できます
 	// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusschedule"}}`
 	// `/commonserviceitem?{"Filter":{"Provider.Class":"eventbustrigger"}}`
@@ -58,7 +58,7 @@ type Invoker interface {
 	SetProcessConfigurationSecret(ctx context.Context, request *SetSecretRequest, params SetProcessConfigurationSecretParams) (SetProcessConfigurationSecretRes, error)
 	// UpdateCommonServiceItem invokes updateCommonServiceItem operation.
 	//
-	// 実行設定・スケジュールの更新.
+	// 実行設定・スケジュール・トリガーの更新.
 	//
 	// PUT /commonserviceitem/{id}
 	UpdateCommonServiceItem(ctx context.Context, request *UpdateCommonServiceItemRequest, params UpdateCommonServiceItemParams) (UpdateCommonServiceItemRes, error)
@@ -107,7 +107,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 
 // CreateCommonServiceItem invokes createCommonServiceItem operation.
 //
-// 実行設定またはスケジュールの作成.
+// 実行設定・スケジュール・トリガーの作成.
 //
 // POST /commonserviceitem
 func (c *Client) CreateCommonServiceItem(ctx context.Context, request *CreateCommonServiceItemRequest) (CreateCommonServiceItemRes, error) {
@@ -143,6 +143,7 @@ func (c *Client) sendCreateCommonServiceItem(ctx context.Context, request *Creat
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, CreateCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
@@ -187,7 +188,7 @@ func (c *Client) sendCreateCommonServiceItem(ctx context.Context, request *Creat
 
 // DeleteCommonServiceItem invokes deleteCommonServiceItem operation.
 //
-// 実行設定・スケジュールの削除.
+// 実行設定・スケジュール・トリガーの削除.
 //
 // DELETE /commonserviceitem/{id}
 func (c *Client) DeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (DeleteCommonServiceItemRes, error) {
@@ -196,6 +197,7 @@ func (c *Client) DeleteCommonServiceItem(ctx context.Context, params DeleteCommo
 }
 
 func (c *Client) sendDeleteCommonServiceItem(ctx context.Context, params DeleteCommonServiceItemParams) (res DeleteCommonServiceItemRes, err error) {
+
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
 	pathParts[0] = "/commonserviceitem/"
@@ -228,6 +230,7 @@ func (c *Client) sendDeleteCommonServiceItem(ctx context.Context, params DeleteC
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, DeleteCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
@@ -272,7 +275,7 @@ func (c *Client) sendDeleteCommonServiceItem(ctx context.Context, params DeleteC
 
 // GetCommonServiceItem invokes getCommonServiceItem operation.
 //
-// 実行設定・スケジュールの取得.
+// 実行設定・スケジュール・トリガーの取得.
 //
 // GET /commonserviceitem/{id}
 func (c *Client) GetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (GetCommonServiceItemRes, error) {
@@ -281,6 +284,7 @@ func (c *Client) GetCommonServiceItem(ctx context.Context, params GetCommonServi
 }
 
 func (c *Client) sendGetCommonServiceItem(ctx context.Context, params GetCommonServiceItemParams) (res GetCommonServiceItemRes, err error) {
+
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
 	pathParts[0] = "/commonserviceitem/"
@@ -313,6 +317,7 @@ func (c *Client) sendGetCommonServiceItem(ctx context.Context, params GetCommonS
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, GetCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
@@ -358,7 +363,7 @@ func (c *Client) sendGetCommonServiceItem(ctx context.Context, params GetCommonS
 // GetCommonServiceItems invokes getCommonServiceItems operation.
 //
 // Provider.
-// Classでeventbusscheduleまたはeventbusprocessconfigurationを指定してフィルタ可能。
+// Classでeventbusschedule、eventbustriggerまたはeventbusprocessconfigurationを指定してフィルタ可能。
 // クエリパラメータに下記のようにフィルタを設定することでスケジュール、トリガーまたは実行設定のリソースのみを取得できます
 // `/commonserviceitem?{"Filter":{"Provider.Class":"eventbusschedule"}}`
 // `/commonserviceitem?{"Filter":{"Provider.Class":"eventbustrigger"}}`
@@ -371,6 +376,7 @@ func (c *Client) GetCommonServiceItems(ctx context.Context) (GetCommonServiceIte
 }
 
 func (c *Client) sendGetCommonServiceItems(ctx context.Context) (res GetCommonServiceItemsRes, err error) {
+
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
 	pathParts[0] = "/commonserviceitem"
@@ -385,6 +391,7 @@ func (c *Client) sendGetCommonServiceItems(ctx context.Context) (res GetCommonSe
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, GetCommonServiceItemsOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
@@ -438,6 +445,7 @@ func (c *Client) SetProcessConfigurationSecret(ctx context.Context, request *Set
 }
 
 func (c *Client) sendSetProcessConfigurationSecret(ctx context.Context, request *SetSecretRequest, params SetProcessConfigurationSecretParams) (res SetProcessConfigurationSecretRes, err error) {
+
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
 	pathParts[0] = "/commonserviceitem/"
@@ -474,6 +482,7 @@ func (c *Client) sendSetProcessConfigurationSecret(ctx context.Context, request 
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, SetProcessConfigurationSecretOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
@@ -518,7 +527,7 @@ func (c *Client) sendSetProcessConfigurationSecret(ctx context.Context, request 
 
 // UpdateCommonServiceItem invokes updateCommonServiceItem operation.
 //
-// 実行設定・スケジュールの更新.
+// 実行設定・スケジュール・トリガーの更新.
 //
 // PUT /commonserviceitem/{id}
 func (c *Client) UpdateCommonServiceItem(ctx context.Context, request *UpdateCommonServiceItemRequest, params UpdateCommonServiceItemParams) (UpdateCommonServiceItemRes, error) {
@@ -572,6 +581,7 @@ func (c *Client) sendUpdateCommonServiceItem(ctx context.Context, request *Updat
 		type bitset = [1]uint8
 		var satisfied bitset
 		{
+
 			switch err := c.securityApiKeyAuth(ctx, UpdateCommonServiceItemOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0

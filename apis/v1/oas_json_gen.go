@@ -733,6 +733,44 @@ func (s *DeleteCommonServiceItemBadRequest) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes DeleteCommonServiceItemInternalServerError as json.
+func (s *DeleteCommonServiceItemInternalServerError) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes DeleteCommonServiceItemInternalServerError from json.
+func (s *DeleteCommonServiceItemInternalServerError) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode DeleteCommonServiceItemInternalServerError to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = DeleteCommonServiceItemInternalServerError(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *DeleteCommonServiceItemInternalServerError) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *DeleteCommonServiceItemInternalServerError) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes DeleteCommonServiceItemNotFound as json.
 func (s *DeleteCommonServiceItemNotFound) Encode(e *jx.Encoder) {
 	unwrapped := (*Error)(s)
@@ -1102,6 +1140,44 @@ func (s *GetCommonServiceItemBadRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *GetCommonServiceItemBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes GetCommonServiceItemInternalServerError as json.
+func (s *GetCommonServiceItemInternalServerError) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes GetCommonServiceItemInternalServerError from json.
+func (s *GetCommonServiceItemInternalServerError) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode GetCommonServiceItemInternalServerError to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = GetCommonServiceItemInternalServerError(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *GetCommonServiceItemInternalServerError) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *GetCommonServiceItemInternalServerError) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2180,7 +2256,7 @@ func (s *ProcessConfigurationSettings) Encode(e *jx.Encoder) {
 func (s *ProcessConfigurationSettings) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("Destination")
-		e.Str(s.Destination)
+		s.Destination.Encode(e)
 	}
 	{
 		e.FieldStart("Parameters")
@@ -2205,9 +2281,7 @@ func (s *ProcessConfigurationSettings) Decode(d *jx.Decoder) error {
 		case "Destination":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.Destination = string(v)
-				if err != nil {
+				if err := s.Destination.Decode(d); err != nil {
 					return err
 				}
 				return nil
@@ -2278,6 +2352,46 @@ func (s *ProcessConfigurationSettings) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ProcessConfigurationSettings) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ProcessConfigurationSettingsDestination as json.
+func (s ProcessConfigurationSettingsDestination) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes ProcessConfigurationSettingsDestination from json.
+func (s *ProcessConfigurationSettingsDestination) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ProcessConfigurationSettingsDestination to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch ProcessConfigurationSettingsDestination(v) {
+	case ProcessConfigurationSettingsDestinationSimplenotification:
+		*s = ProcessConfigurationSettingsDestinationSimplenotification
+	case ProcessConfigurationSettingsDestinationSimplemq:
+		*s = ProcessConfigurationSettingsDestinationSimplemq
+	default:
+		*s = ProcessConfigurationSettingsDestination(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ProcessConfigurationSettingsDestination) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ProcessConfigurationSettingsDestination) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2830,6 +2944,44 @@ func (s *SetProcessConfigurationSecretBadRequest) MarshalJSON() ([]byte, error) 
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SetProcessConfigurationSecretBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SetProcessConfigurationSecretInternalServerError as json.
+func (s *SetProcessConfigurationSecretInternalServerError) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes SetProcessConfigurationSecretInternalServerError from json.
+func (s *SetProcessConfigurationSecretInternalServerError) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SetProcessConfigurationSecretInternalServerError to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = SetProcessConfigurationSecretInternalServerError(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SetProcessConfigurationSecretInternalServerError) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SetProcessConfigurationSecretInternalServerError) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -4239,6 +4391,44 @@ func (s *UpdateCommonServiceItemBadRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *UpdateCommonServiceItemBadRequest) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes UpdateCommonServiceItemInternalServerError as json.
+func (s *UpdateCommonServiceItemInternalServerError) Encode(e *jx.Encoder) {
+	unwrapped := (*Error)(s)
+
+	unwrapped.Encode(e)
+}
+
+// Decode decodes UpdateCommonServiceItemInternalServerError from json.
+func (s *UpdateCommonServiceItemInternalServerError) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode UpdateCommonServiceItemInternalServerError to nil")
+	}
+	var unwrapped Error
+	if err := func() error {
+		if err := unwrapped.Decode(d); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "alias")
+	}
+	*s = UpdateCommonServiceItemInternalServerError(unwrapped)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *UpdateCommonServiceItemInternalServerError) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *UpdateCommonServiceItemInternalServerError) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

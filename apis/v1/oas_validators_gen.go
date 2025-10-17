@@ -186,6 +186,40 @@ func (s *GetCommonServiceItemsOK) Validate() error {
 	return nil
 }
 
+func (s *ProcessConfigurationSettings) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := s.Destination.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "Destination",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s ProcessConfigurationSettingsDestination) Validate() error {
+	switch s {
+	case "simplenotification":
+		return nil
+	case "simplemq":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
 func (s *Provider) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -225,7 +259,10 @@ func (s ProviderClass) Validate() error {
 func (s Settings) Validate() error {
 	switch s.Type {
 	case ProcessConfigurationSettingsSettings:
-		return nil // no validation needed
+		if err := s.ProcessConfigurationSettings.Validate(); err != nil {
+			return err
+		}
+		return nil
 	case ScheduleSettingsSettings:
 		return nil // no validation needed
 	case TriggerSettingsSettings:

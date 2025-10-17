@@ -156,6 +156,15 @@ func (s *DeleteCommonServiceItemBadRequest) SetFake() {
 }
 
 // SetFake set fake values.
+func (s *DeleteCommonServiceItemInternalServerError) SetFake() {
+	var unwrapped Error
+	{
+		unwrapped.SetFake()
+	}
+	*s = DeleteCommonServiceItemInternalServerError(unwrapped)
+}
+
+// SetFake set fake values.
 func (s *DeleteCommonServiceItemNotFound) SetFake() {
 	var unwrapped Error
 	{
@@ -228,6 +237,15 @@ func (s *GetCommonServiceItemBadRequest) SetFake() {
 		unwrapped.SetFake()
 	}
 	*s = GetCommonServiceItemBadRequest(unwrapped)
+}
+
+// SetFake set fake values.
+func (s *GetCommonServiceItemInternalServerError) SetFake() {
+	var unwrapped Error
+	{
+		unwrapped.SetFake()
+	}
+	*s = GetCommonServiceItemInternalServerError(unwrapped)
 }
 
 // SetFake set fake values.
@@ -440,7 +458,7 @@ func (s *OptString) SetFake() {
 func (s *ProcessConfigurationSettings) SetFake() {
 	{
 		{
-			s.Destination = "string"
+			s.Destination.SetFake()
 		}
 	}
 	{
@@ -448,6 +466,11 @@ func (s *ProcessConfigurationSettings) SetFake() {
 			s.Parameters = "string"
 		}
 	}
+}
+
+// SetFake set fake values.
+func (s *ProcessConfigurationSettingsDestination) SetFake() {
+	*s = ProcessConfigurationSettingsDestinationSimplenotification
 }
 
 // SetFake set fake values.
@@ -539,6 +562,15 @@ func (s *SetProcessConfigurationSecretBadRequest) SetFake() {
 		unwrapped.SetFake()
 	}
 	*s = SetProcessConfigurationSecretBadRequest(unwrapped)
+}
+
+// SetFake set fake values.
+func (s *SetProcessConfigurationSecretInternalServerError) SetFake() {
+	var unwrapped Error
+	{
+		unwrapped.SetFake()
+	}
+	*s = SetProcessConfigurationSecretInternalServerError(unwrapped)
 }
 
 // SetFake set fake values.
@@ -742,6 +774,15 @@ func (s *UpdateCommonServiceItemBadRequest) SetFake() {
 		unwrapped.SetFake()
 	}
 	*s = UpdateCommonServiceItemBadRequest(unwrapped)
+}
+
+// SetFake set fake values.
+func (s *UpdateCommonServiceItemInternalServerError) SetFake() {
+	var unwrapped Error
+	{
+		unwrapped.SetFake()
+	}
+	*s = UpdateCommonServiceItemInternalServerError(unwrapped)
 }
 
 // SetFake set fake values.

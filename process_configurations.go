@@ -77,16 +77,15 @@ func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.Comm
 		return nil, NewAPIError("ProcessConfiguration.Read", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.GetCommonServiceItemNotFound:
 		return nil, NewAPIError("ProcessConfiguration.Read", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.GetCommonServiceItemsInternalServerError:
-	// 	return nil, NewAPIError("ProcessConfiguration.Read", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.GetCommonServiceItemInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.Read", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("CommonServiceItem.Read", 0, nil)
 	}
 }
 
 func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
-	// TODO: want {Create,Update}ProcessConfigurationRequest. FBed. waiting till oapi updated
+	// TODO: request schema
 	request.CommonServiceItem.Provider.Class = v1.ProviderClassEventbusprocessconfiguration
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
 	if err != nil {
@@ -110,7 +109,7 @@ func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateC
 }
 
 func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
-	// TODO: want {Create,Update}ProcessConfigurationRequest. FBed. waiting till oapi updated
+	// TODO: request schema
 	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})
 	if err != nil {
 		return nil, NewAPIError("ProcessConfiguration.Update", 0, err)
@@ -125,9 +124,8 @@ func (op *processConfigurationOp) Update(ctx context.Context, id string, request
 		return nil, NewAPIError("ProcessConfiguration.Update", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.UpdateCommonServiceItemNotFound:
 		return nil, NewAPIError("ProcessConfiguration.Update", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.UpdateCommonServiceItemI:
-	// 	return nil, NewAPIError("ProcessConfiguration.Update", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.UpdateCommonServiceItemInternalServerError:
+		return nil, NewAPIError("ProcessConfiguration.Update", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return nil, NewAPIError("ProcessConfiguration.Update", 0, nil)
 	}
@@ -148,9 +146,8 @@ func (op *processConfigurationOp) UpdateSecret(ctx context.Context, id string, s
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 401, errors.New(p.ErrorMsg.Value))
 	case *v1.SetProcessConfigurationSecretNotFound:
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.SetProcessConfigurationSecretInternalServerError:
-	// 	return NewAPIError("ProcessConfiguration.UpdateSecret", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.SetProcessConfigurationSecretInternalServerError:
+		return NewAPIError("ProcessConfiguration.UpdateSecret", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return NewAPIError("ProcessConfiguration.UpdateSecret", 0, nil)
 	}
@@ -171,9 +168,8 @@ func (op *processConfigurationOp) Delete(ctx context.Context, id string) error {
 		return NewAPIError("ProcessConfiguration.Delete", 400, errors.New(p.ErrorMsg.Value))
 	case *v1.DeleteCommonServiceItemNotFound:
 		return NewAPIError("ProcessConfiguration.Delete", 404, errors.New(p.ErrorMsg.Value))
-	// TODO: FBed. waiting till oapi updated
-	// case *v1.DeleteCommonServiceItemInternalServerError:
-	// 	return NewAPIError("ProcessConfiguration.Delete", 500, errors.New(p.ErrorMsg.Value))
+	case *v1.DeleteCommonServiceItemInternalServerError:
+		return NewAPIError("ProcessConfiguration.Delete", 500, errors.New(p.ErrorMsg.Value))
 	default:
 		return NewAPIError("ProcessConfiguration.Delete", 0, nil)
 	}
@@ -182,7 +178,7 @@ func (op *processConfigurationOp) Delete(ctx context.Context, id string) error {
 func CreateSimpleNotificationSettings(groupId string, message string) v1.Settings {
 	param, _ := json.Marshal(map[string]string{"group_id": groupId, "message": message})
 	return v1.NewProcessConfigurationSettingsSettings(v1.ProcessConfigurationSettings{
-		Destination: "simplenotification", // TODO: want it as enum
+		Destination: v1.ProcessConfigurationSettingsDestinationSimplenotification,
 		Parameters:  string(param),
 	})
 }
@@ -190,7 +186,7 @@ func CreateSimpleNotificationSettings(groupId string, message string) v1.Setting
 func CreateSimpleMqSettings(queueName string, content string) v1.Settings {
 	param, _ := json.Marshal(map[string]string{"queue_name": queueName, "content": content})
 	return v1.NewProcessConfigurationSettingsSettings(v1.ProcessConfigurationSettings{
-		Destination: "simplemq", // TODO: want it as enum
+		Destination: v1.ProcessConfigurationSettingsDestinationSimplemq,
 		Parameters:  string(param),
 	})
 }

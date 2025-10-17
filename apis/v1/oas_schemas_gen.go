@@ -266,6 +266,10 @@ type DeleteCommonServiceItemBadRequest Error
 
 func (*DeleteCommonServiceItemBadRequest) deleteCommonServiceItemRes() {}
 
+type DeleteCommonServiceItemInternalServerError Error
+
+func (*DeleteCommonServiceItemInternalServerError) deleteCommonServiceItemRes() {}
+
 type DeleteCommonServiceItemNotFound Error
 
 func (*DeleteCommonServiceItemNotFound) deleteCommonServiceItemRes() {}
@@ -374,6 +378,10 @@ func (s *Error) SetErrorMsg(val OptString) {
 type GetCommonServiceItemBadRequest Error
 
 func (*GetCommonServiceItemBadRequest) getCommonServiceItemRes() {}
+
+type GetCommonServiceItemInternalServerError Error
+
+func (*GetCommonServiceItemInternalServerError) getCommonServiceItemRes() {}
 
 type GetCommonServiceItemNotFound Error
 
@@ -1089,13 +1097,13 @@ func (o OptString) Or(d string) string {
 // Ref: #/components/schemas/ProcessConfigurationSettings
 type ProcessConfigurationSettings struct {
 	// ジョブの宛先（simplenotification/simplemq）.
-	Destination string `json:"Destination"`
+	Destination ProcessConfigurationSettingsDestination `json:"Destination"`
 	// Destinationごとのパラメータ（group_id, message, queue_name, content等）.
 	Parameters string `json:"Parameters"`
 }
 
 // GetDestination returns the value of Destination.
-func (s *ProcessConfigurationSettings) GetDestination() string {
+func (s *ProcessConfigurationSettings) GetDestination() ProcessConfigurationSettingsDestination {
 	return s.Destination
 }
 
@@ -1105,13 +1113,55 @@ func (s *ProcessConfigurationSettings) GetParameters() string {
 }
 
 // SetDestination sets the value of Destination.
-func (s *ProcessConfigurationSettings) SetDestination(val string) {
+func (s *ProcessConfigurationSettings) SetDestination(val ProcessConfigurationSettingsDestination) {
 	s.Destination = val
 }
 
 // SetParameters sets the value of Parameters.
 func (s *ProcessConfigurationSettings) SetParameters(val string) {
 	s.Parameters = val
+}
+
+// ジョブの宛先（simplenotification/simplemq）.
+type ProcessConfigurationSettingsDestination string
+
+const (
+	ProcessConfigurationSettingsDestinationSimplenotification ProcessConfigurationSettingsDestination = "simplenotification"
+	ProcessConfigurationSettingsDestinationSimplemq           ProcessConfigurationSettingsDestination = "simplemq"
+)
+
+// AllValues returns all ProcessConfigurationSettingsDestination values.
+func (ProcessConfigurationSettingsDestination) AllValues() []ProcessConfigurationSettingsDestination {
+	return []ProcessConfigurationSettingsDestination{
+		ProcessConfigurationSettingsDestinationSimplenotification,
+		ProcessConfigurationSettingsDestinationSimplemq,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ProcessConfigurationSettingsDestination) MarshalText() ([]byte, error) {
+	switch s {
+	case ProcessConfigurationSettingsDestinationSimplenotification:
+		return []byte(s), nil
+	case ProcessConfigurationSettingsDestinationSimplemq:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ProcessConfigurationSettingsDestination) UnmarshalText(data []byte) error {
+	switch ProcessConfigurationSettingsDestination(data) {
+	case ProcessConfigurationSettingsDestinationSimplenotification:
+		*s = ProcessConfigurationSettingsDestinationSimplenotification
+		return nil
+	case ProcessConfigurationSettingsDestinationSimplemq:
+		*s = ProcessConfigurationSettingsDestinationSimplemq
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/Provider
@@ -1374,6 +1424,10 @@ func NewStringScheduleSettingsStartsAt(v string) ScheduleSettingsStartsAt {
 type SetProcessConfigurationSecretBadRequest Error
 
 func (*SetProcessConfigurationSecretBadRequest) setProcessConfigurationSecretRes() {}
+
+type SetProcessConfigurationSecretInternalServerError Error
+
+func (*SetProcessConfigurationSecretInternalServerError) setProcessConfigurationSecretRes() {}
 
 type SetProcessConfigurationSecretNotFound Error
 
@@ -1917,6 +1971,10 @@ func NewTriggerConditionInTriggerSettingsConditionsItem(v TriggerConditionIn) Tr
 type UpdateCommonServiceItemBadRequest Error
 
 func (*UpdateCommonServiceItemBadRequest) updateCommonServiceItemRes() {}
+
+type UpdateCommonServiceItemInternalServerError Error
+
+func (*UpdateCommonServiceItemInternalServerError) updateCommonServiceItemRes() {}
 
 type UpdateCommonServiceItemNotFound Error
 

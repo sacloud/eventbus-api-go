@@ -111,6 +111,18 @@ func TestDeleteCommonServiceItemBadRequest_EncodeDecode(t *testing.T) {
 	var typ2 DeleteCommonServiceItemBadRequest
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestDeleteCommonServiceItemInternalServerError_EncodeDecode(t *testing.T) {
+	var typ DeleteCommonServiceItemInternalServerError
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 DeleteCommonServiceItemInternalServerError
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestDeleteCommonServiceItemNotFound_EncodeDecode(t *testing.T) {
 	var typ DeleteCommonServiceItemNotFound
 	typ.SetFake()
@@ -166,7 +178,7 @@ func TestError_Examples(t *testing.T) {
 		Input string
 	}{
 		{Input: "{\"error_code\":\"bad_request\",\"error_msg\":\"不適切な要求です。パラメータの指定誤り、入力規則違反です。入力内容をご確認ください。\",\"is_fatal\":true,\"serial\":\"749ad39e1eea340c4d75bf5a4dd4bd11\",\"status\":\"400 Bad Request\"}"},
-		{Input: "{\"error_code\":\"conflict\",\"error_msg\":\"要求された操作を行えません。現在の対象の状態では、この操作を受け付けできません。\\nsame queue name found\",\"is_fatal\":true,\"serial\":\"749ad39e1eea340c4d75bf5a4dd4bd11\",\"status\":\"409 Conflict\"}"},
+		{Input: "{\"error_code\":\"conflict\",\"error_msg\":\"要求を受け付けできません。プロジェクトあたりのリソース数上限により、リソースの割り当てに失敗しました。\",\"is_fatal\":true,\"serial\":\"749ad39e1eea340c4d75bf5a4dd4bd11\",\"status\":\"409 Conflict\"}"},
 		{Input: "{\"error_code\":\"unauthorized\",\"error_msg\":\"error-unauthorized\",\"is_fatal\":true,\"serial\":\"749ad39e1eea340c4d75bf5a4dd4bd11\",\"status\":\"401 Unauthorized\"}"},
 	} {
 		tc := tc
@@ -200,6 +212,18 @@ func TestGetCommonServiceItemBadRequest_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 GetCommonServiceItemBadRequest
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestGetCommonServiceItemInternalServerError_EncodeDecode(t *testing.T) {
+	var typ GetCommonServiceItemInternalServerError
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 GetCommonServiceItemInternalServerError
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestGetCommonServiceItemNotFound_EncodeDecode(t *testing.T) {
@@ -310,6 +334,18 @@ func TestProcessConfigurationSettings_EncodeDecode(t *testing.T) {
 	var typ2 ProcessConfigurationSettings
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestProcessConfigurationSettingsDestination_EncodeDecode(t *testing.T) {
+	var typ ProcessConfigurationSettingsDestination
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 ProcessConfigurationSettingsDestination
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestProvider_EncodeDecode(t *testing.T) {
 	var typ Provider
 	typ.SetFake()
@@ -409,6 +445,18 @@ func TestSetProcessConfigurationSecretBadRequest_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 SetProcessConfigurationSecretBadRequest
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestSetProcessConfigurationSecretInternalServerError_EncodeDecode(t *testing.T) {
+	var typ SetProcessConfigurationSecretInternalServerError
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 SetProcessConfigurationSecretInternalServerError
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestSetProcessConfigurationSecretNotFound_EncodeDecode(t *testing.T) {
@@ -601,6 +649,18 @@ func TestUpdateCommonServiceItemBadRequest_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 UpdateCommonServiceItemBadRequest
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestUpdateCommonServiceItemInternalServerError_EncodeDecode(t *testing.T) {
+	var typ UpdateCommonServiceItemInternalServerError
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 UpdateCommonServiceItemInternalServerError
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestUpdateCommonServiceItemNotFound_EncodeDecode(t *testing.T) {
