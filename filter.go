@@ -4,14 +4,26 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strings"
+	"net/url"
 
 	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
 )
 
 var _ http.RoundTripper = (*filterInjector)(nil)
 
-type filterInjector struct{}
+type filterInjector struct {
+	listAPIPath string
+}
+
+func newFilterInjector(apiURL string) (http.RoundTripper, error) {
+	u, err := url.Parse(apiURL)
+	if err != nil {
+		return nil, err
+	}
+	return &filterInjector{
+		listAPIPath: u.JoinPath("/commonserviceitem").Path,
+	}, nil
+}
 
 func (t *filterInjector) RoundTrip(req *http.Request) (*http.Response, error) {
 	// NOTE: OpenAPIで表現できないクエリの書き込みを行う
@@ -19,7 +31,7 @@ func (t *filterInjector) RoundTrip(req *http.Request) (*http.Response, error) {
 	// `GET /commonserviceitem?{"Filter":{"Provider.Class":"eventbusschedule"}}`
 	// `GET /commonserviceitem?{"Filter":{"Provider.Class":"eventbustrigger"}}`
 	// `GET /commonserviceitem?{"Filter":{"Provider.Class":"eventbusprocessconfiguration"}}`.
-	if req.Method == http.MethodGet && strings.HasSuffix(req.URL.Path, "/commonserviceitem") {
+	if req.Method == http.MethodGet && req.URL.Path == t.listAPIPath {
 		pc := getFilterProviderClass(req.Context())
 		req.URL.RawQuery = fmt.Sprintf(`{"Filter":{"Provider.Class":"%s"}}`, pc)
 	}

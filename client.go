@@ -51,11 +51,16 @@ func NewClient(params ...client.ClientParam) (*v1.Client, error) {
 }
 
 func NewClientWithApiUrl(apiUrl string, params ...client.ClientParam) (*v1.Client, error) {
+	filterInjector, err := newFilterInjector(apiUrl)
+	if err != nil {
+		return nil, err
+	}
+
 	params = append(params,
 		client.WithUserAgent(UserAgent),
 		// TODO: filterがOpenAPI定義で表現できるようになったら不要となるので削除。
 		client.WithHTTPClient(&http.Client{
-			Transport: &filterInjector{},
+			Transport: filterInjector,
 		}),
 		client.WithOptions(&client.Options{
 			RequestCustomizers: []sacloudhttp.RequestCustomizer{
