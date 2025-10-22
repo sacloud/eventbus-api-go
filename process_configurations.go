@@ -86,7 +86,7 @@ func (op *processConfigurationOp) Read(ctx context.Context, id string) (*v1.Comm
 
 func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
 	if !request.CommonServiceItem.Settings.IsProcessConfigurationSettings() {
-		return nil, errors.New("invalid settings as ProcessConfiguration")
+		return nil, NewError("invalid settings as ProcessConfiguration", nil)
 	}
 	request.CommonServiceItem.Provider = v1.Provider{Class: v1.ProviderClassEventbusprocessconfiguration}
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
@@ -112,7 +112,7 @@ func (op *processConfigurationOp) Create(ctx context.Context, request v1.CreateC
 
 func (op *processConfigurationOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
 	if settings := request.CommonServiceItem.Settings; settings.IsSet() && !settings.Value.IsProcessConfigurationSettings() {
-		return nil, errors.New("invalid settings as ProcessConfiguration")
+		return nil, NewError("invalid settings as ProcessConfiguration", nil)
 	}
 	request.CommonServiceItem.Provider = v1.NewOptProvider(v1.Provider{Class: v1.ProviderClassEventbusprocessconfiguration})
 	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})

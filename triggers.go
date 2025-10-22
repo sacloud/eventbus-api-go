@@ -84,7 +84,7 @@ func (op *triggerOp) Read(ctx context.Context, id string) (*v1.CommonServiceItem
 
 func (op *triggerOp) Create(ctx context.Context, request v1.CreateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
 	if !request.CommonServiceItem.Settings.IsTriggerSettings() {
-		return nil, errors.New("invalid settings as Trigger")
+		return nil, NewError("invalid settings as Trigger", nil)
 	}
 	request.CommonServiceItem.Provider = v1.Provider{Class: v1.ProviderClassEventbustrigger}
 	res, err := op.client.CreateCommonServiceItem(ctx, &request)
@@ -110,7 +110,7 @@ func (op *triggerOp) Create(ctx context.Context, request v1.CreateCommonServiceI
 
 func (op *triggerOp) Update(ctx context.Context, id string, request v1.UpdateCommonServiceItemRequest) (*v1.CommonServiceItem, error) {
 	if settings := request.CommonServiceItem.Settings; settings.IsSet() && !settings.Value.IsTriggerSettings() {
-		return nil, errors.New("invalid settings as Trigger")
+		return nil, NewError("invalid settings as Trigger", nil)
 	}
 	request.CommonServiceItem.Provider = v1.NewOptProvider(v1.Provider{Class: v1.ProviderClassEventbustrigger})
 	res, err := op.client.UpdateCommonServiceItem(ctx, &request, v1.UpdateCommonServiceItemParams{ID: id})
