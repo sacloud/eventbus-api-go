@@ -2,63 +2,26 @@
 
 package v1
 
-// ConfigureProcessConfigurationParams is parameters of configureProcessConfiguration operation.
-type ConfigureProcessConfigurationParams struct {
+// DeleteCommonServiceItemParams is parameters of deleteCommonServiceItem operation.
+type DeleteCommonServiceItemParams struct {
+	// キューのリソースID.
 	ID string
 }
 
-// ConfigureProcessConfigurationSecretParams is parameters of configureProcessConfigurationSecret operation.
-type ConfigureProcessConfigurationSecretParams struct {
+// GetCommonServiceItemParams is parameters of getCommonServiceItem operation.
+type GetCommonServiceItemParams struct {
+	// キューのリソースID.
 	ID string
 }
 
-// ConfigureScheduleParams is parameters of configureSchedule operation.
-type ConfigureScheduleParams struct {
+// SetProcessConfigurationSecretParams is parameters of setProcessConfigurationSecret operation.
+type SetProcessConfigurationSecretParams struct {
+	// キューのリソースID.
 	ID string
 }
 
-// CreateProcessConfigurationParams is parameters of createProcessConfiguration operation.
-type CreateProcessConfigurationParams struct {
+// UpdateCommonServiceItemParams is parameters of updateCommonServiceItem operation.
+type UpdateCommonServiceItemParams struct {
+	// キューのリソースID.
 	ID string
-}
-
-// CreateScheduleParams is parameters of createSchedule operation.
-type CreateScheduleParams struct {
-	ID string
-}
-
-// DeleteProcessConfigurationParams is parameters of deleteProcessConfiguration operation.
-type DeleteProcessConfigurationParams struct {
-	ID string
-}
-
-// DeleteScheduleParams is parameters of deleteSchedule operation.
-type DeleteScheduleParams struct {
-	ID string
-}
-
-// GetProcessConfigurationByIdParams is parameters of getProcessConfigurationById operation.
-type GetProcessConfigurationByIdParams struct {
-	ID string
-}
-
-// GetProcessConfigurationsParams is parameters of getProcessConfigurationsByAccount operation.
-type GetProcessConfigurationsParams struct {
-	// 会員ID.
-	XSakuraInternalMemberCode string
-	// アカウントID.
-	XSakuraInternalAccountID string
-}
-
-// GetScheduleByIdParams is parameters of getScheduleById operation.
-type GetScheduleByIdParams struct {
-	ID string
-}
-
-// GetSchedulesParams is parameters of getSchedulesByAccount operation.
-type GetSchedulesParams struct {
-	// 会員ID.
-	XSakuraInternalMemberCode string
-	// アカウントID.
-	XSakuraInternalAccountID string
 }

@@ -5,65 +5,49 @@ package v1
 import (
 	"bytes"
 	"net/http"
-	"encoding/json"
 
-	// ogenによる自動生成では本来jxが使われる
-	//"github.com/go-faster/jx"
-
+	"github.com/go-faster/jx"
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeConfigureProcessConfigurationRequest(
-	req *ConfigureProcessConfigurationRequest,
+func encodeCreateCommonServiceItemRequest(
+	req *CreateCommonServiceItemRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
-	
-	encoded, _ := json.Marshal(req)
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
 
-func encodeConfigureProcessConfigurationSecretRequest(
-	req *ConfigureProcessConfigurationSecretRequest,
+func encodeSetProcessConfigurationSecretRequest(
+	req *SetSecretRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
-
-	encoded, _ := json.Marshal(req)
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
 
-func encodeConfigureScheduleRequest(
-	req *ConfigureScheduleRequest,
+func encodeUpdateCommonServiceItemRequest(
+	req *UpdateCommonServiceItemRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
-
-	encoded, _ := json.Marshal(req)
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeCreateProcessConfigurationRequest(
-	req *CreateProcessConfigurationRequest,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-
-	encoded, _ := json.Marshal(req)
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeCreateScheduleRequest(
-	req *CreateScheduleRequest,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-
-	encoded, _ := json.Marshal(req)
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
