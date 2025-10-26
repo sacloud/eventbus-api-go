@@ -290,6 +290,49 @@ func (s ProviderClass) Validate() error {
 	}
 }
 
+func (s *ScheduleSettings) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.RecurringUnit.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "RecurringUnit",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s ScheduleSettingsRecurringUnit) Validate() error {
+	switch s {
+	case "min":
+		return nil
+	case "hour":
+		return nil
+	case "day":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+
 func (s Settings) Validate() error {
 	switch s.Type {
 	case ProcessConfigurationSettingsSettings:
@@ -298,7 +341,10 @@ func (s Settings) Validate() error {
 		}
 		return nil
 	case ScheduleSettingsSettings:
-		return nil // no validation needed
+		if err := s.ScheduleSettings.Validate(); err != nil {
+			return err
+		}
+		return nil
 	case TriggerSettingsSettings:
 		if err := s.TriggerSettings.Validate(); err != nil {
 			return err

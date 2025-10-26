@@ -43,8 +43,8 @@ func TestScheduleAPI(t *testing.T) {
 			Settings: v1.NewScheduleSettingsSettings(v1.ScheduleSettings{
 				ProcessConfigurationID: pcId,
 				RecurringStep:          v1.NewOptInt(5),
-				RecurringUnit:          v1.NewOptString("min"),
-				StartsAt:               v1.NewOptScheduleSettingsStartsAt(v1.NewInt64ScheduleSettingsStartsAt(time.Now().UnixMilli())),
+				RecurringUnit:          v1.NewOptScheduleSettingsRecurringUnit(v1.ScheduleSettingsRecurringUnitMin),
+				StartsAt:               v1.NewInt64ScheduleSettingsStartsAt(time.Now().UnixMilli()),
 			}),
 		},
 	})
@@ -58,7 +58,7 @@ func TestScheduleAPI(t *testing.T) {
 		if sched.ID == resCreate.ID {
 			found = true
 			assert.Equal(t, "SDK Test", sched.Name)
-			assert.Equal(t, v1.NewOptString("min"), sched.Settings.ScheduleSettings.RecurringUnit)
+			assert.Equal(t, v1.NewOptScheduleSettingsRecurringUnit(v1.ScheduleSettingsRecurringUnitMin), sched.Settings.ScheduleSettings.RecurringUnit)
 		}
 	}
 	assert.True(t, found, "Created Schedule not found in list")
@@ -69,8 +69,8 @@ func TestScheduleAPI(t *testing.T) {
 			Settings: v1.NewOptSettings(v1.NewScheduleSettingsSettings(v1.ScheduleSettings{
 				ProcessConfigurationID: pcId,
 				RecurringStep:          v1.NewOptInt(1),
-				RecurringUnit:          v1.NewOptString("hour"),
-				StartsAt:               v1.NewOptScheduleSettingsStartsAt(v1.NewInt64ScheduleSettingsStartsAt(time.Now().UnixMilli())),
+				RecurringUnit:          v1.NewOptScheduleSettingsRecurringUnit(v1.ScheduleSettingsRecurringUnitHour),
+				StartsAt:               v1.NewInt64ScheduleSettingsStartsAt(time.Now().UnixMilli()),
 			})),
 		},
 	})
@@ -79,7 +79,7 @@ func TestScheduleAPI(t *testing.T) {
 	resRead, err := schedOp.Read(ctx, schedId)
 	assert.NoError(t, err)
 	assert.Equal(t, "SDK Test 2", resRead.Name)
-	assert.Equal(t, v1.NewOptString("hour"), resRead.Settings.ScheduleSettings.RecurringUnit)
+	assert.Equal(t, v1.NewOptScheduleSettingsRecurringUnit(v1.ScheduleSettingsRecurringUnitHour), resRead.Settings.ScheduleSettings.RecurringUnit)
 	assert.Equal(t, []string{"tag1", "tag2"}, resRead.Tags)
 
 	err = schedOp.Delete(ctx, schedId)
