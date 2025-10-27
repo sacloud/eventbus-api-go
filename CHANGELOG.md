@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.1](https://github.com/sacloud/eventbus-api-go/compare/v0.5.0...v0.5.1) - 2025-10-27
+- Update OpenAPI by @a2not in https://github.com/sacloud/eventbus-api-go/pull/35
+- ci: bump actions/setup-go from 5.5.0 to 6.0.0 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/25
+
 ## [v0.5.0](https://github.com/sacloud/eventbus-api-go/compare/v0.4.0...v0.5.0) - 2025-10-24
 - chore(textlint): ignore CHANGELOG.md in linting by @a2not in https://github.com/sacloud/eventbus-api-go/pull/32
 - Trigger APIの追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/34
