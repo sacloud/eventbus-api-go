@@ -1072,38 +1072,38 @@ func (o OptProvider) Or(d Provider) Provider {
 	return d
 }
 
-// NewOptScheduleSettingsStartsAt returns new OptScheduleSettingsStartsAt with value set to v.
-func NewOptScheduleSettingsStartsAt(v ScheduleSettingsStartsAt) OptScheduleSettingsStartsAt {
-	return OptScheduleSettingsStartsAt{
+// NewOptScheduleSettingsRecurringUnit returns new OptScheduleSettingsRecurringUnit with value set to v.
+func NewOptScheduleSettingsRecurringUnit(v ScheduleSettingsRecurringUnit) OptScheduleSettingsRecurringUnit {
+	return OptScheduleSettingsRecurringUnit{
 		Value: v,
 		Set:   true,
 	}
 }
 
-// OptScheduleSettingsStartsAt is optional ScheduleSettingsStartsAt.
-type OptScheduleSettingsStartsAt struct {
-	Value ScheduleSettingsStartsAt
+// OptScheduleSettingsRecurringUnit is optional ScheduleSettingsRecurringUnit.
+type OptScheduleSettingsRecurringUnit struct {
+	Value ScheduleSettingsRecurringUnit
 	Set   bool
 }
 
-// IsSet returns true if OptScheduleSettingsStartsAt was set.
-func (o OptScheduleSettingsStartsAt) IsSet() bool { return o.Set }
+// IsSet returns true if OptScheduleSettingsRecurringUnit was set.
+func (o OptScheduleSettingsRecurringUnit) IsSet() bool { return o.Set }
 
 // Reset unsets value.
-func (o *OptScheduleSettingsStartsAt) Reset() {
-	var v ScheduleSettingsStartsAt
+func (o *OptScheduleSettingsRecurringUnit) Reset() {
+	var v ScheduleSettingsRecurringUnit
 	o.Value = v
 	o.Set = false
 }
 
 // SetTo sets value to v.
-func (o *OptScheduleSettingsStartsAt) SetTo(v ScheduleSettingsStartsAt) {
+func (o *OptScheduleSettingsRecurringUnit) SetTo(v ScheduleSettingsRecurringUnit) {
 	o.Set = true
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o OptScheduleSettingsStartsAt) Get() (v ScheduleSettingsStartsAt, ok bool) {
+func (o OptScheduleSettingsRecurringUnit) Get() (v ScheduleSettingsRecurringUnit, ok bool) {
 	if !o.Set {
 		return v, false
 	}
@@ -1111,7 +1111,7 @@ func (o OptScheduleSettingsStartsAt) Get() (v ScheduleSettingsStartsAt, ok bool)
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o OptScheduleSettingsStartsAt) Or(d ScheduleSettingsStartsAt) ScheduleSettingsStartsAt {
+func (o OptScheduleSettingsRecurringUnit) Or(d ScheduleSettingsRecurringUnit) ScheduleSettingsRecurringUnit {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1456,14 +1456,14 @@ type ScheduleSettings struct {
 	ProcessConfigurationID string `json:"ProcessConfigurationID"`
 	// 実行間隔.
 	RecurringStep OptInt `json:"RecurringStep"`
-	// 実行間隔単位（min/hour/day）.
-	RecurringUnit OptString `json:"RecurringUnit"`
+	// 実行間隔単位.
+	RecurringUnit OptScheduleSettingsRecurringUnit `json:"RecurringUnit"`
 	// Crontab形式.
 	Crontab OptString `json:"Crontab"`
 	// スケジュール開始時刻（エポックミリ秒）
 	// リクエスト時はintegerで指定する必要があります。
 	// レスポンスはstringで返却されます。.
-	StartsAt OptScheduleSettingsStartsAt `json:"StartsAt"`
+	StartsAt ScheduleSettingsStartsAt `json:"StartsAt"`
 }
 
 // GetProcessConfigurationID returns the value of ProcessConfigurationID.
@@ -1477,7 +1477,7 @@ func (s *ScheduleSettings) GetRecurringStep() OptInt {
 }
 
 // GetRecurringUnit returns the value of RecurringUnit.
-func (s *ScheduleSettings) GetRecurringUnit() OptString {
+func (s *ScheduleSettings) GetRecurringUnit() OptScheduleSettingsRecurringUnit {
 	return s.RecurringUnit
 }
 
@@ -1487,7 +1487,7 @@ func (s *ScheduleSettings) GetCrontab() OptString {
 }
 
 // GetStartsAt returns the value of StartsAt.
-func (s *ScheduleSettings) GetStartsAt() OptScheduleSettingsStartsAt {
+func (s *ScheduleSettings) GetStartsAt() ScheduleSettingsStartsAt {
 	return s.StartsAt
 }
 
@@ -1502,7 +1502,7 @@ func (s *ScheduleSettings) SetRecurringStep(val OptInt) {
 }
 
 // SetRecurringUnit sets the value of RecurringUnit.
-func (s *ScheduleSettings) SetRecurringUnit(val OptString) {
+func (s *ScheduleSettings) SetRecurringUnit(val OptScheduleSettingsRecurringUnit) {
 	s.RecurringUnit = val
 }
 
@@ -1512,8 +1512,57 @@ func (s *ScheduleSettings) SetCrontab(val OptString) {
 }
 
 // SetStartsAt sets the value of StartsAt.
-func (s *ScheduleSettings) SetStartsAt(val OptScheduleSettingsStartsAt) {
+func (s *ScheduleSettings) SetStartsAt(val ScheduleSettingsStartsAt) {
 	s.StartsAt = val
+}
+
+// 実行間隔単位.
+type ScheduleSettingsRecurringUnit string
+
+const (
+	ScheduleSettingsRecurringUnitMin  ScheduleSettingsRecurringUnit = "min"
+	ScheduleSettingsRecurringUnitHour ScheduleSettingsRecurringUnit = "hour"
+	ScheduleSettingsRecurringUnitDay  ScheduleSettingsRecurringUnit = "day"
+)
+
+// AllValues returns all ScheduleSettingsRecurringUnit values.
+func (ScheduleSettingsRecurringUnit) AllValues() []ScheduleSettingsRecurringUnit {
+	return []ScheduleSettingsRecurringUnit{
+		ScheduleSettingsRecurringUnitMin,
+		ScheduleSettingsRecurringUnitHour,
+		ScheduleSettingsRecurringUnitDay,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ScheduleSettingsRecurringUnit) MarshalText() ([]byte, error) {
+	switch s {
+	case ScheduleSettingsRecurringUnitMin:
+		return []byte(s), nil
+	case ScheduleSettingsRecurringUnitHour:
+		return []byte(s), nil
+	case ScheduleSettingsRecurringUnitDay:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ScheduleSettingsRecurringUnit) UnmarshalText(data []byte) error {
+	switch ScheduleSettingsRecurringUnit(data) {
+	case ScheduleSettingsRecurringUnitMin:
+		*s = ScheduleSettingsRecurringUnitMin
+		return nil
+	case ScheduleSettingsRecurringUnitHour:
+		*s = ScheduleSettingsRecurringUnitHour
+		return nil
+	case ScheduleSettingsRecurringUnitDay:
+		*s = ScheduleSettingsRecurringUnitDay
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // スケジュール開始時刻（エポックミリ秒）

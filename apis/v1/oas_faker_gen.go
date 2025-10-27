@@ -478,8 +478,8 @@ func (s *OptProvider) SetFake() {
 }
 
 // SetFake set fake values.
-func (s *OptScheduleSettingsStartsAt) SetFake() {
-	var elem ScheduleSettingsStartsAt
+func (s *OptScheduleSettingsRecurringUnit) SetFake() {
+	var elem ScheduleSettingsRecurringUnit
 	{
 		elem.SetFake()
 	}
@@ -602,6 +602,11 @@ func (s *ScheduleSettings) SetFake() {
 			s.StartsAt.SetFake()
 		}
 	}
+}
+
+// SetFake set fake values.
+func (s *ScheduleSettingsRecurringUnit) SetFake() {
+	*s = ScheduleSettingsRecurringUnitMin
 }
 
 // SetFake set fake values.

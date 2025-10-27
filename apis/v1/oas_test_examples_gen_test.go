@@ -435,6 +435,18 @@ func TestScheduleSettings_EncodeDecode(t *testing.T) {
 	var typ2 ScheduleSettings
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestScheduleSettingsRecurringUnit_EncodeDecode(t *testing.T) {
+	var typ ScheduleSettingsRecurringUnit
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 ScheduleSettingsRecurringUnit
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestScheduleSettingsStartsAt_EncodeDecode(t *testing.T) {
 	var typ ScheduleSettingsStartsAt
 	typ.SetFake()

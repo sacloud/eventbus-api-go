@@ -2367,18 +2367,18 @@ func (s *OptProvider) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
-// Encode encodes ScheduleSettingsStartsAt as json.
-func (o OptScheduleSettingsStartsAt) Encode(e *jx.Encoder) {
+// Encode encodes ScheduleSettingsRecurringUnit as json.
+func (o OptScheduleSettingsRecurringUnit) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
 	}
-	o.Value.Encode(e)
+	e.Str(string(o.Value))
 }
 
-// Decode decodes ScheduleSettingsStartsAt from json.
-func (o *OptScheduleSettingsStartsAt) Decode(d *jx.Decoder) error {
+// Decode decodes ScheduleSettingsRecurringUnit from json.
+func (o *OptScheduleSettingsRecurringUnit) Decode(d *jx.Decoder) error {
 	if o == nil {
-		return errors.New("invalid: unable to decode OptScheduleSettingsStartsAt to nil")
+		return errors.New("invalid: unable to decode OptScheduleSettingsRecurringUnit to nil")
 	}
 	o.Set = true
 	if err := o.Value.Decode(d); err != nil {
@@ -2388,14 +2388,14 @@ func (o *OptScheduleSettingsStartsAt) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s OptScheduleSettingsStartsAt) MarshalJSON() ([]byte, error) {
+func (s OptScheduleSettingsRecurringUnit) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *OptScheduleSettingsStartsAt) UnmarshalJSON(data []byte) error {
+func (s *OptScheduleSettingsRecurringUnit) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2984,10 +2984,8 @@ func (s *ScheduleSettings) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.StartsAt.Set {
-			e.FieldStart("StartsAt")
-			s.StartsAt.Encode(e)
-		}
+		e.FieldStart("StartsAt")
+		s.StartsAt.Encode(e)
 	}
 }
 
@@ -3051,8 +3049,8 @@ func (s *ScheduleSettings) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"Crontab\"")
 			}
 		case "StartsAt":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				s.StartsAt.Reset()
 				if err := s.StartsAt.Decode(d); err != nil {
 					return err
 				}
@@ -3070,7 +3068,7 @@ func (s *ScheduleSettings) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000001,
+		0b00010001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -3112,6 +3110,48 @@ func (s *ScheduleSettings) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *ScheduleSettings) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes ScheduleSettingsRecurringUnit as json.
+func (s ScheduleSettingsRecurringUnit) Encode(e *jx.Encoder) {
+	e.Str(string(s))
+}
+
+// Decode decodes ScheduleSettingsRecurringUnit from json.
+func (s *ScheduleSettingsRecurringUnit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode ScheduleSettingsRecurringUnit to nil")
+	}
+	v, err := d.StrBytes()
+	if err != nil {
+		return err
+	}
+	// Try to use constant string.
+	switch ScheduleSettingsRecurringUnit(v) {
+	case ScheduleSettingsRecurringUnitMin:
+		*s = ScheduleSettingsRecurringUnitMin
+	case ScheduleSettingsRecurringUnitHour:
+		*s = ScheduleSettingsRecurringUnitHour
+	case ScheduleSettingsRecurringUnitDay:
+		*s = ScheduleSettingsRecurringUnitDay
+	default:
+		*s = ScheduleSettingsRecurringUnit(v)
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s ScheduleSettingsRecurringUnit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *ScheduleSettingsRecurringUnit) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
