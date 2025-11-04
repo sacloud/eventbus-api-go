@@ -195,3 +195,18 @@ func CreateSimpleMqSettings(queueName string, content string) v1.Settings {
 		Parameters:  string(param),
 	})
 }
+
+type AutoScaleAction string
+
+const (
+	AutoScaleActionUp   AutoScaleAction = "scale_up"
+	AutoScaleActionDown AutoScaleAction = "scale_down"
+)
+
+func CreateAutoScaleSettings(action AutoScaleAction, resourceID string) v1.Settings {
+	param, _ := json.Marshal(map[string]string{"action": string(action), "resource_id": resourceID})
+	return v1.NewProcessConfigurationSettingsSettings(v1.ProcessConfigurationSettings{
+		Destination: v1.ProcessConfigurationSettingsDestinationAutoscale,
+		Parameters:  string(param),
+	})
+}
