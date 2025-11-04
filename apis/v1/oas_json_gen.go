@@ -2632,6 +2632,8 @@ func (s *ProcessConfigurationSettingsDestination) Decode(d *jx.Decoder) error {
 		*s = ProcessConfigurationSettingsDestinationSimplenotification
 	case ProcessConfigurationSettingsDestinationSimplemq:
 		*s = ProcessConfigurationSettingsDestinationSimplemq
+	case ProcessConfigurationSettingsDestinationAutoscale:
+		*s = ProcessConfigurationSettingsDestinationAutoscale
 	default:
 		*s = ProcessConfigurationSettingsDestination(v)
 	}
