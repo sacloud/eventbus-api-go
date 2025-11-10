@@ -249,6 +249,8 @@ func (s ProcessConfigurationSettingsDestination) Validate() error {
 		return nil
 	case "simplemq":
 		return nil
+	case "autoscale":
+		return nil
 	default:
 		return errors.Errorf("invalid value: %v", s)
 	}

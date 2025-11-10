@@ -1258,7 +1258,7 @@ func (o OptString) Or(d string) string {
 
 // Ref: #/components/schemas/ProcessConfigurationSettings
 type ProcessConfigurationSettings struct {
-	// ジョブの宛先（simplenotification/simplemq）.
+	// ジョブの宛先（simplenotification/simplemq/autoscale）.
 	Destination ProcessConfigurationSettingsDestination `json:"Destination"`
 	// Destinationごとのパラメータ（group_id, message, queue_name, content等）.
 	Parameters string `json:"Parameters"`
@@ -1284,12 +1284,13 @@ func (s *ProcessConfigurationSettings) SetParameters(val string) {
 	s.Parameters = val
 }
 
-// ジョブの宛先（simplenotification/simplemq）.
+// ジョブの宛先（simplenotification/simplemq/autoscale）.
 type ProcessConfigurationSettingsDestination string
 
 const (
 	ProcessConfigurationSettingsDestinationSimplenotification ProcessConfigurationSettingsDestination = "simplenotification"
 	ProcessConfigurationSettingsDestinationSimplemq           ProcessConfigurationSettingsDestination = "simplemq"
+	ProcessConfigurationSettingsDestinationAutoscale          ProcessConfigurationSettingsDestination = "autoscale"
 )
 
 // AllValues returns all ProcessConfigurationSettingsDestination values.
@@ -1297,6 +1298,7 @@ func (ProcessConfigurationSettingsDestination) AllValues() []ProcessConfiguratio
 	return []ProcessConfigurationSettingsDestination{
 		ProcessConfigurationSettingsDestinationSimplenotification,
 		ProcessConfigurationSettingsDestinationSimplemq,
+		ProcessConfigurationSettingsDestinationAutoscale,
 	}
 }
 
@@ -1306,6 +1308,8 @@ func (s ProcessConfigurationSettingsDestination) MarshalText() ([]byte, error) {
 	case ProcessConfigurationSettingsDestinationSimplenotification:
 		return []byte(s), nil
 	case ProcessConfigurationSettingsDestinationSimplemq:
+		return []byte(s), nil
+	case ProcessConfigurationSettingsDestinationAutoscale:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -1320,6 +1324,9 @@ func (s *ProcessConfigurationSettingsDestination) UnmarshalText(data []byte) err
 		return nil
 	case ProcessConfigurationSettingsDestinationSimplemq:
 		*s = ProcessConfigurationSettingsDestinationSimplemq
+		return nil
+	case ProcessConfigurationSettingsDestinationAutoscale:
+		*s = ProcessConfigurationSettingsDestinationAutoscale
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
