@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.5.2](https://github.com/sacloud/eventbus-api-go/compare/v0.5.1...v0.5.2) - 2025-11-10
+- Destination `autoscale` の追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/37
+
 ## [v0.5.1](https://github.com/sacloud/eventbus-api-go/compare/v0.5.0...v0.5.1) - 2025-10-27
 - Update OpenAPI by @a2not in https://github.com/sacloud/eventbus-api-go/pull/35
 - ci: bump actions/setup-go from 5.5.0 to 6.0.0 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/25
