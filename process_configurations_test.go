@@ -14,15 +14,15 @@ import (
 )
 
 func TestProcessConfigurationAPI(t *testing.T) {
-	testutil.PreCheckEnvsFunc("SAKURACLOUD_ACCESS_TOKEN",
-		"SAKURACLOUD_ACCESS_TOKEN_SECRET", "SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")(t)
+	testutil.PreCheckEnvsFunc("SAKURA_ACCESS_TOKEN",
+		"SAKURA_ACCESS_TOKEN_SECRET", "SAKURA_SIMPLE_NOTIFICATION_GROUP_ID")(t)
 
 	client, err := eventbus.NewClient(client.WithDisableProfile(true))
 	require.NoError(t, err)
 
 	ctx := context.Background()
 	pcOp := eventbus.NewProcessConfigurationOp(client)
-	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
+	groupId := os.Getenv("SAKURA_SIMPLE_NOTIFICATION_GROUP_ID")
 
 	resCreate, err := pcOp.Create(ctx, v1.CreateCommonServiceItemRequest{
 		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
@@ -60,8 +60,8 @@ func TestProcessConfigurationAPI(t *testing.T) {
 
 	err = pcOp.UpdateSecret(ctx, pcId, v1.SetSecretRequest{
 		Secret: v1.NewSacloudAPISecretSetSecretRequestSecret(v1.SacloudAPISecret{
-			AccessToken:       os.Getenv("SAKURACLOUD_ACCESS_TOKEN"),
-			AccessTokenSecret: os.Getenv("SAKURACLOUD_ACCESS_TOKEN_SECRET"),
+			AccessToken:       os.Getenv("SAKURA_ACCESS_TOKEN"),
+			AccessTokenSecret: os.Getenv("SAKURA_ACCESS_TOKEN_SECRET"),
 		}),
 	})
 	assert.NoError(t, err)

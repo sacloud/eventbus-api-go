@@ -13,8 +13,8 @@ import (
 )
 
 func TestTriggerAPI(t *testing.T) {
-	testutil.PreCheckEnvsFunc("SAKURACLOUD_ACCESS_TOKEN",
-		"SAKURACLOUD_ACCESS_TOKEN_SECRET", "SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")(t)
+	testutil.PreCheckEnvsFunc("SAKURA_ACCESS_TOKEN",
+		"SAKURA_ACCESS_TOKEN_SECRET", "SAKURA_SIMPLE_NOTIFICATION_GROUP_ID")(t)
 
 	client, err := eventbus.NewClient()
 	require.NoError(t, err)
@@ -22,7 +22,7 @@ func TestTriggerAPI(t *testing.T) {
 	ctx := context.Background()
 	pcOp := eventbus.NewProcessConfigurationOp(client)
 	triggerOp := eventbus.NewTriggerOp(client)
-	groupId := os.Getenv("SAKURACLOUD_SIMPLE_NOTIFICATION_GROUP_ID")
+	groupId := os.Getenv("SAKURA_SIMPLE_NOTIFICATION_GROUP_ID")
 
 	pc, err := pcOp.Create(ctx, v1.CreateCommonServiceItemRequest{
 		CommonServiceItem: v1.CreateCommonServiceItemRequestCommonServiceItem{
