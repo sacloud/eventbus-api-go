@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.3](https://github.com/sacloud/eventbus-api-go/compare/v0.5.2...v0.5.3) - 2026-02-09
+- CIでのE2Eテストの廃止 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/53
+- OpenAPI定義の追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/56
+
 ## [v0.5.2](https://github.com/sacloud/eventbus-api-go/compare/v0.5.1...v0.5.2) - 2025-11-10
 - Destination `autoscale` の追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/37
 
