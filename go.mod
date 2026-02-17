@@ -1,6 +1,8 @@
 module github.com/sacloud/eventbus-api-go
 
-go 1.25
+go 1.25.0
+
+toolchain go1.25
 
 tool github.com/ogen-go/ogen/cmd/ogen
 
