@@ -5,10 +5,10 @@ import (
 	"os"
 	"testing"
 
-	client "github.com/sacloud/api-client-go"
 	eventbus "github.com/sacloud/eventbus-api-go"
 	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
 	"github.com/sacloud/packages-go/testutil"
+	"github.com/sacloud/saclient-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +17,8 @@ func TestProcessConfigurationAPI(t *testing.T) {
 	testutil.PreCheckEnvsFunc("SAKURA_ACCESS_TOKEN",
 		"SAKURA_ACCESS_TOKEN_SECRET", "SAKURA_SIMPLE_NOTIFICATION_GROUP_ID")(t)
 
-	client, err := eventbus.NewClient(client.WithDisableProfile(true))
+	var theClient saclient.Client
+	client, err := eventbus.NewClient(&theClient)
 	require.NoError(t, err)
 
 	ctx := context.Background()

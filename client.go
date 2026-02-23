@@ -1,4 +1,4 @@
-// Copyright 2025- The sacloud/eventbus-api-go authors
+// Copyright 2025-2026 The sacloud/eventbus-api-go authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,16 +17,20 @@ package eventbus
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"runtime"
 
 	client "github.com/sacloud/api-client-go"
 	v1 "github.com/sacloud/eventbus-api-go/apis/v1"
-	sacloudhttp "github.com/sacloud/go-http"
+	"github.com/sacloud/saclient-go"
 )
 
-// DefaultAPIRootURL デフォルトのAPIルートURL
-const DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1"
+const (
+	// DefaultAPIRootURL デフォルトのAPIルートURL
+	DefaultAPIRootURL = "https://secure.sakura.ad.jp/cloud/zone/is1a/api/cloud/1.1"
+
+	// ServiceKey SDKの種別を示すキー、プロファイルでのエンドポイント取得に利用する
+	ServiceKey = "eventbus"
+)
 
 // UserAgent APIリクエスト時のユーザーエージェント
 var UserAgent = fmt.Sprintf(
@@ -37,7 +41,7 @@ var UserAgent = fmt.Sprintf(
 	client.DefaultUserAgent,
 )
 
-// SecuritySourceはOpenAPI定義で使用されている認証のための仕組み。api-client-goが処理するので、ogen用はダミーで誤魔化す
+// DummySecuritySource SecuritySourceはOpenAPI定義で使用されている認証のための仕組み。saclient-goが処理するので、ogen用はダミーで誤魔化す
 type DummySecuritySource struct {
 	Token string
 }
@@ -46,40 +50,36 @@ func (ss DummySecuritySource) ApiKeyAuth(ctx context.Context, operationName v1.O
 	return v1.ApiKeyAuth{Username: ss.Token}, nil
 }
 
-func NewClient(params ...client.ClientParam) (*v1.Client, error) {
-	return NewClientWithApiUrl(DefaultAPIRootURL, params...)
+func NewClient(client saclient.ClientAPI) (*v1.Client, error) {
+	endpointConfig, err := client.EndpointConfig()
+	if err != nil {
+		return nil, NewError("unable to load endpoint configuration", err)
+	}
+	endpoint := DefaultAPIRootURL
+	if ep, ok := endpointConfig.Endpoints[ServiceKey]; ok && ep != "" {
+		endpoint = ep
+	}
+	return NewClientWithAPIRootURL(client, endpoint)
 }
 
-func NewClientWithApiUrl(apiUrl string, params ...client.ClientParam) (*v1.Client, error) {
-	filterInjector, err := newFilterInjector(apiUrl)
+func NewClientWithAPIRootURL(client saclient.ClientAPI, apiRootURL string) (*v1.Client, error) {
+	dupable, ok := client.(saclient.ClientOptionAPI)
+	if !ok {
+		return nil, NewError("client does not implement saclient.ClientOptionAPI", nil)
+	}
+	middleware, err := injectFilterMiddleware(apiRootURL)
+	if err != nil {
+		return nil, NewError("failed to load middleware", nil)
+	}
+
+	augmented, err := dupable.DupWith(
+		saclient.WithUserAgent(UserAgent),
+		saclient.WithForceAutomaticAuthentication(),
+		saclient.WithBigInt(false),          // 文字列を勝手に数値に変換しないようヘッダーで指定
+		saclient.WithMiddleware(middleware), // TODO: filterがOpenAPI定義で表現できるようになったら不要となる。その後に削除する。
+	)
 	if err != nil {
 		return nil, err
 	}
-
-	params = append(params,
-		client.WithUserAgent(UserAgent),
-		// TODO: filterがOpenAPI定義で表現できるようになったら不要となるので削除。
-		client.WithHTTPClient(&http.Client{
-			Transport: filterInjector,
-		}),
-		client.WithOptions(&client.Options{
-			RequestCustomizers: []sacloudhttp.RequestCustomizer{
-				func(req *http.Request) error {
-					// 文字列を勝手に数値に変換しないようヘッダーで指定
-					req.Header.Set("X-Sakura-Bigint-As-Int", "0")
-					return nil
-				},
-			},
-		}))
-	c, err := client.NewClient(apiUrl, params...)
-	if err != nil {
-		return nil, NewError("NewClientWithApiUrl", err)
-	}
-
-	v1Client, err := v1.NewClient(c.ServerURL(), DummySecuritySource{Token: "eventbus-client"}, v1.WithClient(c.NewHttpRequestDoer()))
-	if err != nil {
-		return nil, NewError("NewClientWithApiUrl", err)
-	}
-
-	return v1Client, nil
+	return v1.NewClient(apiRootURL, DummySecuritySource{Token: "eventbus-client"}, v1.WithClient(augmented))
 }
