@@ -3630,7 +3630,25 @@ func (s *SetSecretRequestSecret) Decode(d *jx.Decoder) error {
 	if err := d.Capture(func(d *jx.Decoder) error {
 		return d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 			switch string(key) {
+			case "APIKey":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := SimpleMQSecretSetSecretRequestSecret
+				if found && s.Type != match {
+					s.Type = ""
+					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
+				}
+				found = true
+				s.Type = match
 			case "AccessToken":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := SacloudAPISecretSetSecretRequestSecret
 				if found && s.Type != match {
 					s.Type = ""
@@ -3639,15 +3657,12 @@ func (s *SetSecretRequestSecret) Decode(d *jx.Decoder) error {
 				found = true
 				s.Type = match
 			case "AccessTokenSecret":
-				match := SacloudAPISecretSetSecretRequestSecret
-				if found && s.Type != match {
-					s.Type = ""
-					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
 				}
-				found = true
-				s.Type = match
-			case "APIKey":
-				match := SimpleMQSecretSetSecretRequestSecret
+				match := SacloudAPISecretSetSecretRequestSecret
 				if found && s.Type != match {
 					s.Type = ""
 					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
@@ -3728,7 +3743,39 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 	if err := d.Capture(func(d *jx.Decoder) error {
 		return d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 			switch string(key) {
+			case "Conditions":
+				// Type-based discrimination: check if field has expected JSON type (nullable)
+				typ := d.Next()
+				if typ != jx.Array && typ != jx.Null {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := TriggerSettingsSettings
+				if found && s.Type != match {
+					s.Type = ""
+					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
+				}
+				found = true
+				s.Type = match
+			case "Crontab":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := ScheduleSettingsSettings
+				if found && s.Type != match {
+					s.Type = ""
+					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
+				}
+				found = true
+				s.Type = match
 			case "Destination":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := ProcessConfigurationSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
@@ -3737,6 +3784,11 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 				found = true
 				s.Type = match
 			case "Parameters":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := ProcessConfigurationSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
@@ -3745,6 +3797,11 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 				found = true
 				s.Type = match
 			case "RecurringStep":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.Number {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := ScheduleSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
@@ -3753,6 +3810,11 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 				found = true
 				s.Type = match
 			case "RecurringUnit":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := ScheduleSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
@@ -3760,8 +3822,13 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 				}
 				found = true
 				s.Type = match
-			case "Crontab":
-				match := ScheduleSettingsSettings
+			case "Source":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.String {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := TriggerSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
 					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
@@ -3776,23 +3843,13 @@ func (s *Settings) Decode(d *jx.Decoder) error {
 				}
 				found = true
 				s.Type = match
-			case "Source":
-				match := TriggerSettingsSettings
-				if found && s.Type != match {
-					s.Type = ""
-					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
-				}
-				found = true
-				s.Type = match
 			case "Types":
-				match := TriggerSettingsSettings
-				if found && s.Type != match {
-					s.Type = ""
-					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
+				// Type-based discrimination: check if field has expected JSON type (nullable)
+				typ := d.Next()
+				if typ != jx.Array && typ != jx.Null {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
 				}
-				found = true
-				s.Type = match
-			case "Conditions":
 				match := TriggerSettingsSettings
 				if found && s.Type != match {
 					s.Type = ""
