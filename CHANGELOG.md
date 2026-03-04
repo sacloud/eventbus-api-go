@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.6.0](https://github.com/sacloud/eventbus-api-go/compare/v0.5.2...v0.6.0) - 2026-03-04
+- CIでのE2Eテストの廃止 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/53
+- OpenAPI定義の追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/56
+- go toolchainバージョン指定を追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/57
+- Switch API client to saclient-go by @yamamoto-febc in https://github.com/sacloud/eventbus-api-go/pull/59
+- go: bump github.com/go-faster/jx from 1.1.0 to 1.2.0 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/39
+- ci: bump actions/checkout from 5.0.0 to 6.0.2 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/50
+- go: bump github.com/ogen-go/ogen from 1.16.0 to 1.18.0 by @dependabot[bot] in https://github.com/sacloud/eventbus-api-go/pull/58
+
 ## [v0.5.2](https://github.com/sacloud/eventbus-api-go/compare/v0.5.1...v0.5.2) - 2025-11-10
 - Destination `autoscale` の追加 by @a2not in https://github.com/sacloud/eventbus-api-go/pull/37
 
