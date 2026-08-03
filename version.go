@@ -16,4 +16,4 @@
 // Please migrate to that module. This repository will be archived.
 package eventbus
 
-const Version = "0.6.1"
+const Version = "0.6.2"
