@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.6.2](https://github.com/sacloud/eventbus-api-go/compare/v0.6.1...v0.6.2) - 2026-08-03
+- update README for repository transition by @shyouhei in https://github.com/sacloud/eventbus-api-go/pull/83
+
 ## [v0.6.1](https://github.com/sacloud/eventbus-api-go/compare/v0.6.0...v0.6.1) - 2026-03-09
 - Remove direct api-client-go dependency by @a2not in https://github.com/sacloud/eventbus-api-go/pull/65
 
